@@ -1,9 +1,18 @@
+import { useNavigate } from 'react-router-dom'
 import { MdMenu, MdSearch, MdNotificationsNone, MdWaterDrop, MdDarkMode, MdLightMode } from 'react-icons/md'
 import { useTheme } from '../../context/ThemeContext'
+import { useAuth } from '../../context/AuthContext'
 import './Navbar.css'
 
 function Navbar({ onMenuToggle }) {
     const { theme, toggleTheme } = useTheme()
+    const { user } = useAuth()
+    const navigate = useNavigate()
+
+    const getInitial = () => {
+        const name = user?.displayName || user?.email || 'U'
+        return name.charAt(0).toUpperCase()
+    }
 
     return (
         <header className="navbar">
@@ -30,16 +39,20 @@ function Navbar({ onMenuToggle }) {
                 >
                     {theme === 'dark' ? <MdLightMode /> : <MdDarkMode />}
                 </button>
-                <button className="btn-icon navbar__action tooltip" data-tooltip="Log Water">
+                <button className="btn-icon navbar__action tooltip" data-tooltip="Log Water (Stage 6)">
                     <MdWaterDrop />
                 </button>
-                <button className="btn-icon navbar__action navbar__notification tooltip" data-tooltip="Notifications">
+                <button className="btn-icon navbar__action navbar__notification tooltip" data-tooltip="Notifications (Stage 7)">
                     <MdNotificationsNone />
                     <span className="navbar__notification-dot" />
                 </button>
-                <div className="navbar__profile">
-                    <div className="navbar__avatar">
-                        <span>U</span>
+                <div className="navbar__profile" onClick={() => navigate('/profile')} style={{ cursor: 'pointer' }}>
+                    <div className="navbar__avatar tooltip" data-tooltip="My Profile">
+                        {user?.photoURL ? (
+                            <img src={user.photoURL} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                        ) : (
+                            <span>{getInitial()}</span>
+                        )}
                     </div>
                 </div>
             </div>
