@@ -3,7 +3,8 @@ import { useAuth } from '../context/AuthContext'
 import {
     MdAnalytics, MdLocalFireDepartment, MdFitnessCenter,
     MdDirectionsWalk, MdWaterDrop, MdBedtime, MdTrendingUp,
-    MdMonitorWeight, MdFavorite, MdSpeed, MdRestaurant
+    MdMonitorWeight, MdFavorite, MdSpeed, MdRestaurant,
+    MdSportsMartialArts
 } from 'react-icons/md'
 import {
     Chart as ChartJS,
@@ -11,6 +12,7 @@ import {
     BarElement, ArcElement, Filler, Tooltip, Legend
 } from 'chart.js'
 import { Line, Bar, Doughnut } from 'react-chartjs-2'
+import MuscleAnalysis from './MuscleAnalysis'
 import './Analysis.css'
 
 ChartJS.register(
@@ -77,6 +79,7 @@ function Analysis() {
     const { user, getUserProfile } = useAuth()
     const profile = getUserProfile() || {}
     const [period, setPeriod] = useState(7) // 7 or 30 days
+    const [analysisTab, setAnalysisTab] = useState('health') // 'health' or 'muscles'
 
     // Load historical daily data from localStorage
     const [dailyHistory, setDailyHistory] = useState([])
@@ -231,222 +234,236 @@ function Analysis() {
                     <h1 className="heading-2">Health Analysis 📊</h1>
                     <p className="text-muted text-sm">Track your progress, analyze trends, optimize your health</p>
                 </div>
-                <div className="analysis-period-toggle">
-                    <button className={`analysis-period-btn ${period === 7 ? 'active' : ''}`} onClick={() => setPeriod(7)}>7 Days</button>
-                    <button className={`analysis-period-btn ${period === 30 ? 'active' : ''}`} onClick={() => setPeriod(30)}>30 Days</button>
+                <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
+                    <div className="analysis-period-toggle">
+                        <button className={`analysis-period-btn ${analysisTab === 'health' ? 'active' : ''}`} onClick={() => setAnalysisTab('health')}><MdTrendingUp /> Health</button>
+                        <button className={`analysis-period-btn ${analysisTab === 'muscles' ? 'active' : ''}`} onClick={() => setAnalysisTab('muscles')}><MdSportsMartialArts /> Muscles & Plans</button>
+                    </div>
+                    {analysisTab === 'health' && (
+                        <div className="analysis-period-toggle">
+                            <button className={`analysis-period-btn ${period === 7 ? 'active' : ''}`} onClick={() => setPeriod(7)}>7D</button>
+                            <button className={`analysis-period-btn ${period === 30 ? 'active' : ''}`} onClick={() => setPeriod(30)}>30D</button>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* ── Health Score + Body Stats Row ── */}
-            <div className="analysis-top-row">
-                {/* Health Score Ring */}
-                <div className="glass-card-static analysis-score-card">
-                    <h3 className="dash-card-title"><MdFavorite style={{ color: scoreColor }} /> Health Score</h3>
-                    <div className="analysis-score-ring">
-                        <svg viewBox="0 0 120 120" className="analysis-ring-svg">
-                            <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
-                            <circle cx="60" cy="60" r="50" fill="none" stroke={scoreColor} strokeWidth="10"
-                                strokeDasharray={`${(healthScore / 100) * 314} 314`}
-                                strokeLinecap="round" transform="rotate(-90 60 60)"
-                                style={{ transition: 'stroke-dasharray 1s ease' }} />
-                        </svg>
-                        <div className="analysis-score-center">
-                            <span className="analysis-score-val" style={{ color: scoreColor }}>{healthScore}</span>
-                            <span className="analysis-score-label">/ 100</span>
-                        </div>
-                    </div>
-                    <div className="analysis-score-breakdown">
-                        <div className="analysis-score-item">
-                            <MdRestaurant style={{ color: '#22c55e' }} />
-                            <span>Nutrition</span>
-                            <span style={{ color: today.calories > 0 ? '#22c55e' : 'var(--text-tertiary)' }}>{today.calories > 0 ? '✓' : '—'}</span>
-                        </div>
-                        <div className="analysis-score-item">
-                            <MdDirectionsWalk style={{ color: '#3b82f6' }} />
-                            <span>Steps</span>
-                            <span style={{ color: today.steps >= 10000 ? '#22c55e' : 'var(--text-tertiary)' }}>{today.steps >= 10000 ? '✓' : `${today.steps}`}</span>
-                        </div>
-                        <div className="analysis-score-item">
-                            <MdWaterDrop style={{ color: '#06b6d4' }} />
-                            <span>Water</span>
-                            <span style={{ color: today.water >= 8 ? '#22c55e' : 'var(--text-tertiary)' }}>{today.water >= 8 ? '✓' : `${today.water}/8`}</span>
-                        </div>
-                        <div className="analysis-score-item">
-                            <MdBedtime style={{ color: '#8b5cf6' }} />
-                            <span>Sleep</span>
-                            <span style={{ color: today.sleep >= 7 ? '#22c55e' : 'var(--text-tertiary)' }}>{today.sleep >= 7 ? '✓' : `${today.sleep}h`}</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* BMI / BMR / TDEE */}
-                <div className="glass-card-static analysis-body-card">
-                    <h3 className="dash-card-title"><MdMonitorWeight style={{ color: '#3b82f6' }} /> Body Stats</h3>
-                    <div className="analysis-body-grid">
-                        <div className="analysis-body-stat">
-                            <span className="analysis-body-val" style={{ color: bmiCat.color }}>{bmi || '—'}</span>
-                            <span className="analysis-body-label">BMI</span>
-                            <span className="analysis-body-tag" style={{ color: bmiCat.color }}>{bmiCat.label}</span>
-                        </div>
-                        <div className="analysis-body-stat">
-                            <span className="analysis-body-val">{bmr || '—'}</span>
-                            <span className="analysis-body-label">BMR</span>
-                            <span className="analysis-body-tag">kcal/day</span>
-                        </div>
-                        <div className="analysis-body-stat">
-                            <span className="analysis-body-val">{tdee || '—'}</span>
-                            <span className="analysis-body-label">TDEE</span>
-                            <span className="analysis-body-tag">kcal/day</span>
-                        </div>
-                        <div className="analysis-body-stat">
-                            <span className="analysis-body-val">{profile.weight || '—'}</span>
-                            <span className="analysis-body-label">Weight</span>
-                            <span className="analysis-body-tag">kg</span>
-                        </div>
-                    </div>
-                    <div className="analysis-bmi-bar">
-                        <div className="analysis-bmi-zones">
-                            <span style={{ background: '#3b82f6', flex: 18.5 }}>Under</span>
-                            <span style={{ background: '#22c55e', flex: 6.5 }}>Normal</span>
-                            <span style={{ background: '#f59e0b', flex: 5 }}>Over</span>
-                            <span style={{ background: '#ef4444', flex: 10 }}>Obese</span>
-                        </div>
-                        {bmi && (
-                            <div className="analysis-bmi-marker" style={{ left: `${Math.min(Math.max(((bmi - 15) / 25) * 100, 0), 100)}%` }}>
-                                ▲
+            {analysisTab === 'muscles' ? (
+                <MuscleAnalysis />
+            ) : (
+                <>
+                    {/* ── Health Score + Body Stats Row ── */}
+                    <div className="analysis-top-row">
+                        {/* Health Score Ring */}
+                        <div className="glass-card-static analysis-score-card">
+                            <h3 className="dash-card-title"><MdFavorite style={{ color: scoreColor }} /> Health Score</h3>
+                            <div className="analysis-score-ring">
+                                <svg viewBox="0 0 120 120" className="analysis-ring-svg">
+                                    <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
+                                    <circle cx="60" cy="60" r="50" fill="none" stroke={scoreColor} strokeWidth="10"
+                                        strokeDasharray={`${(healthScore / 100) * 314} 314`}
+                                        strokeLinecap="round" transform="rotate(-90 60 60)"
+                                        style={{ transition: 'stroke-dasharray 1s ease' }} />
+                                </svg>
+                                <div className="analysis-score-center">
+                                    <span className="analysis-score-val" style={{ color: scoreColor }}>{healthScore}</span>
+                                    <span className="analysis-score-label">/ 100</span>
+                                </div>
                             </div>
-                        )}
-                    </div>
-                </div>
+                            <div className="analysis-score-breakdown">
+                                <div className="analysis-score-item">
+                                    <MdRestaurant style={{ color: '#22c55e' }} />
+                                    <span>Nutrition</span>
+                                    <span style={{ color: today.calories > 0 ? '#22c55e' : 'var(--text-tertiary)' }}>{today.calories > 0 ? '✓' : '—'}</span>
+                                </div>
+                                <div className="analysis-score-item">
+                                    <MdDirectionsWalk style={{ color: '#3b82f6' }} />
+                                    <span>Steps</span>
+                                    <span style={{ color: today.steps >= 10000 ? '#22c55e' : 'var(--text-tertiary)' }}>{today.steps >= 10000 ? '✓' : `${today.steps}`}</span>
+                                </div>
+                                <div className="analysis-score-item">
+                                    <MdWaterDrop style={{ color: '#06b6d4' }} />
+                                    <span>Water</span>
+                                    <span style={{ color: today.water >= 8 ? '#22c55e' : 'var(--text-tertiary)' }}>{today.water >= 8 ? '✓' : `${today.water}/8`}</span>
+                                </div>
+                                <div className="analysis-score-item">
+                                    <MdBedtime style={{ color: '#8b5cf6' }} />
+                                    <span>Sleep</span>
+                                    <span style={{ color: today.sleep >= 7 ? '#22c55e' : 'var(--text-tertiary)' }}>{today.sleep >= 7 ? '✓' : `${today.sleep}h`}</span>
+                                </div>
+                            </div>
+                        </div>
 
-                {/* Period Averages */}
-                <div className="glass-card-static analysis-avg-card">
-                    <h3 className="dash-card-title"><MdTrendingUp style={{ color: '#f59e0b' }} /> {period}-Day Averages</h3>
-                    <div className="analysis-avg-list">
-                        <div className="analysis-avg-item">
-                            <MdLocalFireDepartment style={{ color: '#22c55e' }} />
-                            <span>Calories</span>
-                            <strong>{avgs.calories} kcal</strong>
+                        {/* BMI / BMR / TDEE */}
+                        <div className="glass-card-static analysis-body-card">
+                            <h3 className="dash-card-title"><MdMonitorWeight style={{ color: '#3b82f6' }} /> Body Stats</h3>
+                            <div className="analysis-body-grid">
+                                <div className="analysis-body-stat">
+                                    <span className="analysis-body-val" style={{ color: bmiCat.color }}>{bmi || '—'}</span>
+                                    <span className="analysis-body-label">BMI</span>
+                                    <span className="analysis-body-tag" style={{ color: bmiCat.color }}>{bmiCat.label}</span>
+                                </div>
+                                <div className="analysis-body-stat">
+                                    <span className="analysis-body-val">{bmr || '—'}</span>
+                                    <span className="analysis-body-label">BMR</span>
+                                    <span className="analysis-body-tag">kcal/day</span>
+                                </div>
+                                <div className="analysis-body-stat">
+                                    <span className="analysis-body-val">{tdee || '—'}</span>
+                                    <span className="analysis-body-label">TDEE</span>
+                                    <span className="analysis-body-tag">kcal/day</span>
+                                </div>
+                                <div className="analysis-body-stat">
+                                    <span className="analysis-body-val">{profile.weight || '—'}</span>
+                                    <span className="analysis-body-label">Weight</span>
+                                    <span className="analysis-body-tag">kg</span>
+                                </div>
+                            </div>
+                            <div className="analysis-bmi-bar">
+                                <div className="analysis-bmi-zones">
+                                    <span style={{ background: '#3b82f6', flex: 18.5 }}>Under</span>
+                                    <span style={{ background: '#22c55e', flex: 6.5 }}>Normal</span>
+                                    <span style={{ background: '#f59e0b', flex: 5 }}>Over</span>
+                                    <span style={{ background: '#ef4444', flex: 10 }}>Obese</span>
+                                </div>
+                                {bmi && (
+                                    <div className="analysis-bmi-marker" style={{ left: `${Math.min(Math.max(((bmi - 15) / 25) * 100, 0), 100)}%` }}>
+                                        ▲
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        <div className="analysis-avg-item">
-                            <MdFitnessCenter style={{ color: '#ef4444' }} />
-                            <span>Protein</span>
-                            <strong>{avgs.protein}g</strong>
-                        </div>
-                        <div className="analysis-avg-item">
-                            <MdDirectionsWalk style={{ color: '#3b82f6' }} />
-                            <span>Steps</span>
-                            <strong>{avgs.steps.toLocaleString()}</strong>
-                        </div>
-                        <div className="analysis-avg-item">
-                            <MdWaterDrop style={{ color: '#06b6d4' }} />
-                            <span>Water</span>
-                            <strong>{avgs.water} glasses</strong>
-                        </div>
-                        <div className="analysis-avg-item">
-                            <MdBedtime style={{ color: '#8b5cf6' }} />
-                            <span>Sleep</span>
-                            <strong>{avgs.sleep} hrs</strong>
-                        </div>
-                        <div className="analysis-avg-item">
-                            <MdLocalFireDepartment style={{ color: '#ef4444' }} />
-                            <span>Burned</span>
-                            <strong>{avgs.burned} kcal</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            {/* ── Charts Row ── */}
-            <div className="analysis-charts-row">
-                {/* Calorie Trend */}
-                <div className="glass-card-static analysis-chart-card analysis-chart-wide">
-                    <h3 className="dash-card-title"><MdLocalFireDepartment style={{ color: '#22c55e' }} /> Calorie Trend</h3>
-                    <div className="analysis-chart-container">
-                        <Line data={calorieChartData} options={calorieChartOptions} />
-                    </div>
-                </div>
-
-                {/* Today's Macros */}
-                <div className="glass-card-static analysis-chart-card">
-                    <h3 className="dash-card-title"><MdRestaurant style={{ color: '#ef4444' }} /> Today's Macros</h3>
-                    <div className="analysis-chart-container analysis-donut-container">
-                        <Doughnut data={macroChartData} options={{ ...CHART_OPTIONS, scales: undefined, plugins: { ...CHART_OPTIONS.plugins, legend: { display: false } } }} />
-                    </div>
-                    <div className="analysis-macro-legend">
-                        <div className="analysis-macro-item">
-                            <span className="analysis-macro-dot" style={{ background: '#ef4444' }}></span>
-                            <span>Protein</span>
-                            <strong>{today.protein || 0}g</strong>
+                        {/* Period Averages */}
+                        <div className="glass-card-static analysis-avg-card">
+                            <h3 className="dash-card-title"><MdTrendingUp style={{ color: '#f59e0b' }} /> {period}-Day Averages</h3>
+                            <div className="analysis-avg-list">
+                                <div className="analysis-avg-item">
+                                    <MdLocalFireDepartment style={{ color: '#22c55e' }} />
+                                    <span>Calories</span>
+                                    <strong>{avgs.calories} kcal</strong>
+                                </div>
+                                <div className="analysis-avg-item">
+                                    <MdFitnessCenter style={{ color: '#ef4444' }} />
+                                    <span>Protein</span>
+                                    <strong>{avgs.protein}g</strong>
+                                </div>
+                                <div className="analysis-avg-item">
+                                    <MdDirectionsWalk style={{ color: '#3b82f6' }} />
+                                    <span>Steps</span>
+                                    <strong>{avgs.steps.toLocaleString()}</strong>
+                                </div>
+                                <div className="analysis-avg-item">
+                                    <MdWaterDrop style={{ color: '#06b6d4' }} />
+                                    <span>Water</span>
+                                    <strong>{avgs.water} glasses</strong>
+                                </div>
+                                <div className="analysis-avg-item">
+                                    <MdBedtime style={{ color: '#8b5cf6' }} />
+                                    <span>Sleep</span>
+                                    <strong>{avgs.sleep} hrs</strong>
+                                </div>
+                                <div className="analysis-avg-item">
+                                    <MdLocalFireDepartment style={{ color: '#ef4444' }} />
+                                    <span>Burned</span>
+                                    <strong>{avgs.burned} kcal</strong>
+                                </div>
+                            </div>
                         </div>
-                        <div className="analysis-macro-item">
-                            <span className="analysis-macro-dot" style={{ background: '#3b82f6' }}></span>
-                            <span>Carbs</span>
-                            <strong>{today.carbs || 0}g</strong>
+                    </div>
+
+                    {/* ── Charts Row ── */}
+                    <div className="analysis-charts-row">
+                        {/* Calorie Trend */}
+                        <div className="glass-card-static analysis-chart-card analysis-chart-wide">
+                            <h3 className="dash-card-title"><MdLocalFireDepartment style={{ color: '#22c55e' }} /> Calorie Trend</h3>
+                            <div className="analysis-chart-container">
+                                <Line data={calorieChartData} options={calorieChartOptions} />
+                            </div>
                         </div>
-                        <div className="analysis-macro-item">
-                            <span className="analysis-macro-dot" style={{ background: '#f59e0b' }}></span>
-                            <span>Fat</span>
-                            <strong>{today.fat || 0}g</strong>
+
+                        {/* Today's Macros */}
+                        <div className="glass-card-static analysis-chart-card">
+                            <h3 className="dash-card-title"><MdRestaurant style={{ color: '#ef4444' }} /> Today's Macros</h3>
+                            <div className="analysis-chart-container analysis-donut-container">
+                                <Doughnut data={macroChartData} options={{ ...CHART_OPTIONS, scales: undefined, plugins: { ...CHART_OPTIONS.plugins, legend: { display: false } } }} />
+                            </div>
+                            <div className="analysis-macro-legend">
+                                <div className="analysis-macro-item">
+                                    <span className="analysis-macro-dot" style={{ background: '#ef4444' }}></span>
+                                    <span>Protein</span>
+                                    <strong>{today.protein || 0}g</strong>
+                                </div>
+                                <div className="analysis-macro-item">
+                                    <span className="analysis-macro-dot" style={{ background: '#3b82f6' }}></span>
+                                    <span>Carbs</span>
+                                    <strong>{today.carbs || 0}g</strong>
+                                </div>
+                                <div className="analysis-macro-item">
+                                    <span className="analysis-macro-dot" style={{ background: '#f59e0b' }}></span>
+                                    <span>Fat</span>
+                                    <strong>{today.fat || 0}g</strong>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            {/* ── Steps + Sleep Charts ── */}
-            <div className="analysis-charts-row">
-                <div className="glass-card-static analysis-chart-card">
-                    <h3 className="dash-card-title"><MdDirectionsWalk style={{ color: '#3b82f6' }} /> Steps</h3>
-                    <div className="analysis-chart-container">
-                        <Bar data={stepsChartData} options={{ ...CHART_OPTIONS, plugins: { ...CHART_OPTIONS.plugins, legend: { display: false } } }} />
-                    </div>
-                    <p className="text-xs text-muted text-center" style={{ marginTop: '8px' }}>
-                        <span style={{ color: '#22c55e' }}>■</span> 10k+ reached &nbsp; <span style={{ color: '#3b82f6' }}>■</span> Below goal
-                    </p>
-                </div>
+                    {/* ── Steps + Sleep Charts ── */}
+                    <div className="analysis-charts-row">
+                        <div className="glass-card-static analysis-chart-card">
+                            <h3 className="dash-card-title"><MdDirectionsWalk style={{ color: '#3b82f6' }} /> Steps</h3>
+                            <div className="analysis-chart-container">
+                                <Bar data={stepsChartData} options={{ ...CHART_OPTIONS, plugins: { ...CHART_OPTIONS.plugins, legend: { display: false } } }} />
+                            </div>
+                            <p className="text-xs text-muted text-center" style={{ marginTop: '8px' }}>
+                                <span style={{ color: '#22c55e' }}>■</span> 10k+ reached &nbsp; <span style={{ color: '#3b82f6' }}>■</span> Below goal
+                            </p>
+                        </div>
 
-                <div className="glass-card-static analysis-chart-card">
-                    <h3 className="dash-card-title"><MdBedtime style={{ color: '#8b5cf6' }} /> Sleep</h3>
-                    <div className="analysis-chart-container">
-                        <Line data={sleepChartData} options={{ ...CHART_OPTIONS, plugins: { ...CHART_OPTIONS.plugins, legend: { display: false } } }} />
+                        <div className="glass-card-static analysis-chart-card">
+                            <h3 className="dash-card-title"><MdBedtime style={{ color: '#8b5cf6' }} /> Sleep</h3>
+                            <div className="analysis-chart-container">
+                                <Line data={sleepChartData} options={{ ...CHART_OPTIONS, plugins: { ...CHART_OPTIONS.plugins, legend: { display: false } } }} />
+                            </div>
+                            <p className="text-xs text-muted text-center" style={{ marginTop: '8px' }}>
+                                Ideal: 7-9 hours per night
+                            </p>
+                        </div>
                     </div>
-                    <p className="text-xs text-muted text-center" style={{ marginTop: '8px' }}>
-                        Ideal: 7-9 hours per night
-                    </p>
-                </div>
-            </div>
 
-            {/* ── Calorie Balance Card ── */}
-            <div className="glass-card-static analysis-balance-card">
-                <h3 className="dash-card-title"><MdSpeed style={{ color: '#06b6d4' }} /> Today's Calorie Balance</h3>
-                <div className="analysis-balance-row">
-                    <div className="analysis-balance-block">
-                        <span className="analysis-balance-val" style={{ color: '#22c55e' }}>{today.calories || 0}</span>
-                        <span className="analysis-balance-label">Consumed</span>
+                    {/* ── Calorie Balance Card ── */}
+                    <div className="glass-card-static analysis-balance-card">
+                        <h3 className="dash-card-title"><MdSpeed style={{ color: '#06b6d4' }} /> Today's Calorie Balance</h3>
+                        <div className="analysis-balance-row">
+                            <div className="analysis-balance-block">
+                                <span className="analysis-balance-val" style={{ color: '#22c55e' }}>{today.calories || 0}</span>
+                                <span className="analysis-balance-label">Consumed</span>
+                            </div>
+                            <span className="analysis-balance-op">−</span>
+                            <div className="analysis-balance-block">
+                                <span className="analysis-balance-val" style={{ color: '#ef4444' }}>{(today.caloriesBurned || 0) + (bmr || 0)}</span>
+                                <span className="analysis-balance-label">Total Burned</span>
+                            </div>
+                            <span className="analysis-balance-op">=</span>
+                            <div className="analysis-balance-block">
+                                <span className="analysis-balance-val" style={{
+                                    color: ((today.calories || 0) - (today.caloriesBurned || 0) - (bmr || 0)) > 0 ? '#f59e0b' : '#22c55e'
+                                }}>
+                                    {(today.calories || 0) - (today.caloriesBurned || 0) - (bmr || 0)}
+                                </span>
+                                <span className="analysis-balance-label">
+                                    {((today.calories || 0) - (today.caloriesBurned || 0) - (bmr || 0)) > 0 ? 'Surplus' : 'Deficit'}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="analysis-balance-breakdown">
+                            <span className="text-xs text-muted">BMR: {bmr || '—'} kcal</span>
+                            <span className="text-xs text-muted">Exercise: {today.caloriesBurned || 0} kcal</span>
+                            <span className="text-xs text-muted">Target: {calorieTarget} kcal</span>
+                        </div>
                     </div>
-                    <span className="analysis-balance-op">−</span>
-                    <div className="analysis-balance-block">
-                        <span className="analysis-balance-val" style={{ color: '#ef4444' }}>{(today.caloriesBurned || 0) + (bmr || 0)}</span>
-                        <span className="analysis-balance-label">Total Burned</span>
-                    </div>
-                    <span className="analysis-balance-op">=</span>
-                    <div className="analysis-balance-block">
-                        <span className="analysis-balance-val" style={{
-                            color: ((today.calories || 0) - (today.caloriesBurned || 0) - (bmr || 0)) > 0 ? '#f59e0b' : '#22c55e'
-                        }}>
-                            {(today.calories || 0) - (today.caloriesBurned || 0) - (bmr || 0)}
-                        </span>
-                        <span className="analysis-balance-label">
-                            {((today.calories || 0) - (today.caloriesBurned || 0) - (bmr || 0)) > 0 ? 'Surplus' : 'Deficit'}
-                        </span>
-                    </div>
-                </div>
-                <div className="analysis-balance-breakdown">
-                    <span className="text-xs text-muted">BMR: {bmr || '—'} kcal</span>
-                    <span className="text-xs text-muted">Exercise: {today.caloriesBurned || 0} kcal</span>
-                    <span className="text-xs text-muted">Target: {calorieTarget} kcal</span>
-                </div>
-            </div>
+                </>
+            )}
         </div>
     )
 }

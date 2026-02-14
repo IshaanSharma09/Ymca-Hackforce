@@ -1,0 +1,327 @@
+/* ── Muscle Analysis ── */
+
+/* ── Section Tabs ── */
+.ma-section-tabs {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.ma-tab {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    font-size: var(--font-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.ma-tab:hover {
+    border-color: var(--accent-start);
+    color: var(--text-primary);
+}
+
+.ma-tab.active {
+    background: rgba(0, 212, 170, 0.08);
+    border-color: var(--accent-start);
+    color: var(--text-accent);
+}
+
+/* ── Heatmap ── */
+.ma-heatmap-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: var(--space-4);
+    align-items: start;
+}
+
+.ma-body-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.ma-body-svg-container {
+    width: 100%;
+    max-width: 340px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ma-body-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.ma-heatmap-legend {
+    display: flex;
+    gap: var(--space-4);
+    font-size: var(--font-xs);
+    color: var(--text-secondary);
+}
+
+.ma-legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 4px;
+}
+
+/* ── Frequency ── */
+.ma-side-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.ma-freq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.ma-freq-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.ma-freq-name {
+    width: 90px;
+    font-size: var(--font-xs);
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.ma-freq-bar-bg {
+    flex: 1;
+    height: 8px;
+    border-radius: var(--radius-full);
+    background: var(--bg-secondary);
+    overflow: hidden;
+}
+
+.ma-freq-bar {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.5s ease;
+    min-width: 2px;
+}
+
+.ma-freq-val {
+    width: 28px;
+    text-align: right;
+    font-size: var(--font-xs);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* ── Imbalances ── */
+.ma-imbalance-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.ma-imbalance-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: var(--font-xs);
+    line-height: 1.4;
+}
+
+.ma-imbalance-warn {
+    background: rgba(245, 158, 11, 0.06);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.ma-imbalance-danger {
+    background: rgba(239, 68, 68, 0.06);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.ma-imbalance-success {
+    background: rgba(34, 197, 94, 0.06);
+    border: 1px solid rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.ma-imbalance-info {
+    background: rgba(59, 130, 246, 0.06);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+/* ── Workout Plan ── */
+.ma-plan-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.ma-plan-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ma-plan-days {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.ma-plan-day {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ma-plan-day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: var(--text-primary);
+    transition: background 0.2s;
+}
+
+.ma-plan-day-header:hover {
+    background: var(--bg-secondary);
+}
+
+.ma-plan-day-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.ma-plan-day-badge {
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    background: rgba(0, 212, 170, 0.1);
+    color: var(--text-accent);
+    font-size: var(--font-xs);
+    font-weight: 700;
+    min-width: 40px;
+    text-align: center;
+}
+
+.ma-plan-exercises {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-top: var(--space-3);
+    margin-top: var(--space-3);
+    border-top: 1px solid var(--glass-border);
+}
+
+.ma-plan-exercise {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    transition: background 0.15s;
+}
+
+.ma-plan-exercise:hover {
+    background: var(--bg-secondary);
+}
+
+.ma-plan-ex-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    color: var(--text-accent);
+    font-size: var(--font-xs);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ma-plan-ex-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+/* ── Meal Plan ── */
+.ma-meal-plan {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.ma-meal-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.ma-meal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ma-meal-type {
+    font-size: var(--font-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-accent);
+}
+
+.ma-meal-macros {
+    display: flex;
+    gap: var(--space-3);
+    font-size: var(--font-xs);
+    font-weight: 600;
+}
+
+.ma-meal-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .ma-heatmap-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ma-section-tabs {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 640px) {
+    .ma-section-tabs {
+        flex-direction: column;
+    }
+}
