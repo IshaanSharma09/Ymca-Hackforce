@@ -1,5 +1,60 @@
 /* ── Dashboard ── */
 
+/* ── Game Hero Section ── */
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.dash-game-hero {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+    padding: var(--space-4);
+    background: rgba(10, 14, 26, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+}
+
+.dash-calorie-warning {
+    flex: 1;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 2px solid;
+    animation: warningFlash 1.5s ease-in-out infinite;
+}
+
+.dash-calorie-warning--stuffed {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: #ef4444;
+}
+
+.dash-calorie-warning--exhausted {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: #f59e0b;
+}
+
+.dash-calorie-warning__text {
+    font-family: var(--font-pixel);
+    font-size: 0.6rem;
+    line-height: 1.8;
+    color: var(--text-primary);
+}
+
+@keyframes warningFlash {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
 /* ── Quick Actions ── */
 .dash-quick-actions {
     display: flex;

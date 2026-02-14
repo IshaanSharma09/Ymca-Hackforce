@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useDailyLog } from '../context/DailyLogContext'
+import GameCharacter from '../components/GameCharacter/GameCharacter'
+import PixelHearts from '../components/PixelHearts/PixelHearts'
 import {
     MdLocalFireDepartment, MdRestaurantMenu, MdFitnessCenter,
     MdWaterDrop, MdDirectionsWalk, MdBedtime, MdAdd, MdTrendingUp,
@@ -65,9 +67,33 @@ function Dashboard() {
     const hour = new Date().getHours()
     const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening'
 
+    // BMI calculation
+    const heightM = (profile.height || 170) / 100
+    const bmi = (profile.weight || 70) / (heightM * heightM)
+
+    // Calorie status for character expression
+    const calorieRatio = dailyData.caloriesConsumed / calorieTarget
+    let calorieStatusText = ''
+    let calorieStatus = 'happy'
+    if (calorieRatio > 1.3) {
+        calorieStatus = 'stuffed'
+        calorieStatusText = '⚠️ TOO MANY CALORIES! Your hero feels stuffed!'
+    } else if (calorieRatio > 0 && calorieRatio < 0.4 && dailyData.protein < macroTargets.protein * 0.3) {
+        calorieStatus = 'exhausted'
+        calorieStatusText = '⚠️ LOW FUEL! Your hero needs more food & protein!'
+    }
+
+    // Health score for hearts (0-100)
+    const healthScore = Math.min(100, Math.round(
+        (Math.min(calorieProgress, 100) * 0.3) +
+        (stepsProgress * 0.25) +
+        (waterProgress * 0.25) +
+        (Math.min((dailyData.sleep || 0) / 8 * 100, 100) * 0.2)
+    ))
+
     return (
         <div className="page animate-fade-in">
-            {/* Header */}
+            {/* Header with Pixel Hearts */}
             <div className="page__header dash-header">
                 <div>
                     <h1 className="heading-2">{greeting}, {user?.displayName?.split(' ')[0] || 'Champion'} 👋</h1>
@@ -75,6 +101,17 @@ function Dashboard() {
                         {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
                     </p>
                 </div>
+                <PixelHearts score={healthScore} />
+            </div>
+
+            {/* Game Hero Section — Character + Calorie Warning */}
+            <div className="dash-game-hero">
+                <GameCharacter bmi={bmi} calorieStatus={calorieStatus} size={140} />
+                {calorieStatusText && (
+                    <div className={`dash-calorie-warning dash-calorie-warning--${calorieStatus}`}>
+                        <span className="dash-calorie-warning__text">{calorieStatusText}</span>
+                    </div>
+                )}
             </div>
 
             {/* Quick Actions */}

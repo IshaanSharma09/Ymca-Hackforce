@@ -1,0 +1,71 @@
+/* ============================================================
+   PIXEL HEARTS — Retro HP Display
+   ============================================================ */
+
+.pixel-hearts {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.pixel-heart {
+    width: 28px;
+    height: 28px;
+    image-rendering: pixelated;
+    transition: transform 0.3s ease;
+}
+
+.pixel-heart:hover {
+    transform: scale(1.2);
+}
+
+.pixel-heart__svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Full heart — red */
+.pixel-heart--full .pixel-heart__svg rect {
+    fill: #e53935;
+    animation: heartPulse 2s ease-in-out infinite;
+}
+
+/* Half heart — dark red / cracked */
+.pixel-heart--half .pixel-heart__svg rect {
+    fill: #8e2424;
+}
+
+/* Half heart — right half remains red */
+.pixel-heart--half .pixel-heart__svg rect:nth-child(n+8) {
+    fill: #e53935;
+}
+
+/* Empty heart — dark gray */
+.pixel-heart--empty .pixel-heart__svg rect {
+    fill: #333;
+}
+
+@keyframes heartPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.85;
+    }
+}
+
+/* Outline/border effect */
+.pixel-heart--full .pixel-heart__svg {
+    filter: drop-shadow(1px 1px 0 #7f1d1d);
+}
+
+.pixel-heart--half .pixel-heart__svg {
+    filter: drop-shadow(1px 1px 0 #4a1010);
+}
+
+.pixel-heart--empty .pixel-heart__svg {
+    filter: drop-shadow(1px 1px 0 #111);
+}

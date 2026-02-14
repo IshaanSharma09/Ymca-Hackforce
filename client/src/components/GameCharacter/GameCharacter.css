@@ -1,0 +1,158 @@
+/* ============================================================
+   GAME CHARACTER — Pixel Art Avatar
+   ============================================================ */
+
+.game-char {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    image-rendering: auto;
+}
+
+.game-char__svg {
+    width: 100%;
+    height: 100%;
+    image-rendering: auto;
+}
+
+/* Idle bounce animation */
+.game-char--happy .game-char__svg {
+    animation: charBounce 2s ease-in-out infinite;
+}
+
+.game-char--stuffed .game-char__svg {
+    animation: charWobble 3s ease-in-out infinite;
+}
+
+.game-char--exhausted .game-char__svg {
+    animation: charSag 4s ease-in-out infinite;
+}
+
+@keyframes charBounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes charWobble {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(1deg);
+    }
+
+    75% {
+        transform: rotate(-1deg);
+    }
+}
+
+@keyframes charSag {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(2px);
+    }
+}
+
+/* Sweat drop animation */
+.game-char__sweat {
+    animation: sweatDrop 2s ease-in-out infinite;
+}
+
+@keyframes sweatDrop {
+
+    0%,
+    100% {
+        opacity: 0;
+        transform: translateY(0);
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+        transform: translateY(4px);
+    }
+
+    90% {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+}
+
+/* Bloat bubble animations */
+.game-char__bubble1 {
+    animation: bubble 3s ease-in-out infinite;
+}
+
+.game-char__bubble2 {
+    animation: bubble 3s ease-in-out infinite 1s;
+}
+
+@keyframes bubble {
+
+    0%,
+    100% {
+        opacity: 0;
+        transform: translateY(0) scale(0.5);
+    }
+
+    30% {
+        opacity: 0.7;
+        transform: translateY(-3px) scale(1);
+    }
+
+    70% {
+        opacity: 0.3;
+        transform: translateY(-8px) scale(1.2);
+    }
+}
+
+/* Label below character */
+.game-char__label {
+    font-family: var(--font-pixel);
+    font-size: 0.5rem;
+    color: var(--text-secondary);
+    text-align: center;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Arm flex for normal/fit character */
+.game-char--normal .game-char__arm-left {
+    animation: armFlex 3s ease-in-out infinite;
+    transform-origin: bottom left;
+}
+
+.game-char--normal .game-char__arm-right {
+    animation: armFlex 3s ease-in-out infinite 0.5s;
+    transform-origin: bottom right;
+}
+
+@keyframes armFlex {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(-15deg);
+    }
+}
