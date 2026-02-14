@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useDailyLog } from '../context/DailyLogContext'
 import {
     MdAnalytics, MdLocalFireDepartment, MdFitnessCenter,
     MdDirectionsWalk, MdWaterDrop, MdBedtime, MdTrendingUp,
@@ -92,23 +93,26 @@ function Analysis() {
             const d = new Date(now)
             d.setDate(d.getDate() - i)
             const key = d.toISOString().split('T')[0]
-            const stored = JSON.parse(localStorage.getItem(`fitfuel-daily-${user.uid}-${key}`) || '{}')
+
+            const isToday = (key === new Date().toISOString().split('T')[0])
+            const stored = (isToday && dailyData) ? dailyData : JSON.parse(localStorage.getItem(`fitfuel-daily-${user.uid}-${key}`) || '{}')
+
             history.push({
                 date: key,
                 label: d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
                 shortLabel: d.toLocaleDateString('en-US', { weekday: 'short' }),
-                calories: stored.calories || 0,
-                protein: stored.protein || 0,
-                carbs: stored.carbs || 0,
-                fat: stored.fat || 0,
-                steps: stored.steps || 0,
-                water: stored.water || 0,
-                sleep: stored.sleep || 0,
-                caloriesBurned: stored.caloriesBurned || 0
+                calories: stored?.caloriesConsumed || 0,
+                protein: stored?.protein || 0,
+                carbs: stored?.carbs || 0,
+                fat: stored?.fat || 0,
+                steps: stored?.steps || 0,
+                water: stored?.water || 0,
+                sleep: stored?.sleep || 0,
+                caloriesBurned: stored?.caloriesBurned || 0
             })
         }
         setDailyHistory(history)
-    }, [user, period])
+    }, [user, period, dailyData])
 
     // Calculate averages
     const avgs = useMemo(() => {

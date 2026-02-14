@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useDailyLog } from '../context/DailyLogContext'
 import {
     MdFitnessCenter, MdSearch, MdAdd, MdClose, MdDelete,
     MdExpandMore, MdExpandLess, MdLocalFireDepartment,
@@ -73,6 +74,7 @@ const calcCalories = (met, weightKg, durationMin) =>
 
 function Workout() {
     const { user, getUserProfile } = useAuth()
+    const { dailyData, saveDailyData } = useDailyLog()
     const profile = getUserProfile() || {}
     const userWeight = profile.weight || 70 // kg
 
@@ -197,13 +199,12 @@ function Workout() {
         setWorkoutHistory(updated)
         localStorage.setItem(`fitfuel-workouts-${user.uid}`, JSON.stringify(updated))
 
-        // Sync to dashboard
-        const today = new Date().toISOString().split('T')[0]
-        const dailyKey = `fitfuel-daily-${user.uid}-${today}`
-        const daily = JSON.parse(localStorage.getItem(dailyKey) || '{}')
-        daily.caloriesBurned = (daily.caloriesBurned || 0) + totalCal
-        daily.workoutsToday = (daily.workoutsToday || 0) + 1
-        localStorage.setItem(dailyKey, JSON.stringify(daily))
+        // Sync to dashboard via context
+        saveDailyData({
+            ...dailyData,
+            caloriesBurned: (dailyData.caloriesBurned || 0) + totalCal,
+            workoutsToday: (dailyData.workoutsToday || 0) + 1
+        })
 
         // Reset
         setCurrentExercises([])

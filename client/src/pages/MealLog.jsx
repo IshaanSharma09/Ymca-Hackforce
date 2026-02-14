@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useDailyLog } from '../context/DailyLogContext'
 import {
     MdSearch, MdAdd, MdClose, MdRestaurantMenu,
     MdLocalFireDepartment, MdFavorite,
@@ -117,6 +118,7 @@ const MEAL_TYPES = [
 
 function MealLog() {
     const { user } = useAuth()
+    const { dailyData, saveDailyData } = useDailyLog()
     const [searchQuery, setSearchQuery] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [selectedMealType, setSelectedMealType] = useState('breakfast')
@@ -142,17 +144,19 @@ function MealLog() {
         const today = new Date().toISOString().split('T')[0]
         setLoggedMeals(meals)
         localStorage.setItem(`fitfuel-meals-${user.uid}-${today}`, JSON.stringify(meals))
+
         const totalCal = meals.reduce((s, m) => s + m.calories, 0)
         const totalPro = meals.reduce((s, m) => s + m.protein, 0)
         const totalCarbs = meals.reduce((s, m) => s + m.carbs, 0)
         const totalFat = meals.reduce((s, m) => s + m.fat, 0)
-        const dailyKey = `fitfuel-daily-${user.uid}-${today}`
-        const daily = JSON.parse(localStorage.getItem(dailyKey) || '{}')
-        daily.caloriesConsumed = totalCal
-        daily.protein = totalPro
-        daily.carbs = totalCarbs
-        daily.fat = totalFat
-        localStorage.setItem(dailyKey, JSON.stringify(daily))
+
+        saveDailyData({
+            ...dailyData,
+            caloriesConsumed: totalCal,
+            protein: totalPro,
+            carbs: totalCarbs,
+            fat: totalFat
+        })
     }
 
     const handleSearch = (query) => {

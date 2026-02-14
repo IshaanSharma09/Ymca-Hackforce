@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import Sidebar from './components/Sidebar/Sidebar'
 import Navbar from './components/Navbar/Navbar'
+import GameBackground from './components/GameBackground/GameBackground'
 import Onboarding from './components/Onboarding/Onboarding'
 import Dashboard from './pages/Dashboard'
 import MealLog from './pages/MealLog'
@@ -37,6 +38,7 @@ function AppLayout() {
 
     return (
         <div className="app-layout">
+            <GameBackground />
             <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
             <div className={`main-wrapper ${collapsed ? 'collapsed' : ''}`}>
                 <Navbar onMenuToggle={() => setCollapsed(!collapsed)} />

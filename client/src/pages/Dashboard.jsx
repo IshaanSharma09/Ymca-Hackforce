@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useDailyLog } from '../context/DailyLogContext'
 import {
     MdLocalFireDepartment, MdRestaurantMenu, MdFitnessCenter,
     MdWaterDrop, MdDirectionsWalk, MdBedtime, MdAdd, MdTrendingUp,
@@ -10,34 +11,14 @@ import './Dashboard.css'
 
 function Dashboard() {
     const { user, getUserProfile } = useAuth()
+    const { dailyData, saveDailyData, addWater } = useDailyLog()
     const profile = getUserProfile() || {}
     const navigate = useNavigate()
 
-    const [dailyData, setDailyData] = useState({
-        caloriesConsumed: 0, caloriesBurned: 0,
-        protein: 0, carbs: 0, fat: 0,
-        steps: 0, water: 0, sleep: 0, workoutsToday: 0
-    })
     const [showStepsModal, setShowStepsModal] = useState(false)
     const [showSleepModal, setShowSleepModal] = useState(false)
     const [stepsInput, setStepsInput] = useState('')
     const [sleepInput, setSleepInput] = useState('')
-
-    useEffect(() => {
-        if (user) {
-            const today = new Date().toISOString().split('T')[0]
-            const saved = localStorage.getItem(`fitfuel-daily-${user.uid}-${today}`)
-            if (saved) setDailyData(JSON.parse(saved))
-        }
-    }, [user])
-
-    const saveDailyData = (newData) => {
-        const today = new Date().toISOString().split('T')[0]
-        setDailyData(newData)
-        localStorage.setItem(`fitfuel-daily-${user.uid}-${today}`, JSON.stringify(newData))
-    }
-
-    const addWater = () => saveDailyData({ ...dailyData, water: dailyData.water + 1 })
 
     const submitSteps = () => {
         const steps = parseInt(stepsInput) || 0
