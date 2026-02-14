@@ -1,60 +1,57 @@
-/* ── Game Character — Modern Avatar ── */
-.game-char {
+/* ═══════════════════════════════════════════
+   GAME CHARACTER — Detailed Avatar
+   ═══════════════════════════════════════════ */
+
+.character {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--space-2);
+    animation: characterIdle 3s ease-in-out infinite;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
 }
 
-.game-char__svg {
+.character__svg {
     width: 100%;
-    height: auto;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+    height: 100%;
 }
 
-/* Aura glow pulse */
-.game-char__aura {
-    animation: auraPulse 3s ease-in-out infinite;
+/* ── Aura Glow ── */
+.character__aura {
+    position: absolute;
+    inset: -15%;
+    border-radius: 50%;
+    pointer-events: none;
+    transition: all 0.5s ease;
 }
 
-@keyframes auraPulse {
+.character--happy .character__aura {
+    background: radial-gradient(circle, rgba(0, 229, 160, 0.15) 0%, transparent 70%);
+    animation: auraGlow 2s ease-in-out infinite alternate;
+}
 
-    0%,
+.character--stuffed .character__aura {
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+}
+
+.character--tired .character__aura {
+    background: radial-gradient(circle, rgba(148, 163, 184, 0.1) 0%, transparent 70%);
+}
+
+@keyframes auraGlow {
+    0% {
+        opacity: 0.5;
+        transform: scale(0.95);
+    }
+
     100% {
-        opacity: 0.4;
-        r: 28;
-    }
-
-    50% {
-        opacity: 0.7;
-        r: 32;
+        opacity: 1;
+        transform: scale(1.05);
     }
 }
 
-/* Arm idle animation */
-.game-char--happy .game-char__arm-right {
-    animation: armFlex 2s ease-in-out infinite;
-    transform-origin: center top;
-}
-
-@keyframes armFlex {
-
-    0%,
-    100% {
-        transform: rotate(0deg);
-    }
-
-    50% {
-        transform: rotate(-8deg);
-    }
-}
-
-/* Float animation for happy state */
-.game-char--happy .game-char__svg {
-    animation: charFloat 3s ease-in-out infinite;
-}
-
-@keyframes charFloat {
+/* ── Idle Animation ── */
+@keyframes characterIdle {
 
     0%,
     100% {
@@ -62,16 +59,54 @@
     }
 
     50% {
-        transform: translateY(-4px);
+        transform: translateY(-6px);
     }
 }
 
-/* Stuffed state — slight sway */
-.game-char--stuffed .game-char__svg {
-    animation: charSway 2s ease-in-out infinite;
+.character--tired {
+    animation: characterDroop 4s ease-in-out infinite;
 }
 
-@keyframes charSway {
+@keyframes characterDroop {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-2deg);
+    }
+
+    50% {
+        transform: translateY(2px) rotate(2deg);
+    }
+}
+
+.character--stuffed {
+    animation: characterWobble 2s ease-in-out infinite;
+}
+
+@keyframes characterWobble {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    25% {
+        transform: translateY(-3px) rotate(1deg);
+    }
+
+    75% {
+        transform: translateY(-3px) rotate(-1deg);
+    }
+}
+
+/* ── Arms animation ── */
+.character--happy .character__arm--right,
+.character--happy .character__hand--right {
+    animation: armWave 2s ease-in-out infinite;
+    transform-origin: 72px 58px;
+}
+
+@keyframes armWave {
 
     0%,
     100% {
@@ -79,103 +114,108 @@
     }
 
     25% {
-        transform: rotate(1deg);
+        transform: rotate(-15deg);
     }
 
     75% {
-        transform: rotate(-1deg);
+        transform: rotate(5deg);
     }
 }
 
-/* Exhausted state — droop */
-.game-char--exhausted .game-char__svg {
-    animation: charDroop 4s ease-in-out infinite;
+/* ── Ground Shadow ── */
+.character__shadow {
+    animation: shadowPulse 3s ease-in-out infinite;
 }
 
-@keyframes charDroop {
+@keyframes shadowPulse {
 
     0%,
     100% {
-        transform: translateY(0);
+        rx: 22;
+        opacity: 0.3;
     }
 
     50% {
-        transform: translateY(3px);
+        rx: 18;
+        opacity: 0.2;
     }
 }
 
-/* Zzz text animated */
-.game-char__zzz {
-    fill: var(--text-tertiary);
+/* ── Sparkle / Sweat / Zzz ── */
+.character__sparkle {
+    animation: sparkleFloat 1.5s ease-in-out infinite;
+}
+
+@keyframes sparkleFloat {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: translateY(-5px) scale(1.3);
+    }
+}
+
+.character__sweat {
+    animation: sweatDrip 1.2s ease-in infinite;
+}
+
+@keyframes sweatDrip {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+}
+
+.character__zzz {
     animation: zzzFloat 2s ease-in-out infinite;
 }
 
 @keyframes zzzFloat {
-
-    0%,
-    100% {
-        opacity: 0.3;
-        transform: translateY(0);
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.5);
     }
 
     50% {
         opacity: 1;
-        transform: translateY(-4px);
-    }
-}
-
-/* Bubble animation */
-.game-char__bubble1 {
-    animation: bubbleUp 2s ease-in-out infinite;
-}
-
-.game-char__bubble2 {
-    animation: bubbleUp 2.5s ease-in-out infinite 0.5s;
-}
-
-@keyframes bubbleUp {
-
-    0%,
-    100% {
-        opacity: 0;
-        transform: translateY(0);
-    }
-
-    30% {
-        opacity: 0.8;
+        transform: translate(5px, -8px) scale(1);
     }
 
     100% {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translate(10px, -16px) scale(0.8);
     }
 }
 
-/* Label */
-.game-char__label {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-full);
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--glass-border);
-    font-size: var(--font-xs);
-    font-weight: 600;
-}
-
-.game-char__emoji {
-    font-size: 0.85rem;
-}
-
-.game-char__type {
+/* ── Label ── */
+.character__label {
+    margin-top: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
     color: var(--text-secondary);
-    text-transform: capitalize;
+    text-align: center;
+    white-space: nowrap;
+    font-family: var(--font-heading);
 }
 
-/* Light theme */
-[data-theme="light"] .game-char__label {
-    background: rgba(0, 0, 0, 0.04);
-    border-color: rgba(0, 0, 0, 0.08);
+.character--happy .character__label {
+    color: var(--accent-start);
+}
+
+.character--stuffed .character__label {
+    color: #f59e0b;
+}
+
+.character--tired .character__label {
+    color: #94a3b8;
 }

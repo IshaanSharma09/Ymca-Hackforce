@@ -51,6 +51,32 @@ const calcTDEE = (bmr, activityLevel) => {
     return Math.round(bmr * (m[activityLevel] || 1.2))
 }
 
+// Generate realistic demo data for charts when no real data exists
+const generateDemoData = (days) => {
+    const data = []
+    const now = new Date()
+    for (let i = days - 1; i >= 0; i--) {
+        const d = new Date(now)
+        d.setDate(d.getDate() - i)
+        const dayOfWeek = d.getDay()
+        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
+        data.push({
+            date: d.toISOString().split('T')[0],
+            label: d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
+            shortLabel: d.toLocaleDateString('en-US', { weekday: 'short' }),
+            calories: Math.round(1600 + Math.random() * 800 + (isWeekend ? 200 : 0)),
+            protein: Math.round(60 + Math.random() * 80),
+            carbs: Math.round(100 + Math.random() * 120),
+            fat: Math.round(30 + Math.random() * 50),
+            steps: Math.round(4000 + Math.random() * 9000 + (isWeekend ? -2000 : 0)),
+            water: Math.round(3 + Math.random() * 6),
+            sleep: Math.round((5.5 + Math.random() * 3.5) * 2) / 2,
+            caloriesBurned: Math.round(200 + Math.random() * 500)
+        })
+    }
+    return data
+}
+
 const CHART_OPTIONS = {
     responsive: true,
     maintainAspectRatio: false,
@@ -81,6 +107,7 @@ const CHART_OPTIONS = {
 
 function Analysis() {
     const { user, getUserProfile } = useAuth()
+    const { dailyData } = useDailyLog()
     const profile = getUserProfile() || {}
     const [period, setPeriod] = useState(7) // 7 or 30 days
     const [analysisTab, setAnalysisTab] = useState('health') // 'health' or 'muscles'
@@ -92,6 +119,7 @@ function Analysis() {
         if (!user) return
         const history = []
         const now = new Date()
+        let hasAnyData = false
         for (let i = period - 1; i >= 0; i--) {
             const d = new Date(now)
             d.setDate(d.getDate() - i)
@@ -99,6 +127,8 @@ function Analysis() {
 
             const isToday = (key === new Date().toISOString().split('T')[0])
             const stored = (isToday && dailyData) ? dailyData : JSON.parse(localStorage.getItem(`fitfuel-daily-${user.uid}-${key}`) || '{}')
+
+            if (stored.caloriesConsumed || stored.steps || stored.water) hasAnyData = true
 
             history.push({
                 date: key,
@@ -114,7 +144,8 @@ function Analysis() {
                 caloriesBurned: stored?.caloriesBurned || 0
             })
         }
-        setDailyHistory(history)
+        // If no real data, use demo data for charts
+        setDailyHistory(hasAnyData ? history : generateDemoData(period))
     }, [user, period, dailyData])
 
     // Calculate averages
