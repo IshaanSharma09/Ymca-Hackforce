@@ -1,49 +1,55 @@
-/* ── Dashboard ── */
+/* ── Dashboard — Modern Gamified ── */
 
-/* ── Game Hero Section ── */
+/* ── Header Row ── */
 .dash-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-4);
 }
 
+/* ── Game Hero Section ── */
 .dash-game-hero {
     display: flex;
     align-items: center;
     gap: var(--space-6);
     margin-bottom: var(--space-6);
-    padding: var(--space-4);
-    background: rgba(10, 14, 26, 0.5);
-    border: 2px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--glass-shadow);
 }
 
 .dash-calorie-warning {
     flex: 1;
-    padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-md);
-    border: 2px solid;
-    animation: warningFlash 1.5s ease-in-out infinite;
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-lg);
+    border: 1px solid;
+    animation: warningPulse 2s ease-in-out infinite;
 }
 
 .dash-calorie-warning--stuffed {
-    background: rgba(239, 68, 68, 0.15);
-    border-color: #ef4444;
+    background: rgba(248, 113, 113, 0.1);
+    border-color: rgba(248, 113, 113, 0.3);
 }
 
 .dash-calorie-warning--exhausted {
-    background: rgba(245, 158, 11, 0.15);
-    border-color: #f59e0b;
+    background: rgba(251, 191, 36, 0.1);
+    border-color: rgba(251, 191, 36, 0.3);
 }
 
 .dash-calorie-warning__text {
-    font-family: var(--font-pixel);
-    font-size: 0.6rem;
-    line-height: 1.8;
+    font-family: var(--font-heading);
+    font-size: var(--font-sm);
+    font-weight: 600;
+    line-height: 1.6;
     color: var(--text-primary);
 }
 
-@keyframes warningFlash {
+@keyframes warningPulse {
 
     0%,
     100% {
@@ -68,8 +74,9 @@
     align-items: center;
     gap: var(--space-3);
     padding: var(--space-3) var(--space-5);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-full);
     background: var(--glass-bg);
+    backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     cursor: pointer;
     transition: all var(--transition-base);
@@ -79,9 +86,10 @@
 }
 
 .dash-quick-btn:hover {
-    transform: translateY(-2px);
-    border-color: var(--accent-start);
-    box-shadow: var(--accent-glow);
+    transform: translateY(-3px);
+    border-color: rgba(0, 229, 160, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), var(--accent-glow);
+    background: rgba(255, 255, 255, 0.06);
 }
 
 .dash-quick-btn:active {
@@ -89,8 +97,8 @@
 }
 
 .dash-quick-btn__icon {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: var(--radius-md);
     display: flex;
     align-items: center;
@@ -102,11 +110,12 @@
 .dash-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-4);
+    gap: var(--space-5);
 }
 
 /* ── Card Titles ── */
 .dash-card-title {
+    font-family: var(--font-heading);
     font-size: var(--font-base);
     font-weight: 700;
     display: flex;
@@ -131,6 +140,7 @@
 .dash-calorie-ring {
     width: 100%;
     height: 100%;
+    filter: drop-shadow(0 0 12px rgba(0, 229, 160, 0.2));
 }
 
 .dash-ring-progress {
@@ -148,6 +158,7 @@
 }
 
 .dash-calorie-number {
+    font-family: var(--font-heading);
     font-size: var(--font-4xl);
     font-weight: 900;
     line-height: 1;
@@ -220,17 +231,17 @@
 
 .dash-macro-protein .progress-fill,
 .dash-macro-protein {
-    background: linear-gradient(135deg, #ef4444, #f97316) !important;
+    background: linear-gradient(135deg, #f87171, #fb923c) !important;
 }
 
 .dash-macro-carbs .progress-fill,
 .dash-macro-carbs {
-    background: linear-gradient(135deg, #3b82f6, #6366f1) !important;
+    background: linear-gradient(135deg, #60a5fa, #818cf8) !important;
 }
 
 .dash-macro-fat .progress-fill,
 .dash-macro-fat {
-    background: linear-gradient(135deg, #f59e0b, #eab308) !important;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
 }
 
 /* ── Steps ── */
@@ -242,6 +253,7 @@
 }
 
 .dash-steps-number {
+    font-family: var(--font-heading);
     font-size: var(--font-3xl);
     font-weight: 900;
     color: var(--text-primary);
@@ -264,10 +276,10 @@
 }
 
 .dash-water-glass {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: var(--radius-md);
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--glass-border);
     display: flex;
     align-items: center;
@@ -279,15 +291,17 @@
 }
 
 .dash-water-glass:hover {
-    border-color: #00b4d8;
-    color: #00b4d8;
-    transform: scale(1.1);
+    border-color: #00b4ff;
+    color: #00b4ff;
+    transform: scale(1.12);
+    box-shadow: 0 0 12px rgba(0, 180, 255, 0.2);
 }
 
 .dash-water-glass.filled {
-    background: rgba(0, 180, 216, 0.15);
-    border-color: #00b4d8;
-    color: #00b4d8;
+    background: rgba(0, 180, 255, 0.12);
+    border-color: #00b4ff;
+    color: #00b4ff;
+    box-shadow: 0 0 8px rgba(0, 180, 255, 0.15);
 }
 
 /* ── Mini Stat Cards ── */
@@ -305,6 +319,7 @@
 
 .dash-mini-number {
     display: block;
+    font-family: var(--font-heading);
     font-size: var(--font-2xl);
     font-weight: 800;
     color: var(--text-primary);
@@ -333,10 +348,16 @@
         overflow-x: auto;
         flex-wrap: nowrap;
         -webkit-overflow-scrolling: touch;
+        padding-bottom: var(--space-2);
     }
 
     .dash-quick-btn {
         flex-shrink: 0;
+    }
+
+    .dash-game-hero {
+        flex-direction: column;
+        text-align: center;
     }
 }
 
@@ -347,6 +368,7 @@
 
     .dash-quick-btn {
         padding: var(--space-3);
+        border-radius: var(--radius-md);
     }
 }
 
@@ -355,7 +377,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -365,9 +387,10 @@
 
 .dash-modal {
     width: 90%;
-    max-width: 360px;
-    padding: var(--space-6);
+    max-width: 380px;
+    padding: var(--space-8);
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-5);
+    border-radius: var(--radius-2xl);
 }

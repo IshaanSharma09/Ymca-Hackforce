@@ -1,47 +1,34 @@
 import './PixelHearts.css'
 
 /**
- * Health score displayed as pixel hearts (like retro game HP).
- * 4 hearts = 100 points. Each heart = 25 points.
- * Full heart: ❤️  |  Half: 💔  |  Empty: 🖤
+ * Modern XP/Health Bar — replaces pixel hearts.
+ * Shows a gradient-filled bar with level badge and HP value.
  */
-function PixelHearts({ score = 0, maxHearts = 4 }) {
-    const pointsPerHeart = 100 / maxHearts  // 25
+function PixelHearts({ score = 0 }) {
+    const level = Math.floor(score / 25) + 1
+    const clampedScore = Math.min(Math.max(score, 0), 100)
 
-    const hearts = Array.from({ length: maxHearts }, (_, i) => {
-        const heartMin = i * pointsPerHeart
-        const heartMax = heartMin + pointsPerHeart
-
-        if (score >= heartMax) return 'full'
-        if (score > heartMin) return 'half'
-        return 'empty'
-    })
+    const getBarColor = () => {
+        if (clampedScore >= 75) return 'var(--accent-gradient)'
+        if (clampedScore >= 50) return 'linear-gradient(135deg, #00e5a0, #fbbf24)'
+        if (clampedScore >= 25) return 'linear-gradient(135deg, #fbbf24, #f87171)'
+        return 'linear-gradient(135deg, #f87171, #ef4444)'
+    }
 
     return (
-        <div className="pixel-hearts">
-            {hearts.map((state, i) => (
-                <div key={i} className={`pixel-heart pixel-heart--${state}`}>
-                    <svg viewBox="0 0 16 16" className="pixel-heart__svg">
-                        {/* Pixel heart shape using rects */}
-                        <rect x="2" y="2" width="4" height="4" />
-                        <rect x="10" y="2" width="4" height="4" />
-                        <rect x="0" y="4" width="4" height="4" />
-                        <rect x="4" y="4" width="4" height="4" />
-                        <rect x="8" y="4" width="4" height="4" />
-                        <rect x="12" y="4" width="4" height="4" />
-                        <rect x="0" y="8" width="4" height="4" />
-                        <rect x="4" y="8" width="4" height="4" />
-                        <rect x="8" y="8" width="4" height="4" />
-                        <rect x="12" y="8" width="4" height="4" />
-                        <rect x="2" y="10" width="4" height="4" />
-                        <rect x="6" y="10" width="4" height="4" />
-                        <rect x="10" y="10" width="4" height="4" />
-                        <rect x="4" y="12" width="4" height="4" />
-                        <rect x="8" y="12" width="4" height="4" />
-                        <rect x="6" y="14" width="4" height="2" />
-                    </svg>
+        <div className="xp-bar-wrapper">
+            <div className="xp-bar-level">
+                <span className="xp-bar-level__badge">LVL {level}</span>
+            </div>
+            <div className="xp-bar-container">
+                <div className="xp-bar-track">
+                    <div
+                        className="xp-bar-fill"
+                        style={{ width: `${clampedScore}%`, background: getBarColor() }}
+                    />
                 </div>
-            ))}
+                <span className="xp-bar-value">{clampedScore} HP</span>
+            </div>
         </div>
     )
 }

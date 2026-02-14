@@ -10,8 +10,17 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID
 }
 
-const app = initializeApp(firebaseConfig)
-export const auth = getAuth(app)
-export const googleProvider = new GoogleAuthProvider()
+let app = null
+let auth = null
+let googleProvider = null
 
+try {
+    app = initializeApp(firebaseConfig)
+    auth = getAuth(app)
+    googleProvider = new GoogleAuthProvider()
+} catch (err) {
+    console.warn('Firebase initialization failed — running in demo mode:', err.message)
+}
+
+export { auth, googleProvider }
 export default app

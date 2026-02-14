@@ -101,7 +101,7 @@
 }
 
 .level-platform__label {
-    font-family: var(--font-pixel);
+    font-family: var(--font-heading);
     font-size: 0.45rem;
     color: var(--text-primary);
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
@@ -129,7 +129,7 @@
 }
 
 .level-platform__pct {
-    font-family: var(--font-pixel);
+    font-family: var(--font-heading);
     font-size: 0.4rem;
     color: var(--text-secondary);
 }

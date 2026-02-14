@@ -1,157 +1,145 @@
 import './GameCharacter.css'
 
 /**
- * Pixel-art character that changes based on BMI and calorie status.
- *
- * BMI body types:
- *   underweight (< 18.5)  → very thin
- *   normal      (18.5–24) → fit / athletic
- *   overweight  (25–29)   → stocky
- *   obese       (30+)     → large / round
- *
- * Calorie expressions:
- *   stuffed   → ate too much  → bloated face
- *   exhausted → ate too little → tired face
- *   happy     → balanced       → energetic face
+ * Modern SVG Avatar that changes based on BMI and calorie status.
+ * Clean, rounded design with smooth gradients and animated aura.
  */
 function GameCharacter({ bmi, calorieStatus = 'happy', size = 120 }) {
-    // Determine body type from BMI
     let bodyType = 'normal'
     if (bmi && bmi < 18.5) bodyType = 'underweight'
     else if (bmi && bmi >= 25 && bmi < 30) bodyType = 'overweight'
     else if (bmi && bmi >= 30) bodyType = 'obese'
 
-    // Body dimensions based on type
-    const bodies = {
-        underweight: { w: 18, h: 30, headR: 10, legW: 4, armW: 3, color: '#9e9e9e', shirt: '#42a5f5' },
-        normal: { w: 24, h: 28, headR: 11, legW: 6, armW: 5, color: '#ffb74d', shirt: '#42a5f5' },
-        overweight: { w: 34, h: 26, headR: 12, legW: 8, armW: 6, color: '#ffb74d', shirt: '#9e9e9e' },
-        obese: { w: 44, h: 24, headR: 13, legW: 10, armW: 7, color: '#ffb74d', shirt: '#9e9e9e' }
+    const configs = {
+        underweight: { bodyW: 22, bodyH: 34, headR: 16, skinGrad: 'skinThin', shirtColor: '#60a5fa', aura: '#60a5fa' },
+        normal: { bodyW: 28, bodyH: 32, headR: 17, skinGrad: 'skinFit', shirtColor: '#00e5a0', aura: '#00e5a0' },
+        overweight: { bodyW: 36, bodyH: 30, headR: 18, skinGrad: 'skinNorm', shirtColor: '#fbbf24', aura: '#fbbf24' },
+        obese: { bodyW: 44, bodyH: 28, headR: 19, skinGrad: 'skinNorm', shirtColor: '#f87171', aura: '#f87171' }
     }
 
-    const b = bodies[bodyType]
+    const c = configs[bodyType]
+    const cx = 50
+    const groundY = 90
+    const bodyTop = groundY - c.bodyH - 14
+    const headY = bodyTop - c.headR + 4
 
-    // Face expression
-    const expressions = {
-        happy: { mouth: 'smile', eyes: 'open', eyebrowY: 0 },
-        stuffed: { mouth: 'bloat', eyes: 'squint', eyebrowY: 2 },
-        exhausted: { mouth: 'frown', eyes: 'droopy', eyebrowY: -1 }
+    const statusEmoji = {
+        happy: '💪',
+        stuffed: '😵',
+        exhausted: '😴'
     }
 
-    const expr = expressions[calorieStatus] || expressions.happy
-
-    const cx = 50 // center x
-    const groundY = 88
-    const bodyTop = groundY - b.h - 14 // legs height = 14
-    const headY = bodyTop - b.headR
+    const auraOpacity = calorieStatus === 'happy' ? 0.3 : calorieStatus === 'stuffed' ? 0.5 : 0.2
 
     return (
         <div className={`game-char game-char--${bodyType} game-char--${calorieStatus}`}
             style={{ width: size, height: size }}>
             <svg viewBox="0 0 100 100" className="game-char__svg">
-                {/* Shadow on ground */}
-                <ellipse cx={cx} cy={groundY + 2} rx={b.w / 2 + 6} ry={3}
-                    fill="rgba(0,0,0,0.2)" />
+                <defs>
+                    <radialGradient id="auraGlow">
+                        <stop offset="0%" stopColor={c.aura} stopOpacity={auraOpacity} />
+                        <stop offset="100%" stopColor={c.aura} stopOpacity="0" />
+                    </radialGradient>
+                    <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#ffcc80" />
+                        <stop offset="100%" stopColor="#ffb74d" />
+                    </linearGradient>
+                    <linearGradient id="shirtGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={c.shirtColor} />
+                        <stop offset="100%" stopColor={c.shirtColor} stopOpacity="0.7" />
+                    </linearGradient>
+                </defs>
+
+                {/* Aura */}
+                <circle cx={cx} cy={headY + 10} r={30} fill="url(#auraGlow)" className="game-char__aura" />
+
+                {/* Shadow */}
+                <ellipse cx={cx} cy={groundY + 2} rx={c.bodyW / 2 + 4} ry={3}
+                    fill="rgba(0,0,0,0.15)" />
 
                 {/* Legs */}
-                <rect x={cx - b.legW - 2} y={groundY - 14} width={b.legW} height={14}
-                    fill="#4a4a4a" rx={1} />
-                <rect x={cx + 2} y={groundY - 14} width={b.legW} height={14}
-                    fill="#4a4a4a" rx={1} />
+                <rect x={cx - 7} y={groundY - 14} width={6} height={14}
+                    fill="#334155" rx={3} />
+                <rect x={cx + 1} y={groundY - 14} width={6} height={14}
+                    fill="#334155" rx={3} />
 
                 {/* Shoes */}
-                <rect x={cx - b.legW - 3} y={groundY - 3} width={b.legW + 2} height={3}
-                    fill="#1565c0" rx={1} />
-                <rect x={cx + 1} y={groundY - 3} width={b.legW + 2} height={3}
-                    fill="#1565c0" rx={1} />
+                <rect x={cx - 8} y={groundY - 4} width={8} height={4}
+                    fill="#1e293b" rx={2} />
+                <rect x={cx} y={groundY - 4} width={8} height={4}
+                    fill="#1e293b" rx={2} />
 
-                {/* Body / Shirt */}
-                <rect x={cx - b.w / 2} y={bodyTop} width={b.w} height={b.h}
-                    fill={b.shirt} rx={2} stroke="#333" strokeWidth={0.5} />
+                {/* Body */}
+                <rect x={cx - c.bodyW / 2} y={bodyTop} width={c.bodyW} height={c.bodyH}
+                    fill="url(#shirtGrad)" rx={c.bodyW / 4} />
 
                 {/* Arms */}
-                {bodyType === 'normal' ? (
-                    <>
-                        {/* Muscular flex pose */}
-                        <rect x={cx - b.w / 2 - b.armW - 1} y={bodyTop + 2} width={b.armW} height={b.h * 0.5}
-                            fill={b.color} rx={1} className="game-char__arm-left" />
-                        <rect x={cx + b.w / 2 + 1} y={bodyTop + 2} width={b.armW} height={b.h * 0.5}
-                            fill={b.color} rx={1} className="game-char__arm-right" />
-                    </>
-                ) : (
-                    <>
-                        {/* Arms down */}
-                        <rect x={cx - b.w / 2 - b.armW} y={bodyTop + 4} width={b.armW} height={b.h * 0.65}
-                            fill={b.color} rx={1} />
-                        <rect x={cx + b.w / 2} y={bodyTop + 4} width={b.armW} height={b.h * 0.65}
-                            fill={b.color} rx={1} />
-                    </>
-                )}
+                <rect x={cx - c.bodyW / 2 - 5} y={bodyTop + 4} width={5} height={c.bodyH * 0.55}
+                    fill="url(#skinGrad)" rx={2.5} className="game-char__arm-left" />
+                <rect x={cx + c.bodyW / 2} y={bodyTop + 4} width={5} height={c.bodyH * 0.55}
+                    fill="url(#skinGrad)" rx={2.5} className="game-char__arm-right" />
 
                 {/* Head */}
-                <circle cx={cx} cy={headY} r={b.headR}
-                    fill={b.color} stroke="#333" strokeWidth={0.5} />
+                <circle cx={cx} cy={headY} r={c.headR}
+                    fill="url(#skinGrad)" />
 
                 {/* Hair */}
-                <rect x={cx - b.headR} y={headY - b.headR} width={b.headR * 2} height={5}
-                    fill="#5d4037" rx={1} />
-                <rect x={cx - b.headR + 1} y={headY - b.headR - 2} width={b.headR * 2 - 4} height={3}
-                    fill="#5d4037" rx={1} />
+                <path d={`M${cx - c.headR + 2} ${headY - 4} Q${cx} ${headY - c.headR - 6} ${cx + c.headR - 2} ${headY - 4}`}
+                    fill="#3f3f46" />
 
                 {/* Eyes */}
-                {expr.eyes === 'open' ? (
+                {calorieStatus === 'happy' ? (
                     <>
-                        <rect x={cx - 4} y={headY - 2 + expr.eyebrowY} width={2.5} height={2.5} fill="#333" />
-                        <rect x={cx + 2} y={headY - 2 + expr.eyebrowY} width={2.5} height={2.5} fill="#333" />
+                        <circle cx={cx - 5} cy={headY - 1} r={2} fill="#1e293b" />
+                        <circle cx={cx + 5} cy={headY - 1} r={2} fill="#1e293b" />
+                        <circle cx={cx - 4.2} cy={headY - 1.8} r={0.7} fill="#fff" />
+                        <circle cx={cx + 5.8} cy={headY - 1.8} r={0.7} fill="#fff" />
                     </>
-                ) : expr.eyes === 'squint' ? (
+                ) : calorieStatus === 'stuffed' ? (
                     <>
-                        <line x1={cx - 5} y1={headY - 1} x2={cx - 1} y2={headY - 1} stroke="#333" strokeWidth={1.5} />
-                        <line x1={cx + 1} y1={headY - 1} x2={cx + 5} y2={headY - 1} stroke="#333" strokeWidth={1.5} />
+                        <line x1={cx - 7} y1={headY - 1} x2={cx - 3} y2={headY - 1} stroke="#1e293b" strokeWidth={1.5} strokeLinecap="round" />
+                        <line x1={cx + 3} y1={headY - 1} x2={cx + 7} y2={headY - 1} stroke="#1e293b" strokeWidth={1.5} strokeLinecap="round" />
                     </>
                 ) : (
-                    /* droopy */
                     <>
-                        <rect x={cx - 4} y={headY - 1} width={2.5} height={1.5} fill="#333" />
-                        <rect x={cx + 2} y={headY - 1} width={2.5} height={1.5} fill="#333" />
-                        <line x1={cx - 5} y1={headY - 2} x2={cx - 2} y2={headY - 3} stroke="#333" strokeWidth={0.5} />
-                        <line x1={cx + 2} y1={headY - 3} x2={cx + 5} y2={headY - 2} stroke="#333" strokeWidth={0.5} />
+                        <circle cx={cx - 5} cy={headY} r={1.5} fill="#1e293b" />
+                        <circle cx={cx + 5} cy={headY} r={1.5} fill="#1e293b" />
+                        <line x1={cx - 7} y1={headY - 2} x2={cx - 3} y2={headY - 3} stroke="#1e293b" strokeWidth={0.8} strokeLinecap="round" />
+                        <line x1={cx + 3} y1={headY - 3} x2={cx + 7} y2={headY - 2} stroke="#1e293b" strokeWidth={0.8} strokeLinecap="round" />
                     </>
                 )}
 
                 {/* Mouth */}
-                {expr.mouth === 'smile' ? (
-                    <path d={`M${cx - 3} ${headY + 3} Q${cx} ${headY + 6} ${cx + 3} ${headY + 3}`}
-                        stroke="#333" strokeWidth={1} fill="none" />
-                ) : expr.mouth === 'bloat' ? (
-                    <ellipse cx={cx} cy={headY + 4} rx={3} ry={2} fill="#795548" stroke="#333" strokeWidth={0.5} />
+                {calorieStatus === 'happy' ? (
+                    <path d={`M${cx - 4} ${headY + 4} Q${cx} ${headY + 8} ${cx + 4} ${headY + 4}`}
+                        stroke="#1e293b" strokeWidth={1.2} fill="none" strokeLinecap="round" />
+                ) : calorieStatus === 'stuffed' ? (
+                    <ellipse cx={cx} cy={headY + 5} rx={3} ry={2.5} fill="#a3a3a3" opacity={0.5} />
                 ) : (
-                    <path d={`M${cx - 3} ${headY + 5} Q${cx} ${headY + 3} ${cx + 3} ${headY + 5}`}
-                        stroke="#333" strokeWidth={1} fill="none" />
+                    <path d={`M${cx - 3} ${headY + 6} Q${cx} ${headY + 4} ${cx + 3} ${headY + 6}`}
+                        stroke="#1e293b" strokeWidth={1} fill="none" strokeLinecap="round" />
                 )}
 
-                {/* Sweat drop for exhausted */}
+                {/* Status effects */}
                 {calorieStatus === 'exhausted' && (
-                    <path d={`M${cx + b.headR + 2} ${headY - 2} Q${cx + b.headR + 4} ${headY + 1} ${cx + b.headR + 2} ${headY + 3}`}
-                        fill="#4fc3f7" stroke="#0288d1" strokeWidth={0.3} className="game-char__sweat" />
+                    <text x={cx + c.headR + 2} y={headY - 4} fontSize="6" className="game-char__zzz">Z</text>
                 )}
-
-                {/* Bloat bubbles for stuffed */}
                 {calorieStatus === 'stuffed' && (
                     <>
-                        <circle cx={cx + b.headR + 3} cy={headY + 2} r={1.5}
-                            fill="none" stroke="#81c784" strokeWidth={0.5} className="game-char__bubble1" />
-                        <circle cx={cx + b.headR + 5} cy={headY - 1} r={1}
-                            fill="none" stroke="#81c784" strokeWidth={0.5} className="game-char__bubble2" />
+                        <circle cx={cx + c.headR + 4} cy={headY} r={2} fill="none" stroke="#a3e635" strokeWidth={0.5} className="game-char__bubble1" />
+                        <circle cx={cx + c.headR + 7} cy={headY - 4} r={1.5} fill="none" stroke="#a3e635" strokeWidth={0.5} className="game-char__bubble2" />
                     </>
                 )}
             </svg>
 
             <div className="game-char__label">
-                {bodyType === 'underweight' && '🏃 Underweight'}
-                {bodyType === 'normal' && '💪 Fit'}
-                {bodyType === 'overweight' && '⚡ Overweight'}
-                {bodyType === 'obese' && '🎯 Obese'}
+                <span className="game-char__emoji">{statusEmoji[calorieStatus]}</span>
+                <span className="game-char__type">
+                    {bodyType === 'underweight' && 'Underweight'}
+                    {bodyType === 'normal' && 'Fit'}
+                    {bodyType === 'overweight' && 'Overweight'}
+                    {bodyType === 'obese' && 'Obese'}
+                </span>
             </div>
         </div>
     )

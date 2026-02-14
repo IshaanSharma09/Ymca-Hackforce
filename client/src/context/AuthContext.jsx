@@ -17,6 +17,13 @@ export function AuthProvider({ children }) {
     const [needsOnboarding, setNeedsOnboarding] = useState(false)
 
     useEffect(() => {
+        // If Firebase auth is not configured, go straight to demo mode
+        if (!auth) {
+            console.warn('Firebase not configured — running in demo mode')
+            setLoading(false)
+            return
+        }
+
         const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
             if (firebaseUser) {
                 setUser({
@@ -38,11 +45,13 @@ export function AuthProvider({ children }) {
     }, [])
 
     const loginWithEmail = async (email, password) => {
+        if (!auth) throw new Error('Firebase not configured')
         const result = await signInWithEmailAndPassword(auth, email, password)
         return result.user
     }
 
     const signupWithEmail = async (email, password, name) => {
+        if (!auth) throw new Error('Firebase not configured')
         const result = await createUserWithEmailAndPassword(auth, email, password)
         await updateProfile(result.user, { displayName: name })
         setUser(prev => ({ ...prev, displayName: name }))
@@ -51,6 +60,7 @@ export function AuthProvider({ children }) {
     }
 
     const loginWithGoogle = async () => {
+        if (!auth) throw new Error('Firebase not configured')
         const result = await signInWithPopup(auth, googleProvider)
         const onboarded = localStorage.getItem(`fitfuel-onboarded-${result.user.uid}`)
         setNeedsOnboarding(!onboarded)
@@ -58,7 +68,9 @@ export function AuthProvider({ children }) {
     }
 
     const logout = async () => {
-        await signOut(auth)
+        if (auth) {
+            await signOut(auth)
+        }
         setUser(null)
     }
 

@@ -1,13 +1,13 @@
-/* ── Sidebar ── */
+/* ── Sidebar — Modern Glass Panel ── */
 .sidebar {
     position: fixed;
     top: 0;
     left: 0;
     width: var(--sidebar-width);
     height: 100vh;
-    background: rgba(10, 14, 26, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border-right: 1px solid var(--glass-border);
     display: flex;
     flex-direction: column;
@@ -49,14 +49,14 @@
     background: var(--accent-gradient);
     border-radius: var(--radius-md);
     font-size: 1.5rem;
-    color: #0a0e1a;
-    box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+    color: #0b0f19;
+    box-shadow: 0 4px 20px rgba(0, 229, 160, 0.3);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .sidebar__logo:hover .sidebar__logo-icon {
     transform: rotate(-8deg) scale(1.08);
-    box-shadow: 0 6px 25px rgba(0, 212, 170, 0.45);
+    box-shadow: 0 6px 30px rgba(0, 229, 160, 0.45);
 }
 
 .sidebar__logo-text {
@@ -66,6 +66,7 @@
 }
 
 .sidebar__logo-name {
+    font-family: var(--font-heading);
     font-size: var(--font-xl);
     font-weight: 800;
     background: var(--accent-gradient);
@@ -113,13 +114,13 @@
     cursor: pointer;
 }
 
-/* Hover glow background effect */
+/* Hover glow background */
 .sidebar__link::before {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: var(--radius-md);
-    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 212, 170, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle at 50% 50%, rgba(0, 229, 160, 0.08) 0%, transparent 70%);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -138,17 +139,18 @@
     transform: translateX(3px) scale(0.97);
 }
 
-/* Active indicator line */
+/* Active indicator */
 .sidebar__link-indicator {
     position: absolute;
-    left: -2px;
+    left: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 4px;
+    width: 3px;
     height: 0;
     background: var(--accent-gradient);
     border-radius: var(--radius-full);
     transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--accent-glow);
 }
 
 .sidebar__link--active .sidebar__link-indicator {
@@ -156,12 +158,12 @@
 }
 
 .sidebar__link--active {
-    background: rgba(0, 212, 170, 0.08);
+    background: rgba(0, 229, 160, 0.08);
     color: var(--text-accent);
 }
 
 .sidebar__link--active:hover {
-    background: rgba(0, 212, 170, 0.12);
+    background: rgba(0, 229, 160, 0.12);
     transform: translateX(0);
 }
 
@@ -172,7 +174,7 @@
 }
 
 .sidebar__link:hover .sidebar__link-icon {
-    transform: scale(1.18);
+    transform: scale(1.15);
     color: var(--accent-start);
 }
 
@@ -190,12 +192,12 @@
     transform: translateX(2px);
 }
 
-/* ── Tooltip (collapsed sidebar) — below the icon ── */
+/* ── Tooltip (collapsed) ── */
 .sidebar__tooltip {
     position: absolute;
-    left: 50%;
-    top: calc(100% + 6px);
-    transform: translateX(-50%) translateY(-4px);
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-4px);
     background: var(--bg-secondary);
     color: var(--text-primary);
     padding: var(--space-1) var(--space-3);
@@ -208,26 +210,12 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid var(--glass-border);
     z-index: 200;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* Tooltip arrow */
-.sidebar__tooltip::before {
-    content: '';
-    position: absolute;
-    top: -4px;
-    left: 50%;
-    transform: translateX(-50%) rotate(45deg);
-    width: 8px;
-    height: 8px;
-    background: var(--bg-secondary);
-    border-left: 1px solid var(--glass-border);
-    border-top: 1px solid var(--glass-border);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .sidebar__link:hover .sidebar__tooltip {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(-50%) translateX(0);
 }
 
 /* ── Bottom Section ── */
@@ -281,8 +269,8 @@
 
 /* ── Light Theme ── */
 [data-theme="light"] .sidebar {
-    background: rgba(255, 255, 255, 0.95);
-    border-right-color: rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.88);
+    border-right-color: rgba(0, 0, 0, 0.06);
 }
 
 [data-theme="light"] .sidebar__link:hover {
@@ -290,7 +278,7 @@
 }
 
 [data-theme="light"] .sidebar__link--active {
-    background: rgba(0, 184, 148, 0.08);
+    background: rgba(0, 201, 141, 0.08);
 }
 
 [data-theme="light"] .sidebar__toggle:hover {
@@ -300,12 +288,7 @@
 [data-theme="light"] .sidebar__tooltip {
     background: #fff;
     border-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
-
-[data-theme="light"] .sidebar__tooltip::before {
-    background: #fff;
-    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 /* ── Responsive ── */
@@ -329,6 +312,7 @@
         position: fixed;
         inset: 0;
         background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
         z-index: 99;
     }
 }

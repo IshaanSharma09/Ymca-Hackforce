@@ -1,71 +1,81 @@
-/* ============================================================
-   PIXEL HEARTS — Retro HP Display
-   ============================================================ */
-
-.pixel-hearts {
+/* ── XP Health Bar — Modern Gamified ── */
+.xp-bar-wrapper {
     display: flex;
-    gap: 6px;
     align-items: center;
+    gap: var(--space-3);
 }
 
-.pixel-heart {
-    width: 28px;
-    height: 28px;
-    image-rendering: pixelated;
-    transition: transform 0.3s ease;
+.xp-bar-level {
+    flex-shrink: 0;
 }
 
-.pixel-heart:hover {
-    transform: scale(1.2);
+.xp-bar-level__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    background: var(--accent-gradient);
+    color: #0b0f19;
+    font-family: var(--font-heading);
+    font-size: var(--font-xs);
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    box-shadow: 0 2px 12px rgba(0, 229, 160, 0.3);
+    animation: neonPulse 3s ease-in-out infinite;
 }
 
-.pixel-heart__svg {
-    width: 100%;
+.xp-bar-container {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: 1;
+    min-width: 120px;
+}
+
+.xp-bar-track {
+    flex: 1;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    position: relative;
+}
+
+.xp-bar-fill {
     height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 0 0 12px rgba(0, 229, 160, 0.3);
 }
 
-/* Full heart — red */
-.pixel-heart--full .pixel-heart__svg rect {
-    fill: #e53935;
-    animation: heartPulse 2s ease-in-out infinite;
+.xp-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
 }
 
-/* Half heart — dark red / cracked */
-.pixel-heart--half .pixel-heart__svg rect {
-    fill: #8e2424;
+.xp-bar-value {
+    font-family: var(--font-heading);
+    font-size: var(--font-xs);
+    font-weight: 700;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    min-width: 42px;
+    text-align: right;
 }
 
-/* Half heart — right half remains red */
-.pixel-heart--half .pixel-heart__svg rect:nth-child(n+8) {
-    fill: #e53935;
+/* Light theme */
+[data-theme="light"] .xp-bar-level__badge {
+    color: #fff;
 }
 
-/* Empty heart — dark gray */
-.pixel-heart--empty .pixel-heart__svg rect {
-    fill: #333;
-}
-
-@keyframes heartPulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.85;
-    }
-}
-
-/* Outline/border effect */
-.pixel-heart--full .pixel-heart__svg {
-    filter: drop-shadow(1px 1px 0 #7f1d1d);
-}
-
-.pixel-heart--half .pixel-heart__svg {
-    filter: drop-shadow(1px 1px 0 #4a1010);
-}
-
-.pixel-heart--empty .pixel-heart__svg {
-    filter: drop-shadow(1px 1px 0 #111);
+[data-theme="light"] .xp-bar-track {
+    background: rgba(0, 0, 0, 0.06);
 }

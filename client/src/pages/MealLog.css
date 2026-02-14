@@ -269,7 +269,7 @@
     background: #ef4444;
     color: white;
     border-radius: 4px;
-    font-family: var(--font-pixel);
+    font-family: var(--font-heading);
     animation: villainPulse 2s infinite;
 }
 
