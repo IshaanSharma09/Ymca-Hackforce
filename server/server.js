@@ -29,11 +29,15 @@ app.get('/api/health', (req, res) => {
 })
 
 // Routes
+import authRouter from './routes/auth.js'
 import mealsRouter from './routes/meals.js'
+import workoutsRouter from './routes/workouts.js'
+import healthLogRouter from './routes/healthLog.js'
+
+app.use('/api/auth', authRouter)
 app.use('/api/meals', mealsRouter)
-// app.use('/api/auth', authRoutes)
-// app.use('/api/workouts', workoutRoutes)
-// app.use('/api/health-log', healthLogRoutes)
+app.use('/api/workouts', workoutsRouter)
+app.use('/api/health-log', healthLogRouter)
 
 // Error handler
 app.use((err, req, res, next) => {

@@ -1,4 +1,6 @@
 import express from 'express'
+import Meal from '../models/Meal.js'
+import User from '../models/User.js'
 import {
     searchRecipes,
     getRecipeOfDay,
@@ -13,6 +15,90 @@ import {
 } from '../services/foodoscopeService.js'
 
 const router = express.Router()
+
+const findUser = async (firebaseUid) => await User.findOne({ firebaseUid })
+
+// ── Meal persistence endpoints ──
+
+/**
+ * POST /api/meals/save
+ * Log a meal to DB
+ * Body: { firebaseUid, mealType, recipe, nutrition, notes }
+ */
+router.post('/save', async (req, res) => {
+    try {
+        const { firebaseUid, ...mealData } = req.body
+        const user = await findUser(firebaseUid)
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' })
+
+        const meal = await Meal.create({ userId: user._id, ...mealData })
+        res.status(201).json({ success: true, meal })
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message })
+    }
+})
+
+/**
+ * GET /api/meals/today/:firebaseUid
+ * Get today's meals
+ */
+router.get('/today/:firebaseUid', async (req, res) => {
+    try {
+        const user = await findUser(req.params.firebaseUid)
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' })
+
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
+        const meals = await Meal.find({
+            userId: user._id,
+            date: { $gte: today }
+        }).sort({ date: -1 })
+
+        res.json({ success: true, meals })
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message })
+    }
+})
+
+/**
+ * GET /api/meals/history/:firebaseUid
+ * Get meal history
+ * Query: ?days=7
+ */
+router.get('/history/:firebaseUid', async (req, res) => {
+    try {
+        const user = await findUser(req.params.firebaseUid)
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' })
+
+        const days = parseInt(req.query.days) || 7
+        const startDate = new Date()
+        startDate.setDate(startDate.getDate() - days)
+
+        const meals = await Meal.find({
+            userId: user._id,
+            date: { $gte: startDate }
+        }).sort({ date: -1 })
+
+        res.json({ success: true, meals })
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message })
+    }
+})
+
+/**
+ * DELETE /api/meals/:id
+ */
+router.delete('/:id', async (req, res) => {
+    try {
+        await Meal.findByIdAndDelete(req.params.id)
+        res.json({ success: true, message: 'Meal deleted' })
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message })
+    }
+})
+
+// ── Foodoscope API proxy endpoints ──
 
 // Search recipes
 router.get('/search', async (req, res) => {
