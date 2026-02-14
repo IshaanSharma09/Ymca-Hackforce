@@ -1,0 +1,149 @@
+/* ============================================================
+   LEVEL PLATFORM — Floating Island Component
+   ============================================================ */
+
+.level-platform {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.5s ease;
+    animation: platformFloat 3s ease-in-out infinite;
+}
+
+.level-platform:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.level-platform:nth-child(3) {
+    animation-delay: 1s;
+}
+
+.level-platform:nth-child(4) {
+    animation-delay: 1.5s;
+}
+
+.level-platform:nth-child(5) {
+    animation-delay: 2s;
+}
+
+@keyframes platformFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+/* ── Island Shape ── */
+.level-platform__island {
+    width: 120px;
+    position: relative;
+}
+
+.level-platform__grass {
+    width: 100%;
+    height: 8px;
+    background: repeating-linear-gradient(90deg,
+            #4caf50 0px, #4caf50 6px,
+            #43a047 6px, #43a047 12px);
+    border-radius: 4px 4px 0 0;
+    box-shadow: 0 -2px 0 0 #66bb6a;
+    image-rendering: pixelated;
+}
+
+.level-platform__dirt {
+    width: 90%;
+    margin: 0 auto;
+    height: 20px;
+    background: repeating-linear-gradient(90deg,
+            #8d6e63 0px, #8d6e63 6px,
+            #795548 6px, #795548 12px);
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+    image-rendering: pixelated;
+}
+
+/* ── Content on Platform ── */
+.level-platform__content {
+    position: absolute;
+    bottom: 28px;
+    /* above the island */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 80px;
+}
+
+.level-platform__flag {
+    font-size: 1.2rem;
+    animation: flagWave 1s ease-in-out infinite;
+}
+
+@keyframes flagWave {
+
+    0%,
+    100% {
+        transform: rotate(-5deg);
+    }
+
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
+.level-platform__icon {
+    font-size: 1.4rem;
+}
+
+.level-platform__label {
+    font-family: var(--font-pixel);
+    font-size: 0.45rem;
+    color: var(--text-primary);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.level-platform__progress {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.level-platform__progress-bar {
+    width: 50px;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+}
+
+.level-platform__progress-fill {
+    height: 100%;
+    transition: width 0.5s ease;
+}
+
+.level-platform__pct {
+    font-family: var(--font-pixel);
+    font-size: 0.4rem;
+    color: var(--text-secondary);
+}
+
+/* ── Reached vs Locked ── */
+.level-platform--reached {
+    filter: none;
+}
+
+.level-platform--locked {
+    opacity: 0.5;
+    filter: grayscale(0.4);
+}
+
+.level-platform--reached .level-platform__island {
+    box-shadow: 0 0 12px rgba(76, 175, 80, 0.3);
+}

@@ -14,6 +14,9 @@ import {
 } from 'chart.js'
 import { Line, Bar, Doughnut } from 'react-chartjs-2'
 import MuscleAnalysis from './MuscleAnalysis'
+import LevelPlatform from '../components/GameComponents/LevelPlatform'
+import GameCharacter from '../components/GameCharacter/GameCharacter'
+import PixelHearts from '../components/PixelHearts/PixelHearts'
 import './Analysis.css'
 
 ChartJS.register(
@@ -256,6 +259,52 @@ function Analysis() {
                 <MuscleAnalysis />
             ) : (
                 <>
+                    {/* ── LEVEL PROGRESS — Platformer View ── */}
+                    <div className="analysis-level-section">
+                        <div className="analysis-level-header">
+                            <h3 className="heading-3">🎮 Level Progress</h3>
+                            <div className="analysis-level-number">
+                                <span className="analysis-level-badge">LV. {Math.max(1, Math.floor(healthScore / 10))}</span>
+                            </div>
+                        </div>
+                        <div className="analysis-level-world">
+                            <GameCharacter bmi={bmi} calorieStatus="happy" size={80} />
+                            <div className="analysis-platforms-container">
+                                <LevelPlatform
+                                    label="Calories" icon="🔥" index={0} total={5}
+                                    progress={today.calories > 0 ? Math.min((today.calories / calorieTarget) * 100, 100) : 0}
+                                    reached={today.calories > 0}
+                                    color="#22c55e"
+                                />
+                                <LevelPlatform
+                                    label="Steps" icon="🚶" index={1} total={5}
+                                    progress={Math.min((today.steps / 10000) * 100, 100)}
+                                    reached={today.steps >= 10000}
+                                    color="#3b82f6"
+                                />
+                                <LevelPlatform
+                                    label="Water" icon="💧" index={2} total={5}
+                                    progress={Math.min((today.water / 8) * 100, 100)}
+                                    reached={today.water >= 8}
+                                    color="#06b6d4"
+                                />
+                                <LevelPlatform
+                                    label="Sleep" icon="😴" index={3} total={5}
+                                    progress={today.sleep > 0 ? Math.min((today.sleep / 8) * 100, 100) : 0}
+                                    reached={today.sleep >= 7}
+                                    color="#8b5cf6"
+                                />
+                                <LevelPlatform
+                                    label="Fitness" icon="🏆" index={4} total={5}
+                                    progress={healthScore}
+                                    reached={healthScore >= 75}
+                                    color="#f59e0b"
+                                />
+                            </div>
+                            <PixelHearts score={healthScore} />
+                        </div>
+                    </div>
+
                     {/* ── Health Score + Body Stats Row ── */}
                     <div className="analysis-top-row">
                         {/* Health Score Ring */}

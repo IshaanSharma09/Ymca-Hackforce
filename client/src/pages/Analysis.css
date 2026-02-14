@@ -1,5 +1,54 @@
 /* ── Analysis Page ── */
 
+/* ── Level Progress — Platformer Section ── */
+.analysis-level-section {
+    margin-bottom: var(--space-6);
+}
+
+.analysis-level-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+}
+
+.analysis-level-badge {
+    font-family: var(--font-pixel);
+    font-size: 0.9rem;
+    padding: var(--space-2) var(--space-4);
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: #fff;
+    border: 2px solid #fbbf24;
+    box-shadow: var(--pixel-shadow-sm);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.analysis-level-world {
+    position: relative;
+    min-height: 350px;
+    background: rgba(10, 14, 26, 0.4);
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: var(--space-4);
+    gap: var(--space-4);
+}
+
+.analysis-platforms-container {
+    position: relative;
+    flex: 1;
+    height: 300px;
+}
+
+/* Score as pixel font */
+.analysis-score-val {
+    font-family: var(--font-pixel);
+    font-size: 1.5rem !important;
+    font-weight: 400 !important;
+}
+
 /* ── Period Toggle ── */
 .analysis-period-toggle {
     display: flex;
