@@ -13,18 +13,16 @@ function Dashboard() {
     const profile = getUserProfile() || {}
     const navigate = useNavigate()
 
-    // Simulated daily data (will be real in later stages)
     const [dailyData, setDailyData] = useState({
-        caloriesConsumed: 0,
-        caloriesBurned: 0,
+        caloriesConsumed: 0, caloriesBurned: 0,
         protein: 0, carbs: 0, fat: 0,
-        steps: 0,
-        water: 0,
-        sleep: 0,
-        workoutsToday: 0
+        steps: 0, water: 0, sleep: 0, workoutsToday: 0
     })
+    const [showStepsModal, setShowStepsModal] = useState(false)
+    const [showSleepModal, setShowSleepModal] = useState(false)
+    const [stepsInput, setStepsInput] = useState('')
+    const [sleepInput, setSleepInput] = useState('')
 
-    // Load saved daily data
     useEffect(() => {
         if (user) {
             const today = new Date().toISOString().split('T')[0]
@@ -33,54 +31,32 @@ function Dashboard() {
         }
     }, [user])
 
-    // Save daily data
     const saveDailyData = (newData) => {
         const today = new Date().toISOString().split('T')[0]
         setDailyData(newData)
         localStorage.setItem(`fitfuel-daily-${user.uid}-${today}`, JSON.stringify(newData))
     }
 
-    // Quick actions
-    const addWater = () => {
-        const newData = { ...dailyData, water: dailyData.water + 1 }
-        saveDailyData(newData)
-    }
+    const addWater = () => saveDailyData({ ...dailyData, water: dailyData.water + 1 })
 
-    const addSteps = () => {
-        const steps = parseInt(prompt('Enter steps:') || '0')
+    const submitSteps = () => {
+        const steps = parseInt(stepsInput) || 0
         if (steps > 0) {
-            const caloriesFromSteps = Math.round(steps * 0.04)
-            const newData = {
+            saveDailyData({
                 ...dailyData,
                 steps: dailyData.steps + steps,
-                caloriesBurned: dailyData.caloriesBurned + caloriesFromSteps
-            }
-            saveDailyData(newData)
+                caloriesBurned: dailyData.caloriesBurned + Math.round(steps * 0.04)
+            })
         }
+        setStepsInput('')
+        setShowStepsModal(false)
     }
 
-    const addSleep = () => {
-        const hours = parseFloat(prompt('Hours slept last night:') || '0')
-        if (hours > 0) {
-            saveDailyData({ ...dailyData, sleep: hours })
-        }
-    }
-
-    const quickLogCalories = () => {
-        const cal = parseInt(prompt('Quick log — calories consumed:') || '0')
-        const pro = parseInt(prompt('Protein (g):') || '0')
-        const carb = parseInt(prompt('Carbs (g):') || '0')
-        const fat = parseInt(prompt('Fat (g):') || '0')
-        if (cal > 0) {
-            const newData = {
-                ...dailyData,
-                caloriesConsumed: dailyData.caloriesConsumed + cal,
-                protein: dailyData.protein + pro,
-                carbs: dailyData.carbs + carb,
-                fat: dailyData.fat + fat
-            }
-            saveDailyData(newData)
-        }
+    const submitSleep = () => {
+        const hours = parseFloat(sleepInput) || 0
+        if (hours > 0) saveDailyData({ ...dailyData, sleep: hours })
+        setSleepInput('')
+        setShowSleepModal(false)
     }
 
     // Calculations
@@ -122,7 +98,7 @@ function Dashboard() {
 
             {/* Quick Actions */}
             <div className="dash-quick-actions stagger-children">
-                <button className="dash-quick-btn" onClick={quickLogCalories}>
+                <button className="dash-quick-btn" onClick={() => navigate('/meals')}>
                     <div className="dash-quick-btn__icon" style={{ background: 'rgba(0, 212, 170, 0.12)', color: 'var(--success)' }}>
                         <MdRestaurantMenu />
                     </div>
@@ -140,13 +116,13 @@ function Dashboard() {
                     </div>
                     <span>Log Water</span>
                 </button>
-                <button className="dash-quick-btn" onClick={addSteps}>
+                <button className="dash-quick-btn" onClick={() => setShowStepsModal(true)}>
                     <div className="dash-quick-btn__icon" style={{ background: 'rgba(245, 158, 11, 0.12)', color: 'var(--warning)' }}>
                         <MdDirectionsWalk />
                     </div>
                     <span>Log Steps</span>
                 </button>
-                <button className="dash-quick-btn" onClick={addSleep}>
+                <button className="dash-quick-btn" onClick={() => setShowSleepModal(true)}>
                     <div className="dash-quick-btn__icon" style={{ background: 'rgba(139, 92, 246, 0.12)', color: '#8b5cf6' }}>
                         <MdBedtime />
                     </div>
@@ -326,6 +302,58 @@ function Dashboard() {
                     </div>
                 </div>
             </div>
+
+            {/* Steps Modal */}
+            {showStepsModal && (
+                <div className="dash-modal-overlay" onClick={() => setShowStepsModal(false)}>
+                    <div className="dash-modal glass-card-static animate-scale-in" onClick={e => e.stopPropagation()}>
+                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <MdDirectionsWalk style={{ color: 'var(--warning)' }} /> Log Steps
+                        </h3>
+                        <input
+                            className="input-field"
+                            type="number"
+                            placeholder="How many steps?"
+                            value={stepsInput}
+                            onChange={e => setStepsInput(e.target.value)}
+                            autoFocus
+                            onKeyDown={e => e.key === 'Enter' && submitSteps()}
+                        />
+                        {stepsInput && parseInt(stepsInput) > 0 && (
+                            <p className="text-sm text-muted">🔥 That's ~{Math.round(parseInt(stepsInput) * 0.04)} cal burned</p>
+                        )}
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowStepsModal(false)}>Cancel</button>
+                            <button className="btn btn-primary" style={{ flex: 1 }} onClick={submitSteps}>Add Steps</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Sleep Modal */}
+            {showSleepModal && (
+                <div className="dash-modal-overlay" onClick={() => setShowSleepModal(false)}>
+                    <div className="dash-modal glass-card-static animate-scale-in" onClick={e => e.stopPropagation()}>
+                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <MdBedtime style={{ color: '#8b5cf6' }} /> Log Sleep
+                        </h3>
+                        <input
+                            className="input-field"
+                            type="number"
+                            step="0.5"
+                            placeholder="Hours slept last night"
+                            value={sleepInput}
+                            onChange={e => setSleepInput(e.target.value)}
+                            autoFocus
+                            onKeyDown={e => e.key === 'Enter' && submitSleep()}
+                        />
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowSleepModal(false)}>Cancel</button>
+                            <button className="btn btn-primary" style={{ flex: 1 }} onClick={submitSleep}>Save</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
