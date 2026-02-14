@@ -6,16 +6,20 @@ import PixelHearts from '../components/PixelHearts/PixelHearts'
 import {
     MdLocalFireDepartment, MdRestaurantMenu, MdFitnessCenter,
     MdWaterDrop, MdDirectionsWalk, MdBedtime, MdTrendingUp,
-    MdTrendingDown
+    MdTrendingDown, MdFavorite, MdFavoriteBorder
 } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 import './Dashboard.css'
 
 function Dashboard() {
     const { user, getUserProfile } = useAuth()
-    const { dailyData, saveDailyData, addWater } = useDailyLog()
+    const {
+        dailyData, saveDailyData, addWater,
+        livesRemaining, isCheatDay, useCheatDay, cheatDayPenalty, totalLives
+    } = useDailyLog()
     const profile = getUserProfile() || {}
     const navigate = useNavigate()
+    const [showCheatConfirm, setShowCheatConfirm] = useState(false)
 
     const [showStepsModal, setShowStepsModal] = useState(false)
     const [showSleepModal, setShowSleepModal] = useState(false)
@@ -81,18 +85,27 @@ function Dashboard() {
         // We'll let GameCharacter handle the visual state logic
     }
 
-    // Health score for hearts (0-100)
-    const healthScore = Math.min(100, Math.round(
+    // Health score for hearts (0-100), with cheat day penalty
+    const rawHealthScore = Math.min(100, Math.round(
         (Math.min(calorieProgress, 100) * 0.3) +
         (stepsProgress * 0.25) +
         (waterProgress * 0.25) +
         (Math.min((dailyData.sleep || 0) / 8 * 100, 100) * 0.2)
     ))
+    const healthScore = isCheatDay
+        ? Math.max(0, rawHealthScore - (cheatDayPenalty || 20))
+        : rawHealthScore
 
     // Level & XP Logic
     const currentLevel = Math.max(1, Math.floor(healthScore / 20) + 1)
     const xpTowardsNext = healthScore % 20
     const xpPercent = (xpTowardsNext / 20) * 100
+
+    // Handle cheat day activation
+    const handleUseCheatDay = () => {
+        useCheatDay()
+        setShowCheatConfirm(false)
+    }
 
     return (
         <div className="page animate-fade-in dashboard-game-mode">
@@ -120,11 +133,43 @@ function Dashboard() {
                     <div className="game-hud__hearts">
                         <PixelHearts score={healthScore} />
                     </div>
+                    <div className="game-hud__lives">
+                        {Array.from({ length: totalLives }).map((_, i) => (
+                            i < livesRemaining
+                                ? <MdFavorite key={i} className="life-icon life-icon--full" />
+                                : <MdFavoriteBorder key={i} className="life-icon life-icon--empty" />
+                        ))}
+                        <span className="life-label">Lives</span>
+                    </div>
                     <div className="game-hud__currency">
                         <span>🪙 {dailyData.steps.toLocaleString()}</span>
                     </div>
                 </div>
             </div>
+
+            {/* ── Cheat Day Banner ── */}
+            {isCheatDay && (
+                <div className="cheat-day-banner animate-fade-in">
+                    <span className="cheat-day-banner__icon">🍕</span>
+                    <div className="cheat-day-banner__text">
+                        <strong>CHEAT DAY ACTIVE</strong>
+                        <span>Enjoy your food! Data is still tracked. Level & XP reduced by {cheatDayPenalty}.</span>
+                    </div>
+                </div>
+            )}
+
+            {/* ── Use Cheat Day Button ── */}
+            {!isCheatDay && (
+                <div className="cheat-day-section">
+                    <button
+                        className="cheat-day-btn"
+                        onClick={() => setShowCheatConfirm(true)}
+                        disabled={livesRemaining <= 0}
+                    >
+                        🍕 Use Cheat Day ({livesRemaining}/{totalLives} left)
+                    </button>
+                </div>
+            )}
 
             {/* ── Character Stage ── */}
             <div className="dash-game-stage">
@@ -329,6 +374,25 @@ function Dashboard() {
                         <div className="modal-actions">
                             <button className="btn btn-secondary" onClick={() => setShowSleepModal(false)}>Cancel</button>
                             <button className="btn btn-primary" onClick={submitSleep}>Save</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Cheat Day Confirm Modal */}
+            {showCheatConfirm && (
+                <div className="modal-overlay animate-fade-in" onClick={() => setShowCheatConfirm(false)}>
+                    <div className="glass-card modal-content cheat-modal" onClick={e => e.stopPropagation()}>
+                        <div className="cheat-modal__icon">🍕</div>
+                        <h3 className="heading-3">Use Cheat Day?</h3>
+                        <p className="text-sm text-muted" style={{ textAlign: 'center', lineHeight: 1.6 }}>
+                            You have <strong>{livesRemaining}</strong> {livesRemaining === 1 ? 'life' : 'lives'} left this month.<br />
+                            Using a cheat day will reduce your level & XP by <strong>{cheatDayPenalty}</strong> points.<br />
+                            You can still eat anything, but you must log your food!
+                        </p>
+                        <div className="modal-actions">
+                            <button className="btn btn-secondary" onClick={() => setShowCheatConfirm(false)}>Cancel</button>
+                            <button className="btn cheat-confirm-btn" onClick={handleUseCheatDay}>🍕 Use Cheat Day</button>
                         </div>
                     </div>
                 </div>

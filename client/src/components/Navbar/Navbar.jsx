@@ -14,7 +14,7 @@ import './Navbar.css'
 function Navbar({ onMenuToggle }) {
     const { theme, toggleTheme } = useTheme()
     const { user } = useAuth()
-    const { dailyData, addWater } = useDailyLog()
+    const { dailyData, addWater, isCheatDay } = useDailyLog()
     const navigate = useNavigate()
 
     const [imgError, setImgError] = useState(false)
@@ -68,13 +68,35 @@ function Navbar({ onMenuToggle }) {
         return now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
     }
 
-    // ── Smart Notifications Logic ──
+    // ── Smart Notifications: Show ALL Incomplete Daily Tasks ──
     const getNotifications = () => {
         const notes = []
-        const now = new Date()
-        const hours = now.getHours()
 
-        // Water Reminder — always show if below target
+        // Cheat Day active warning
+        if (dailyData.isCheatDay || isCheatDay) {
+            notes.push({
+                id: 'cheatday',
+                icon: <MdRestaurantMenu style={{ color: '#f97316' }} />,
+                title: '🍕 Cheat Day Active!',
+                msg: "Enjoy your cheat day! Still log your food for tracking.",
+                time: formatTime(),
+                action: <button className="note-btn" onClick={(e) => { e.stopPropagation(); navigate('/meals'); setShowNotifications(false); }}>Log Food</button>
+            })
+        }
+
+        // Meals not logged
+        if (dailyData.caloriesConsumed === 0) {
+            notes.push({
+                id: 'meals',
+                icon: <MdRestaurantMenu style={{ color: '#f59e0b' }} />,
+                title: '🍳 No Meals Logged',
+                msg: "You haven't logged any food today. Don't forget to track your meals!",
+                time: formatTime(),
+                action: <button className="note-btn" onClick={(e) => { e.stopPropagation(); navigate('/meals'); setShowNotifications(false); }}>Log Meal</button>
+            })
+        }
+
+        // Water below target
         if (dailyData.water < 8) {
             const glassesLeft = 8 - dailyData.water
             notes.push({
@@ -87,80 +109,45 @@ function Navbar({ onMenuToggle }) {
             })
         }
 
-        // Breakfast reminder (7-10 AM, no food logged)
-        if (hours >= 7 && hours < 10 && dailyData.caloriesConsumed === 0) {
-            notes.push({
-                id: 'breakfast',
-                icon: <MdRestaurantMenu style={{ color: '#f59e0b' }} />,
-                title: '🌅 Good Morning!',
-                msg: "Don't skip breakfast! Log your first meal to start the day.",
-                time: formatTime(),
-                action: <button className="note-btn" onClick={(e) => { e.stopPropagation(); navigate('/meals'); setShowNotifications(false); }}>Log Meal</button>
-            })
-        }
-
-        // Lunch Reminder (11 AM - 2 PM)
-        if (hours >= 11 && hours <= 14 && dailyData.caloriesConsumed < 400) {
-            notes.push({
-                id: 'lunch',
-                icon: <MdRestaurantMenu style={{ color: '#f59e0b' }} />,
-                title: '🍽️ Lunch Time!',
-                msg: "It's lunch time. Have you eaten? Log your meal!",
-                time: formatTime(),
-                action: <button className="note-btn" onClick={(e) => { e.stopPropagation(); navigate('/meals'); setShowNotifications(false); }}>Log Lunch</button>
-            })
-        }
-
-        // Dinner Reminder (6-9 PM)
-        if (hours >= 18 && hours <= 21 && dailyData.caloriesConsumed < 1200) {
-            notes.push({
-                id: 'dinner',
-                icon: <MdRestaurantMenu style={{ color: '#ef4444' }} />,
-                title: '🍲 Dinner Reminder',
-                msg: "Have you logged your dinner yet?",
-                time: formatTime(),
-                action: <button className="note-btn" onClick={(e) => { e.stopPropagation(); navigate('/meals'); setShowNotifications(false); }}>Log Dinner</button>
-            })
-        }
-
-        // Steps Goal (after 6 PM)
-        if (dailyData.steps < 5000 && hours >= 18) {
+        // Steps below goal
+        if (dailyData.steps < 10000) {
+            const stepsLeft = 10000 - dailyData.steps
             notes.push({
                 id: 'steps',
                 icon: <MdDirectionsWalk style={{ color: '#3b82f6' }} />,
-                title: '🚶 Move More!',
-                msg: `Only ${dailyData.steps.toLocaleString()} steps today. Take a short walk?`,
+                title: '🚶 Keep Moving!',
+                msg: `${dailyData.steps.toLocaleString()}/10,000 steps. ${stepsLeft.toLocaleString()} more to go!`,
                 time: formatTime(),
                 action: null
             })
         }
 
-        // Workout reminder (if none today, after 3 PM)
-        if (dailyData.workoutsToday === 0 && hours >= 15) {
+        // No workout logged
+        if (dailyData.workoutsToday === 0) {
             notes.push({
                 id: 'workout',
                 icon: <MdFitnessCenter style={{ color: '#8b5cf6' }} />,
-                title: '🏋️ Workout Time!',
-                msg: "No workout logged today. Hit the gym?",
+                title: '🏋️ No Workout Yet',
+                msg: "You haven't logged a workout today. Time to train!",
                 time: formatTime(),
                 action: <button className="note-btn" onClick={(e) => { e.stopPropagation(); navigate('/workout'); setShowNotifications(false); }}>Start Workout</button>
             })
         }
 
-        // Sleep reminder (10 PM - 12 AM)
-        if (hours >= 22 && dailyData.sleep === 0) {
+        // Sleep not logged
+        if (dailyData.sleep === 0) {
             notes.push({
                 id: 'sleep',
                 icon: <MdBedtime style={{ color: '#a78bfa' }} />,
-                title: '😴 Time to Rest',
-                msg: "It's getting late! Log your sleep and rest well.",
+                title: '😴 Log Your Sleep',
+                msg: "Don't forget to log how many hours you slept!",
                 time: formatTime(),
                 action: null
             })
         }
 
         // All goals met — celebration
-        if (notes.length === 0) {
+        if (notes.length === 0 || (notes.length === 1 && notes[0].id === 'cheatday')) {
             notes.push({
                 id: 'allgood',
                 icon: <MdCheckCircle style={{ color: '#22c55e' }} />,

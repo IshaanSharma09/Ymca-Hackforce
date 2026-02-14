@@ -54,7 +54,26 @@ export function DailyLogProvider({ children }) {
         workoutsToday: 0
     })
 
+    // ── Life / Cheat-Day System ──
+    const [livesRemaining, setLivesRemaining] = useState(3)
+    const [isCheatDay, setIsCheatDay] = useState(false)
+    const CHEAT_DAY_PENALTY = 20 // XP penalty for using a cheat day
+    const TOTAL_LIVES = 3
+
     const prefix = user ? `fitfuel-daily-${user.uid}` : null
+
+    // Helper to get current month key for lives
+    function getLivesKey() {
+        if (!user) return null
+        const now = new Date()
+        return `fitfuel-lives-${user.uid}-${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+    }
+
+    // Helper to get cheat day key for today
+    function getCheatDayKey() {
+        if (!user) return null
+        return `fitfuel-cheatday-${user.uid}-${getDateKey()}`
+    }
 
     // Load data on user change + run aggregation
     useEffect(() => {
@@ -70,6 +89,22 @@ export function DailyLogProvider({ children }) {
                 steps: 0, water: 0, sleep: 0, workoutsToday: 0
             })
         }
+
+        // Load lives for this month
+        const livesKey = `fitfuel-lives-${user.uid}-${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`
+        const savedLives = localStorage.getItem(livesKey)
+        if (savedLives !== null) {
+            setLivesRemaining(parseInt(savedLives, 10))
+        } else {
+            // New month — reset to 3 lives
+            setLivesRemaining(TOTAL_LIVES)
+            localStorage.setItem(livesKey, String(TOTAL_LIVES))
+        }
+
+        // Load cheat day status for today
+        const cheatKey = `fitfuel-cheatday-${user.uid}-${today}`
+        setIsCheatDay(localStorage.getItem(cheatKey) === 'true')
+
         // Run aggregation check
         runAggregation(user.uid)
     }, [user])
@@ -116,6 +151,25 @@ export function DailyLogProvider({ children }) {
     const logSleep = useCallback((hours) => {
         saveDailyData({ ...dailyData, sleep: hours })
     }, [dailyData, saveDailyData])
+
+    // ── Cheat Day Actions ──
+    const useCheatDay = useCallback(() => {
+        if (!user || livesRemaining <= 0 || isCheatDay) return false
+        const livesKey = getLivesKey()
+        const cheatKey = getCheatDayKey()
+        if (!livesKey || !cheatKey) return false
+
+        const newLives = livesRemaining - 1
+        setLivesRemaining(newLives)
+        setIsCheatDay(true)
+        localStorage.setItem(livesKey, String(newLives))
+        localStorage.setItem(cheatKey, 'true')
+        return true
+    }, [user, livesRemaining, isCheatDay])
+
+    const getCheatDaysUsedThisMonth = useCallback(() => {
+        return TOTAL_LIVES - livesRemaining
+    }, [livesRemaining])
 
     // ──────────────────────────────────────────────
     //  DATA AGGREGATION: Daily → Weekly → Monthly → Yearly
@@ -265,7 +319,14 @@ export function DailyLogProvider({ children }) {
             logWorkout,
             logSleep,
             getWeeklyData,
-            getMonthlyData
+            getMonthlyData,
+            // Life / Cheat-Day system
+            livesRemaining,
+            isCheatDay,
+            useCheatDay,
+            getCheatDaysUsedThisMonth,
+            cheatDayPenalty: CHEAT_DAY_PENALTY,
+            totalLives: TOTAL_LIVES
         }}>
             {children}
         </DailyLogContext.Provider>

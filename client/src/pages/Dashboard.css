@@ -510,3 +510,184 @@
     background: rgba(251, 191, 36, 0.08);
     border-color: rgba(251, 191, 36, 0.2);
 }
+
+/* ═══════════════════════════════════════════
+   LIFE SYSTEM & CHEAT DAY
+   ═══════════════════════════════════════════ */
+
+/* Lives Display */
+.game-hud__lives {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.life-icon {
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.life-icon--full {
+    color: #ef4444;
+    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.4));
+    animation: lifePulse 2s ease-in-out infinite;
+}
+
+.life-icon--empty {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="light"] .life-icon--empty {
+    color: rgba(0, 0, 0, 0.15);
+}
+
+.life-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 4px;
+}
+
+@keyframes lifePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+/* Cheat Day Section */
+.cheat-day-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-3);
+}
+
+.cheat-day-btn {
+    background: linear-gradient(135deg, #f97316, #ef4444, #f59e0b);
+    background-size: 200% 200%;
+    animation: cheatGradient 3s ease infinite;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: var(--radius-lg);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(249, 115, 22, 0.3);
+}
+
+.cheat-day-btn:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 28px rgba(249, 115, 22, 0.4);
+}
+
+.cheat-day-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+}
+
+@keyframes cheatGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Cheat Day Active Banner */
+.cheat-day-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(239, 68, 68, 0.1));
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    border-radius: var(--radius-xl);
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-3);
+}
+
+.cheat-day-banner__icon {
+    font-size: 2rem;
+    animation: pizzaSpin 3s linear infinite;
+}
+
+@keyframes pizzaSpin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(10deg);
+    }
+
+    75% {
+        transform: rotate(-10deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.cheat-day-banner__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cheat-day-banner__text strong {
+    color: #f97316;
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+}
+
+.cheat-day-banner__text span {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/* Cheat Day Confirm Modal */
+.cheat-modal {
+    text-align: center;
+}
+
+.cheat-modal__icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-2);
+    animation: pizzaSpin 3s linear infinite;
+}
+
+.cheat-confirm-btn {
+    background: linear-gradient(135deg, #f97316, #ef4444) !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 4px 16px rgba(249, 115, 22, 0.35);
+}
+
+.cheat-confirm-btn:hover {
+    box-shadow: 0 8px 28px rgba(249, 115, 22, 0.45);
+    transform: translateY(-1px);
+}
+
+/* Light theme banner */
+[data-theme="light"] .cheat-day-banner {
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.08), rgba(239, 68, 68, 0.06));
+    border-color: rgba(249, 115, 22, 0.2);
+}
