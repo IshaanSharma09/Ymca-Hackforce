@@ -5,8 +5,8 @@ import GameCharacter from '../components/GameCharacter/GameCharacter'
 import PixelHearts from '../components/PixelHearts/PixelHearts'
 import {
     MdLocalFireDepartment, MdRestaurantMenu, MdFitnessCenter,
-    MdWaterDrop, MdDirectionsWalk, MdBedtime, MdAdd, MdTrendingUp,
-    MdTrendingDown, MdArrowForward
+    MdWaterDrop, MdDirectionsWalk, MdBedtime, MdTrendingUp,
+    MdTrendingDown
 } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 import './Dashboard.css'
@@ -50,12 +50,10 @@ function Dashboard() {
     const stepsProgress = Math.min((dailyData.steps / stepsGoal) * 100, 100)
     const waterGoal = 8
     const waterProgress = Math.min((dailyData.water / waterGoal) * 100, 100)
-
-    // Macro targets (based on calorie target)
     const macroTargets = {
-        protein: Math.round((calorieTarget * (profile.macroSplit?.protein || 40) / 100) / 4),
-        carbs: Math.round((calorieTarget * (profile.macroSplit?.carbs || 30) / 100) / 4),
-        fat: Math.round((calorieTarget * (profile.macroSplit?.fat || 30) / 100) / 9)
+        protein: Math.round(calorieTarget * 0.3 / 4),
+        carbs: Math.round(calorieTarget * 0.4 / 4),
+        fat: Math.round(calorieTarget * 0.3 / 9)
     }
 
     // SVG Calorie Ring
@@ -64,8 +62,8 @@ function Dashboard() {
     const ringOffset = ringCircumference - (calorieProgress / 100) * ringCircumference
 
     // Greeting
-    const hour = new Date().getHours()
-    const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening'
+    // const hour = new Date().getHours()
+    // const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening'
 
     // BMI calculation
     const heightM = (profile.height || 170) / 100
@@ -79,8 +77,8 @@ function Dashboard() {
         calorieStatus = 'stuffed'
         calorieStatusText = '⚠️ TOO MANY CALORIES! Your hero feels stuffed!'
     } else if (calorieRatio > 0 && calorieRatio < 0.4 && dailyData.protein < macroTargets.protein * 0.3) {
-        calorieStatus = 'exhausted'
-        calorieStatusText = '⚠️ LOW FUEL! Your hero needs more food & protein!'
+        // Only show exhausted if late in day logic is handled in GameCharacter, but we can pass text here
+        // We'll let GameCharacter handle the visual state logic
     }
 
     // Health score for hearts (0-100)
@@ -91,64 +89,70 @@ function Dashboard() {
         (Math.min((dailyData.sleep || 0) / 8 * 100, 100) * 0.2)
     ))
 
+    // Level & XP Logic
+    const currentLevel = Math.max(1, Math.floor(healthScore / 20) + 1)
+    const xpTowardsNext = healthScore % 20
+    const xpPercent = (xpTowardsNext / 20) * 100
+
     return (
-        <div className="page animate-fade-in">
-            {/* Header with Pixel Hearts */}
-            <div className="page__header dash-header">
-                <div>
-                    <h1 className="heading-2">{greeting}, {user?.displayName?.split(' ')[0] || 'Champion'} 👋</h1>
-                    <p className="text-muted text-sm">
-                        {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-                    </p>
+        <div className="page animate-fade-in dashboard-game-mode">
+            {/* ── Game HUD Header ── */}
+            <div className="game-hud">
+                <div className="game-hud__profile">
+                    <div className="game-hud__avatar-frame">
+                        <div className="game-hud__level-badge">LV.{currentLevel}</div>
+                        <div className="game-hud__avatar-placeholder">
+                            {user?.displayName?.[0] || 'P'}
+                        </div>
+                    </div>
+                    <div className="game-hud__info">
+                        <h1 className="game-hud__name">{user?.displayName?.split(' ')[0] || 'Player 1'}</h1>
+                        <div className="game-hud__xp-container">
+                            <div className="game-hud__xp-label">XP</div>
+                            <div className="game-hud__xp-track">
+                                <div className="game-hud__xp-fill" style={{ width: `${xpPercent}%` }}></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <PixelHearts score={healthScore} />
+
+                <div className="game-hud__stats">
+                    <div className="game-hud__hearts">
+                        <PixelHearts score={healthScore} />
+                    </div>
+                    <div className="game-hud__currency">
+                        <span>🪙 {dailyData.steps.toLocaleString()}</span>
+                    </div>
+                </div>
             </div>
 
-            {/* Game Hero Section — Character + Calorie Warning */}
-            <div className="dash-game-hero">
-                <GameCharacter bmi={bmi} calorieStatus={calorieStatus} size={140} />
+            {/* ── Character Stage ── */}
+            <div className="dash-game-stage">
+                <GameCharacter showStatus={true} />
                 {calorieStatusText && (
-                    <div className={`dash-calorie-warning dash-calorie-warning--${calorieStatus}`}>
-                        <span className="dash-calorie-warning__text">{calorieStatusText}</span>
+                    <div className={`dash-villain-alert dash-villain-alert--${calorieStatus}`}>
+                        <span className="pixel-font">{calorieStatusText}</span>
                     </div>
                 )}
             </div>
 
-            {/* Quick Actions */}
-            <div className="dash-quick-actions stagger-children">
-                <button className="dash-quick-btn" onClick={() => navigate('/meals')}>
-                    <div className="dash-quick-btn__icon" style={{ background: 'rgba(0, 212, 170, 0.12)', color: 'var(--success)' }}>
-                        <MdRestaurantMenu />
-                    </div>
-                    <span>Log Meal</span>
+            {/* ── Action Menu (NES Style) ── */}
+            <div className="game-menu-grid stagger-children">
+                <button className="game-menu-btn" onClick={() => navigate('/meals')}>
+                    <MdRestaurantMenu /> <span>LOG FOOD</span>
                 </button>
-                <button className="dash-quick-btn" onClick={() => navigate('/workout')}>
-                    <div className="dash-quick-btn__icon" style={{ background: 'rgba(59, 130, 246, 0.12)', color: 'var(--info)' }}>
-                        <MdFitnessCenter />
-                    </div>
-                    <span>Log Exercise</span>
+                <button className="game-menu-btn" onClick={() => navigate('/workout')}>
+                    <MdFitnessCenter /> <span>TRAIN</span>
                 </button>
-                <button className="dash-quick-btn" onClick={addWater}>
-                    <div className="dash-quick-btn__icon" style={{ background: 'rgba(0, 180, 216, 0.12)', color: '#00b4d8' }}>
-                        <MdWaterDrop />
-                    </div>
-                    <span>Log Water</span>
+                <button className="game-menu-btn" onClick={addWater}>
+                    <MdWaterDrop /> <span>DRINK</span>
                 </button>
-                <button className="dash-quick-btn" onClick={() => setShowStepsModal(true)}>
-                    <div className="dash-quick-btn__icon" style={{ background: 'rgba(245, 158, 11, 0.12)', color: 'var(--warning)' }}>
-                        <MdDirectionsWalk />
-                    </div>
-                    <span>Log Steps</span>
-                </button>
-                <button className="dash-quick-btn" onClick={() => setShowSleepModal(true)}>
-                    <div className="dash-quick-btn__icon" style={{ background: 'rgba(139, 92, 246, 0.12)', color: '#8b5cf6' }}>
-                        <MdBedtime />
-                    </div>
-                    <span>Log Sleep</span>
+                <button className="game-menu-btn" onClick={() => setShowStepsModal(true)}>
+                    <MdDirectionsWalk /> <span>EXPLORE</span>
                 </button>
             </div>
 
-            {/* Main Grid */}
+            {/* ── Main Grid ── */}
             <div className="dash-grid">
                 {/* Calorie Ring Card */}
                 <div className="glass-card-static dash-calorie-card">
@@ -200,12 +204,12 @@ function Dashboard() {
 
                 {/* Macros Card */}
                 <div className="glass-card-static dash-macros-card">
-                    <h3 className="dash-card-title">📊 Macros</h3>
+                    <h3 className="dash-card-title">📊 Stats (Macros)</h3>
                     <div className="dash-macros-list">
                         <div className="dash-macro">
                             <div className="dash-macro-header">
                                 <span className="dash-macro-name">Protein</span>
-                                <span className="dash-macro-value">{dailyData.protein}g / {macroTargets.protein}g</span>
+                                <span className="dash-macro-value">{Math.round(dailyData.protein)}g / {macroTargets.protein}g</span>
                             </div>
                             <div className="progress-bar">
                                 <div className="progress-fill dash-macro-protein" style={{ width: `${Math.min((dailyData.protein / macroTargets.protein) * 100, 100)}%` }} />
@@ -214,7 +218,7 @@ function Dashboard() {
                         <div className="dash-macro">
                             <div className="dash-macro-header">
                                 <span className="dash-macro-name">Carbs</span>
-                                <span className="dash-macro-value">{dailyData.carbs}g / {macroTargets.carbs}g</span>
+                                <span className="dash-macro-value">{Math.round(dailyData.carbs)}g / {macroTargets.carbs}g</span>
                             </div>
                             <div className="progress-bar">
                                 <div className="progress-fill dash-macro-carbs" style={{ width: `${Math.min((dailyData.carbs / macroTargets.carbs) * 100, 100)}%` }} />
@@ -223,7 +227,7 @@ function Dashboard() {
                         <div className="dash-macro">
                             <div className="dash-macro-header">
                                 <span className="dash-macro-name">Fat</span>
-                                <span className="dash-macro-value">{dailyData.fat}g / {macroTargets.fat}g</span>
+                                <span className="dash-macro-value">{Math.round(dailyData.fat)}g / {macroTargets.fat}g</span>
                             </div>
                             <div className="progress-bar">
                                 <div className="progress-fill dash-macro-fat" style={{ width: `${Math.min((dailyData.fat / macroTargets.fat) * 100, 100)}%` }} />
@@ -235,24 +239,24 @@ function Dashboard() {
                 {/* Steps Card */}
                 <div className="glass-card-static dash-stat-card-large">
                     <h3 className="dash-card-title">
-                        <MdDirectionsWalk style={{ color: 'var(--warning)' }} /> Steps
+                        <MdDirectionsWalk style={{ color: 'var(--warning)' }} /> Quest: Steps
                     </h3>
                     <div className="dash-steps-display">
                         <span className="dash-steps-number">{dailyData.steps.toLocaleString()}</span>
-                        <span className="text-muted text-sm">/ {stepsGoal.toLocaleString()} goal</span>
+                        <span className="text-muted text-sm">/ {stepsGoal.toLocaleString()}</span>
                     </div>
                     <div className="progress-bar" style={{ height: '10px' }}>
                         <div className="progress-fill" style={{ width: `${stepsProgress}%`, background: 'linear-gradient(135deg, #f59e0b, #f97316)' }} />
                     </div>
                     <p className="text-sm text-muted" style={{ marginTop: 'var(--space-2)' }}>
-                        🔥 {Math.round(dailyData.steps * 0.04)} cal burned from walking
+                        🔥 {Math.round(dailyData.steps * 0.04)}XP gained
                     </p>
                 </div>
 
                 {/* Water Card */}
                 <div className="glass-card-static dash-stat-card-large">
                     <h3 className="dash-card-title">
-                        <MdWaterDrop style={{ color: '#00b4d8' }} /> Water
+                        <MdWaterDrop style={{ color: '#00b4d8' }} /> Quest: Hydration
                     </h3>
                     <div className="dash-water-display">
                         <div className="dash-water-glasses">
@@ -269,7 +273,7 @@ function Dashboard() {
                                 </button>
                             ))}
                         </div>
-                        <span className="text-sm text-muted">{dailyData.water} / {waterGoal} glasses</span>
+                        <span className="text-sm text-muted">{dailyData.water} / {waterGoal} potions</span>
                     </div>
                     <div className="progress-bar" style={{ height: '10px' }}>
                         <div className="progress-fill" style={{ width: `${waterProgress}%`, background: 'linear-gradient(135deg, #00b4d8, #0077b6)' }} />
@@ -282,92 +286,49 @@ function Dashboard() {
                         <MdBedtime style={{ fontSize: '1.8rem', color: '#8b5cf6' }} />
                         <div>
                             <span className="dash-mini-number">{dailyData.sleep || '–'}</span>
-                            <span className="dash-mini-label">hours sleep</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Workouts Card */}
-                <div className="glass-card-static dash-stat-card-small">
-                    <div className="dash-mini-stat">
-                        <MdFitnessCenter style={{ fontSize: '1.8rem', color: 'var(--info)' }} />
-                        <div>
-                            <span className="dash-mini-number">{dailyData.workoutsToday}</span>
-                            <span className="dash-mini-label">workouts today</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* BMR/TDEE Card */}
-                <div className="glass-card-static dash-stat-card-small">
-                    <div className="dash-mini-stat">
-                        <MdLocalFireDepartment style={{ fontSize: '1.8rem', color: 'var(--success)' }} />
-                        <div>
-                            <span className="dash-mini-number">{profile.bmr || '–'}</span>
-                            <span className="dash-mini-label">BMR cal/day</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Goal Card */}
-                <div className="glass-card-static dash-stat-card-small">
-                    <div className="dash-mini-stat">
-                        <span style={{ fontSize: '1.8rem' }}>🎯</span>
-                        <div>
-                            <span className="dash-mini-number" style={{ textTransform: 'capitalize', fontSize: 'var(--font-lg)' }}>{profile.goal?.replace('_', ' ') || '–'}</span>
-                            <span className="dash-mini-label">fitness goal</span>
+                            <span className="dash-mini-label">hours rested</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Steps Modal */}
+            {/* Modals */}
             {showStepsModal && (
-                <div className="dash-modal-overlay" onClick={() => setShowStepsModal(false)}>
-                    <div className="dash-modal glass-card-static animate-scale-in" onClick={e => e.stopPropagation()}>
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <MdDirectionsWalk style={{ color: 'var(--warning)' }} /> Log Steps
-                        </h3>
+                <div className="modal-overlay animate-fade-in" onClick={() => setShowStepsModal(false)}>
+                    <div className="glass-card modal-content" onClick={e => e.stopPropagation()}>
+                        <h3 className="heading-3">Log Steps</h3>
                         <input
-                            className="input-field"
                             type="number"
-                            placeholder="How many steps?"
+                            className="input-field"
                             value={stepsInput}
                             onChange={e => setStepsInput(e.target.value)}
+                            placeholder="Enter steps count"
                             autoFocus
-                            onKeyDown={e => e.key === 'Enter' && submitSteps()}
                         />
-                        {stepsInput && parseInt(stepsInput) > 0 && (
-                            <p className="text-sm text-muted">🔥 That's ~{Math.round(parseInt(stepsInput) * 0.04)} cal burned</p>
-                        )}
-                        <div style={{ display: 'flex', gap: '8px' }}>
-                            <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowStepsModal(false)}>Cancel</button>
-                            <button className="btn btn-primary" style={{ flex: 1 }} onClick={submitSteps}>Add Steps</button>
+                        <div className="modal-actions">
+                            <button className="btn btn-secondary" onClick={() => setShowStepsModal(false)}>Cancel</button>
+                            <button className="btn btn-primary" onClick={submitSteps}>Save</button>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Sleep Modal */}
             {showSleepModal && (
-                <div className="dash-modal-overlay" onClick={() => setShowSleepModal(false)}>
-                    <div className="dash-modal glass-card-static animate-scale-in" onClick={e => e.stopPropagation()}>
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <MdBedtime style={{ color: '#8b5cf6' }} /> Log Sleep
-                        </h3>
+                <div className="modal-overlay animate-fade-in" onClick={() => setShowSleepModal(false)}>
+                    <div className="glass-card modal-content" onClick={e => e.stopPropagation()}>
+                        <h3 className="heading-3">Log Sleep</h3>
                         <input
-                            className="input-field"
                             type="number"
-                            step="0.5"
-                            placeholder="Hours slept last night"
+                            className="input-field"
                             value={sleepInput}
                             onChange={e => setSleepInput(e.target.value)}
+                            placeholder="Hours of sleep"
+                            step="0.5"
                             autoFocus
-                            onKeyDown={e => e.key === 'Enter' && submitSleep()}
                         />
-                        <div style={{ display: 'flex', gap: '8px' }}>
-                            <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowSleepModal(false)}>Cancel</button>
-                            <button className="btn btn-primary" style={{ flex: 1 }} onClick={submitSleep}>Save</button>
+                        <div className="modal-actions">
+                            <button className="btn btn-secondary" onClick={() => setShowSleepModal(false)}>Cancel</button>
+                            <button className="btn btn-primary" onClick={submitSleep}>Save</button>
                         </div>
                     </div>
                 </div>

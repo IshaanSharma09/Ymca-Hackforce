@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* ── Game Character — Modern Avatar ── */
 .game-char {
     display: flex;
@@ -55,6 +56,52 @@
 }
 
 @keyframes charFloat {
+=======
+.game-character-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    /* Height needed to accommodate the sprite + bubble */
+    height: 160px;
+    width: 120px;
+}
+
+.pixel-character-wrapper {
+    position: relative;
+    z-index: 10;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.pixel-shadow {
+    width: 60px;
+    height: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    margin-top: -8px;
+    z-index: 5;
+    filter: blur(2px);
+    /* Slight softness, but keep it mostly sharp for pixel art */
+}
+
+/* ── Animations ── */
+.animate-happy {
+    animation: bounceIdle 2s infinite ease-in-out;
+}
+
+.animate-stuffed {
+    animation: wobbleSlow 3s infinite ease-in-out;
+    filter: grayscale(0.2);
+}
+
+.animate-exhausted {
+    animation: sag 4s infinite ease-in-out;
+    filter: brightness(0.9);
+}
+
+@keyframes bounceIdle {
+>>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
 
     0%,
     100% {
@@ -66,6 +113,7 @@
     }
 }
 
+<<<<<<< HEAD
 /* Stuffed state — slight sway */
 .game-char--stuffed .game-char__svg {
     animation: charSway 2s ease-in-out infinite;
@@ -148,9 +196,29 @@
     100% {
         opacity: 0;
         transform: translateY(-10px);
+=======
+@keyframes wobbleSlow {
+
+    0%,
+    100% {
+        transform: scale(1.05, 0.95) rotate(-1deg);
+    }
+
+    50% {
+        transform: scale(0.95, 1.05) rotate(1deg);
     }
 }
 
+@keyframes sag {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+>>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
+    }
+}
+
+<<<<<<< HEAD
 /* Label */
 .game-char__label {
     display: flex;
@@ -178,4 +246,33 @@
 [data-theme="light"] .game-char__label {
     background: rgba(0, 0, 0, 0.04);
     border-color: rgba(0, 0, 0, 0.08);
+=======
+    50% {
+        transform: translateY(2px) rotate(1deg);
+    }
+}
+
+.status-bubble {
+    position: absolute;
+    top: 0;
+    background: white;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
+    border: 2px solid #333;
+    z-index: 20;
+    white-space: nowrap;
+}
+
+.status-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px 6px 0;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+>>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
 }

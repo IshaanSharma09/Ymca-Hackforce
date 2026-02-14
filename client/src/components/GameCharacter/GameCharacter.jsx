@@ -1,5 +1,11 @@
+import { useEffect, useState } from 'react'
+import { useAuth } from '../../context/AuthContext'
+import { useDailyLog } from '../../context/DailyLogContext'
 import './GameCharacter.css'
+import PixelSprite from '../pixel/PixelSprite'
+import { CHAR_FIT, CHAR_NORMAL, CHAR_OVERWEIGHT, PALETTE } from '../pixel/characterSprites'
 
+<<<<<<< HEAD
 /**
  * Modern SVG Avatar that changes based on BMI and calorie status.
  * Clean, rounded design with smooth gradients and animated aura.
@@ -140,7 +146,71 @@ function GameCharacter({ bmi, calorieStatus = 'happy', size = 120 }) {
                     {bodyType === 'overweight' && 'Overweight'}
                     {bodyType === 'obese' && 'Obese'}
                 </span>
+=======
+function GameCharacter({ showStatus = true }) {
+    const { getUserProfile } = useAuth()
+    const { dailyData } = useDailyLog()
+    const [status, setStatus] = useState('happy')
+    const [spriteData, setSpriteData] = useState(CHAR_NORMAL)
+
+    const profile = getUserProfile()
+
+    // ── 1. Calculate BMI & Select Sprite ──
+    useEffect(() => {
+        if (profile?.height && profile?.weight) {
+            const hM = profile.height / 100
+            const bmi = profile.weight / (hM * hM)
+
+            // Select Sprite based on BMI
+            if (bmi < 18.5) setSpriteData(CHAR_NORMAL)
+            else if (bmi >= 18.5 && bmi < 25) setSpriteData(CHAR_FIT)
+            else setSpriteData(CHAR_OVERWEIGHT)
+        }
+    }, [profile])
+
+
+    // ── 2. Determine Expression / Status ──
+    useEffect(() => {
+        if (!dailyData) return
+
+        const { caloriesConsumed, caloriesBurned } = dailyData
+        // const netCalories = caloriesConsumed - caloriesBurned
+        const bmr = profile?.weight ? 10 * profile.weight + 6.25 * profile.height - 5 * profile.age : 2000
+        const tdee = bmr * 1.2
+        const calorieGoal = tdee
+
+        const hour = new Date().getHours()
+
+        if (caloriesConsumed > calorieGoal * 1.1) {
+            setStatus('stuffed')
+        } else if (hour > 17 && caloriesConsumed < calorieGoal * 0.5) {
+            setStatus('exhausted')
+        } else {
+            setStatus('happy')
+        }
+    }, [dailyData, profile])
+
+    return (
+        <div className={`game-character-container ${status}`}>
+            {/* Status Bubble */}
+            {showStatus && status !== 'happy' && (
+                <div className="status-bubble pixel-font animate-pop-in">
+                    {status === 'stuffed' ? '🤢 Bloated...' : '🔋 Low Energy'}
+                </div>
+            )}
+
+            {/* Pixel Character */}
+            <div className={`pixel-character-wrapper animate-${status}`}>
+                <PixelSprite
+                    data={spriteData}
+                    palette={PALETTE}
+                    scale={2} // 2x Scale ("Hi-Bit" / HD-2D look)
+                />
+>>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
             </div>
+
+            {/* Shadow */}
+            <div className="pixel-shadow"></div>
         </div>
     )
 }

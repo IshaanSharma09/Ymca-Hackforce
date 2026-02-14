@@ -1,396 +1,217 @@
-/* ── Dashboard — Modern Gamified ── */
+/* ── Modern Tech Dashboard ── */
+.dashboard-game-mode {
+    padding-top: 20px;
+}
 
-/* ── Header Row ── */
-.dash-header {
+/* ── Tech HUD ── */
+.game-hud {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-}
-
-/* ── Game Hero Section ── */
-.dash-game-hero {
-    display: flex;
-    align-items: center;
-    gap: var(--space-6);
-    margin-bottom: var(--space-6);
-    padding: var(--space-5);
-    background: var(--bg-card);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--glass-shadow);
-}
-
-.dash-calorie-warning {
-    flex: 1;
-    padding: var(--space-3) var(--space-5);
-    border-radius: var(--radius-lg);
-    border: 1px solid;
-    animation: warningPulse 2s ease-in-out infinite;
-}
-
-.dash-calorie-warning--stuffed {
-    background: rgba(248, 113, 113, 0.1);
-    border-color: rgba(248, 113, 113, 0.3);
-}
-
-.dash-calorie-warning--exhausted {
-    background: rgba(251, 191, 36, 0.1);
-    border-color: rgba(251, 191, 36, 0.3);
-}
-
-.dash-calorie-warning__text {
-    font-family: var(--font-heading);
-    font-size: var(--font-sm);
-    font-weight: 600;
-    line-height: 1.6;
-    color: var(--text-primary);
-}
-
-@keyframes warningPulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.7;
-    }
-}
-
-/* ── Quick Actions ── */
-.dash-quick-actions {
-    display: flex;
-    gap: var(--space-3);
-    margin-bottom: var(--space-6);
-    flex-wrap: wrap;
-}
-
-.dash-quick-btn {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3) var(--space-5);
-    border-radius: var(--radius-full);
-    background: var(--glass-bg);
+    background: rgba(16, 24, 40, 0.4);
     backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    cursor: pointer;
-    transition: all var(--transition-base);
-    color: var(--text-primary);
-    font-weight: 600;
-    font-size: var(--font-sm);
+    padding: 16px 24px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 32px;
 }
 
-.dash-quick-btn:hover {
-    transform: translateY(-3px);
-    border-color: rgba(0, 229, 160, 0.3);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), var(--accent-glow);
-    background: rgba(255, 255, 255, 0.06);
-}
-
-.dash-quick-btn:active {
-    transform: scale(0.97);
-}
-
-.dash-quick-btn__icon {
-    width: 38px;
-    height: 38px;
-    border-radius: var(--radius-md);
+.game-hud__profile {
     display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.game-hud__avatar-frame {
+    display: none;
+    /* Clean look */
+}
+
+.game-hud__info {
+    display: flex;
+    flex-direction: column;
+}
+
+.game-hud__name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+    line-height: 1;
+}
+
+.game-hud__xp-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.game-hud__xp-label {
+    font-size: 0.8rem;
+    color: var(--tech-text-secondary);
+    font-weight: 600;
+}
+
+.game-hud__xp-track {
+    width: 160px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.game-hud__xp-fill {
+    height: 100%;
+    background: var(--tech-accent);
+    box-shadow: 0 0 10px var(--tech-accent);
+    transition: width 0.5s ease;
+}
+
+/* ── HUD Stats ── */
+.game-hud__stats {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.game-hud__currency {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    color: var(--tech-accent);
+    background: rgba(0, 240, 255, 0.1);
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+/* ── Stage (Character) ── */
+.dash-game-stage {
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    margin-bottom: 40px;
+    position: relative;
+    /* Spotlight effect */
+    background: radial-gradient(circle at center, rgba(0, 240, 255, 0.1) 0%, transparent 60%);
 }
 
-/* ── Main Grid ── */
+.dash-villain-alert {
+    margin-top: 16px;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+}
+
+/* ── Modern Dock (Action Menu) ── */
+.game-menu-grid {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 48px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    backdrop-filter: blur(10px);
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.game-menu-btn {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--tech-text-secondary);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Bouncy */
+    cursor: pointer;
+    position: relative;
+    overflow: visible;
+}
+
+.game-menu-btn svg {
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 4px;
+    transition: transform 0.3s;
+}
+
+.game-menu-btn span {
+    font-size: 0.65rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    opacity: 0.7;
+}
+
+.game-menu-btn:hover {
+    transform: translateY(-8px) scale(1.1);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--tech-text-primary);
+    color: #fff;
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+}
+
+.game-menu-btn:hover svg {
+    transform: scale(1.1);
+    color: var(--tech-accent);
+    filter: drop-shadow(0 0 8px var(--tech-accent));
+}
+
+.game-menu-btn::after {
+    /* Remove Terraria numbers */
+    content: none !important;
+}
+
+/* ── Cards Grid ── */
 .dash-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-5);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
 }
 
-/* ── Card Titles ── */
 .dash-card-title {
-    font-family: var(--font-heading);
-    font-size: var(--font-base);
-    font-weight: 700;
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    margin-bottom: var(--space-4);
-    color: var(--text-primary);
+    gap: 12px;
+    font-size: 1.2rem;
+    margin-bottom: 24px;
+    color: #fff !important;
+    /* Override Terraria yellow */
+    text-shadow: none !important;
+    font-family: 'Rajdhani', sans-serif !important;
 }
 
-/* ── Calorie Ring ── */
-.dash-calorie-card {
-    grid-row: span 2;
-}
-
-.dash-calorie-ring-wrapper {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    margin: 0 auto var(--space-4);
-}
-
-.dash-calorie-ring {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 0 12px rgba(0, 229, 160, 0.2));
-}
-
-.dash-ring-progress {
-    transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.dash-calorie-ring-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-}
-
+/* Stat Display tweaks */
 .dash-calorie-number {
-    font-family: var(--font-heading);
-    font-size: var(--font-4xl);
-    font-weight: 900;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 3rem;
+    color: #fff;
     line-height: 1;
-    background: var(--accent-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.dash-calorie-label {
-    font-size: var(--font-xs);
-    color: var(--text-tertiary);
-    font-weight: 500;
-}
-
-.dash-calorie-unit {
-    font-size: var(--font-xs);
-    color: var(--text-tertiary);
-}
-
-.dash-calorie-footer {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--glass-border);
-}
-
-.dash-calorie-stat {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--font-sm);
-    color: var(--text-secondary);
-}
-
-.dash-calorie-stat strong {
-    color: var(--text-primary);
-}
-
-.text-danger {
-    color: var(--danger) !important;
-}
-
-/* ── Macros ── */
-.dash-macros-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-}
-
-.dash-macro-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--space-2);
-}
-
-.dash-macro-name {
-    font-size: var(--font-sm);
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.dash-macro-value {
-    font-size: var(--font-xs);
-    color: var(--text-tertiary);
-    font-weight: 500;
-}
-
-.dash-macro-protein .progress-fill,
-.dash-macro-protein {
-    background: linear-gradient(135deg, #f87171, #fb923c) !important;
-}
-
-.dash-macro-carbs .progress-fill,
-.dash-macro-carbs {
-    background: linear-gradient(135deg, #60a5fa, #818cf8) !important;
-}
-
-.dash-macro-fat .progress-fill,
-.dash-macro-fat {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
-}
-
-/* ── Steps ── */
-.dash-steps-display {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-2);
-    margin-bottom: var(--space-3);
 }
 
 .dash-steps-number {
-    font-family: var(--font-heading);
-    font-size: var(--font-3xl);
-    font-weight: 900;
-    color: var(--text-primary);
-}
-
-/* ── Water ── */
-.dash-water-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-3);
-    margin-bottom: var(--space-3);
-}
-
-.dash-water-glasses {
-    display: flex;
-    gap: var(--space-2);
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.dash-water-glass {
-    width: 38px;
-    height: 38px;
-    border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--glass-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    color: var(--text-tertiary);
-}
-
-.dash-water-glass:hover {
-    border-color: #00b4ff;
-    color: #00b4ff;
-    transform: scale(1.12);
-    box-shadow: 0 0 12px rgba(0, 180, 255, 0.2);
-}
-
-.dash-water-glass.filled {
-    background: rgba(0, 180, 255, 0.12);
-    border-color: #00b4ff;
-    color: #00b4ff;
-    box-shadow: 0 0 8px rgba(0, 180, 255, 0.15);
-}
-
-/* ── Mini Stat Cards ── */
-.dash-stat-card-small {
-    display: flex;
-    align-items: center;
-}
-
-.dash-mini-stat {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    width: 100%;
-}
-
-.dash-mini-number {
-    display: block;
-    font-family: var(--font-heading);
-    font-size: var(--font-2xl);
-    font-weight: 800;
-    color: var(--text-primary);
-    line-height: 1.2;
-}
-
-.dash-mini-label {
-    display: block;
-    font-size: var(--font-xs);
-    color: var(--text-tertiary);
-    font-weight: 500;
-    text-transform: capitalize;
-}
-
-/* ── Responsive ── */
-@media (max-width: 900px) {
-    .dash-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .dash-calorie-card {
-        grid-row: span 1;
-    }
-
-    .dash-quick-actions {
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: var(--space-2);
-    }
-
-    .dash-quick-btn {
-        flex-shrink: 0;
-    }
-
-    .dash-game-hero {
-        flex-direction: column;
-        text-align: center;
-    }
-}
-
-@media (max-width: 640px) {
-    .dash-quick-btn span {
-        display: none;
-    }
-
-    .dash-quick-btn {
-        padding: var(--space-3);
-        border-radius: var(--radius-md);
-    }
-}
-
-/* ── Dashboard Modals ── */
-.dash-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    animation: fadeIn 0.2s ease;
-}
-
-.dash-modal {
-    width: 90%;
-    max-width: 380px;
-    padding: var(--space-8);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
-    border-radius: var(--radius-2xl);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff;
 }

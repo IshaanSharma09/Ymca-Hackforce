@@ -182,16 +182,20 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-md);
+    border-radius: 4px;
+    /* Pixel corners */
     background: var(--bg-secondary);
-    border: 1px solid var(--glass-border);
-    transition: all 0.25s ease;
+    border: 2px solid #555;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.1s ease;
+    image-rendering: pixelated;
 }
 
 .meal-result-card:hover {
-    border-color: rgba(0, 212, 170, 0.25);
-    transform: translateX(4px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-color: var(--accent-start);
+    transform: translateY(-2px);
+    box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
+    background: var(--bg-tertiary);
 }
 
 .meal-result-info {

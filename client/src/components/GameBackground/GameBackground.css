@@ -1,195 +1,137 @@
 /* ============================================================
-   GAME BACKGROUND — Modern Animated Gradient Mesh
+   MODERN HI-BIT BACKGROUND (Phase 7)
+   "Ethereal Digital Landscape"
    ============================================================ */
 
 .game-bg {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index: -1;
     overflow: hidden;
-    transition: all 1s ease;
+    background: #0b0f19;
+    /* Deep space/tech bg */
 }
 
-/* ── Gradient Mesh ── */
-.game-bg__mesh {
-    position: absolute;
-    inset: 0;
-    transition: background 1.5s ease;
-}
-
-.game-bg--night .game-bg__mesh {
-    background:
-        radial-gradient(ellipse at 10% 20%, rgba(0, 229, 160, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 90% 80%, rgba(0, 180, 255, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(167, 139, 250, 0.04) 0%, transparent 60%),
-        linear-gradient(180deg, #0b0f19 0%, #111827 50%, #0b0f19 100%);
-}
-
-.game-bg--day .game-bg__mesh {
-    background:
-        radial-gradient(ellipse at 10% 20%, rgba(0, 201, 141, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at 90% 80%, rgba(0, 155, 214, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(124, 58, 237, 0.04) 0%, transparent 60%),
-        linear-gradient(180deg, #f0f4f8 0%, #e8edf3 50%, #f0f4f8 100%);
-}
-
-/* ── Floating Orbs ── */
-.game-bg__orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    animation: orbFloat 12s ease-in-out infinite;
-    opacity: 0.4;
-}
-
-.game-bg--night .game-bg__orb--1 {
-    width: 400px;
-    height: 400px;
-    top: -10%;
-    left: -5%;
-    background: radial-gradient(circle, rgba(0, 229, 160, 0.2), transparent);
-    animation-delay: 0s;
-}
-
-.game-bg--night .game-bg__orb--2 {
-    width: 350px;
-    height: 350px;
-    bottom: -5%;
-    right: -5%;
-    background: radial-gradient(circle, rgba(0, 180, 255, 0.15), transparent);
-    animation-delay: -4s;
-}
-
-.game-bg--night .game-bg__orb--3 {
-    width: 300px;
-    height: 300px;
-    top: 40%;
-    right: 20%;
-    background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent);
-    animation-delay: -8s;
-}
-
-.game-bg--night .game-bg__orb--4 {
-    width: 250px;
-    height: 250px;
-    bottom: 30%;
-    left: 15%;
-    background: radial-gradient(circle, rgba(0, 229, 160, 0.1), transparent);
-    animation-delay: -3s;
-}
-
-.game-bg--day .game-bg__orb--1 {
-    width: 400px;
-    height: 400px;
-    top: -10%;
-    left: -5%;
-    background: radial-gradient(circle, rgba(0, 201, 141, 0.15), transparent);
-}
-
-.game-bg--day .game-bg__orb--2 {
-    width: 350px;
-    height: 350px;
-    bottom: -5%;
-    right: -5%;
-    background: radial-gradient(circle, rgba(0, 155, 214, 0.1), transparent);
-}
-
-.game-bg--day .game-bg__orb--3 {
-    width: 300px;
-    height: 300px;
-    top: 40%;
-    right: 20%;
-    background: radial-gradient(circle, rgba(124, 58, 237, 0.06), transparent);
-}
-
-.game-bg--day .game-bg__orb--4 {
-    width: 250px;
-    height: 250px;
-    bottom: 30%;
-    left: 15%;
-    background: radial-gradient(circle, rgba(0, 201, 141, 0.08), transparent);
-}
-
-@keyframes orbFloat {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1);
-    }
-
-    25% {
-        transform: translate(30px, -20px) scale(1.05);
-    }
-
-    50% {
-        transform: translate(-20px, 15px) scale(0.95);
-    }
-
-    75% {
-        transform: translate(15px, 25px) scale(1.02);
-    }
-}
-
-/* ── Grid Overlay ── */
-.game-bg__grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-    background-size: 60px 60px;
-    opacity: 0.5;
-}
-
-.game-bg--day .game-bg__grid {
-    background-image:
-        linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
-}
-
-/* ── Particles (night only) ── */
-.game-bg__particles {
+/* ── Atmosphere ── */
+.game-bg__sky {
     position: absolute;
     inset: 0;
     z-index: 1;
+    background:
+        radial-gradient(circle at 50% -20%, #1e1b4b 0%, #0b0f19 80%),
+        linear-gradient(to bottom, transparent 60%, rgba(0, 240, 255, 0.05) 100%);
+    opacity: 0.8;
+}
+
+/* ── Digital Grid Floor ── */
+.game-bg__ground {
+    position: absolute;
+    bottom: -100px;
+    /* Tilt effect */
+    left: -50%;
+    width: 200%;
+    height: 400px;
+    z-index: 2;
+    background:
+        linear-gradient(rgba(11, 15, 25, 1), rgba(11, 15, 25, 0)),
+        repeating-linear-gradient(0deg, transparent 0, transparent 39px, rgba(0, 240, 255, 0.1) 40px),
+        repeating-linear-gradient(90deg, transparent 0, transparent 39px, rgba(0, 240, 255, 0.1) 40px);
+    transform: perspective(500px) rotateX(60deg);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 40%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 40%);
+}
+
+/* ── Floating Particles (Data dust) ── */
+.game-bg__particles {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
 }
 
 .game-bg__particle {
     position: absolute;
-    background: rgba(0, 229, 160, 0.5);
+    width: 2px;
+    height: 2px;
+    background: #fff;
     border-radius: 50%;
-    animation: particleFloat 6s ease-in-out infinite;
-    box-shadow: 0 0 6px rgba(0, 229, 160, 0.3);
+    box-shadow: 0 0 4px var(--tech-accent);
+    animation: floatUp linear infinite;
+    opacity: 0;
 }
 
-@keyframes particleFloat {
+/* Determine positions randomly in CSS or use JS. Since this is CSS-only for now, we simulate a few */
+.game-bg__particle:nth-child(1) {
+    left: 10%;
+    top: 100%;
+    animation-duration: 10s;
+    animation-delay: 0s;
+}
 
-    0%,
-    100% {
-        opacity: 0;
+.game-bg__particle:nth-child(2) {
+    left: 30%;
+    top: 100%;
+    animation-duration: 15s;
+    animation-delay: 2s;
+}
+
+.game-bg__particle:nth-child(3) {
+    left: 70%;
+    top: 100%;
+    animation-duration: 8s;
+    animation-delay: 4s;
+}
+
+.game-bg__particle:nth-child(4) {
+    left: 90%;
+    top: 100%;
+    animation-duration: 12s;
+    animation-delay: 1s;
+}
+
+.game-bg__particle:nth-child(5) {
+    left: 50%;
+    top: 100%;
+    animation-duration: 20s;
+    animation-delay: 5s;
+}
+
+@keyframes floatUp {
+    0% {
         transform: translateY(0);
+        opacity: 0;
     }
 
-    20% {
-        opacity: 0.7;
+    10% {
+        opacity: 0.8;
     }
 
-    80% {
-        opacity: 0.4;
+    90% {
+        opacity: 0.3;
     }
 
     100% {
+        transform: translateY(-100vh);
         opacity: 0;
-        transform: translateY(-60px);
     }
 }
 
-/* ── Noise Texture ── */
-.game-bg__noise {
+/* ── Silhouette Foreground (Smooth, not blocky) ── */
+.game-bg__foreground {
     position: absolute;
-    inset: 0;
-    opacity: 0.015;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-    pointer-events: none;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    z-index: 5;
+    background: linear-gradient(to top, #0b0f19 20%, transparent 100%);
+}
+
+/* Hide Old Elements */
+.game-bg__trees-far,
+.game-bg__mountains,
+.game-bg__clouds {
+    display: none;
 }
