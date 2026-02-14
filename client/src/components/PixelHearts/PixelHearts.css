@@ -5,16 +5,8 @@
     gap: var(--space-3);
 }
 
-<<<<<<< HEAD
 .xp-bar-level {
     flex-shrink: 0;
-=======
-.pixel-heart {
-    width: 28px;
-    height: 28px;
-    image-rendering: pixelated;
-    /* Terraria Heart Style */
->>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
 }
 
 .xp-bar-level__badge {
@@ -33,7 +25,18 @@
     animation: neonPulse 3s ease-in-out infinite;
 }
 
-<<<<<<< HEAD
+@keyframes neonPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 2px 12px rgba(0, 229, 160, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 2px 20px rgba(0, 229, 160, 0.5);
+    }
+}
+
 .xp-bar-container {
     display: flex;
     align-items: center;
@@ -68,33 +71,16 @@
     bottom: 0;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     animation: shimmer 2s infinite;
-=======
-.pixel-heart__svg {
-    width: 24px;
-    height: 24px;
-    fill: #dc2626;
-    /* Red */
-    filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.5));
 }
 
-/* Full heart — red */
-.pixel-heart--full .pixel-heart__svg rect {
-    fill: #dc2626;
-    stroke: #7f1d1d;
-    /* Dark Red Stroke logic handled by SVG structure or just simple fill here */
-}
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
 
-/* Add a "shine" to the heart */
-.pixel-heart--full::after {
-    content: '';
-    position: absolute;
-    top: 4px;
-    right: 6px;
-    width: 4px;
-    height: 4px;
-    background: white;
-    opacity: 0.8;
->>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 .xp-bar-value {
