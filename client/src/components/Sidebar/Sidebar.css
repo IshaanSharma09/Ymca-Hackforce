@@ -31,6 +31,12 @@
     gap: var(--space-3);
     padding: var(--space-5) var(--space-5);
     height: var(--navbar-height);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.sidebar__logo:hover {
+    opacity: 0.85;
 }
 
 .sidebar__logo-icon {
@@ -45,6 +51,12 @@
     font-size: 1.5rem;
     color: #0a0e1a;
     box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.sidebar__logo:hover .sidebar__logo-icon {
+    transform: rotate(-8deg) scale(1.08);
+    box-shadow: 0 6px 25px rgba(0, 212, 170, 0.45);
 }
 
 .sidebar__logo-text {
@@ -95,16 +107,38 @@
     color: var(--text-secondary);
     font-weight: 500;
     font-size: var(--font-sm);
-    transition: all var(--transition-fast);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    cursor: pointer;
+}
+
+/* Hover glow background effect */
+.sidebar__link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-md);
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 212, 170, 0.08) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar__link:hover::before {
+    opacity: 1;
 }
 
 .sidebar__link:hover {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--text-primary);
+    transform: translateX(3px);
 }
 
+.sidebar__link:active {
+    transform: translateX(3px) scale(0.97);
+}
+
+/* Active indicator line */
 .sidebar__link-indicator {
     position: absolute;
     left: -2px;
@@ -114,7 +148,7 @@
     height: 0;
     background: var(--accent-gradient);
     border-radius: var(--radius-full);
-    transition: height var(--transition-base);
+    transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar__link--active .sidebar__link-indicator {
@@ -126,43 +160,74 @@
     color: var(--text-accent);
 }
 
+.sidebar__link--active:hover {
+    background: rgba(0, 212, 170, 0.12);
+    transform: translateX(0);
+}
+
 .sidebar__link-icon {
     font-size: 1.3rem;
     min-width: 1.3rem;
-    transition: transform var(--transition-fast);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease;
 }
 
 .sidebar__link:hover .sidebar__link-icon {
-    transform: scale(1.1);
+    transform: scale(1.18);
+    color: var(--accent-start);
+}
+
+.sidebar__link--active .sidebar__link-icon {
+    color: var(--text-accent);
 }
 
 .sidebar__link-label {
     white-space: nowrap;
     overflow: hidden;
+    transition: transform 0.2s ease;
 }
 
-/* ── Tooltip (collapsed) ── */
+.sidebar__link:hover .sidebar__link-label {
+    transform: translateX(2px);
+}
+
+/* ── Tooltip (collapsed sidebar) — below the icon ── */
 .sidebar__tooltip {
     position: absolute;
-    left: calc(var(--sidebar-collapsed) + 4px);
+    left: 50%;
+    top: calc(100% + 6px);
+    transform: translateX(-50%) translateY(-4px);
     background: var(--bg-secondary);
     color: var(--text-primary);
-    padding: var(--space-2) var(--space-3);
+    padding: var(--space-1) var(--space-3);
     border-radius: var(--radius-sm);
     font-size: var(--font-xs);
-    font-weight: 500;
+    font-weight: 600;
     white-space: nowrap;
     pointer-events: none;
     opacity: 0;
-    transform: translateX(-4px);
-    transition: all var(--transition-fast);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid var(--glass-border);
     z-index: 200;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Tooltip arrow */
+.sidebar__tooltip::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    background: var(--bg-secondary);
+    border-left: 1px solid var(--glass-border);
+    border-top: 1px solid var(--glass-border);
 }
 
 .sidebar__link:hover .sidebar__tooltip {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateX(-50%) translateY(0);
 }
 
 /* ── Bottom Section ── */
@@ -190,19 +255,28 @@
     color: var(--text-tertiary);
     font-size: var(--font-sm);
     font-weight: 500;
-    transition: all var(--transition-fast);
+    transition: all 0.25s ease;
     cursor: pointer;
     border: none;
 }
 
 .sidebar__toggle:hover {
-    background: rgba(255, 255, 255, 0.04);
-    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+}
+
+.sidebar__toggle:active {
+    transform: scale(0.96);
 }
 
 .sidebar__toggle svg {
     font-size: 1.2rem;
     min-width: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.sidebar__toggle:hover svg {
+    transform: translateX(-3px);
 }
 
 /* ── Light Theme ── */
@@ -221,6 +295,17 @@
 
 [data-theme="light"] .sidebar__toggle:hover {
     background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .sidebar__tooltip {
+    background: #fff;
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .sidebar__tooltip::before {
+    background: #fff;
+    border-color: rgba(0, 0, 0, 0.1);
 }
 
 /* ── Responsive ── */
