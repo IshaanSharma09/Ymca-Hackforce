@@ -1,7 +1,10 @@
-import { MdMenu, MdSearch, MdNotificationsNone, MdWaterDrop } from 'react-icons/md'
+import { MdMenu, MdSearch, MdNotificationsNone, MdWaterDrop, MdDarkMode, MdLightMode } from 'react-icons/md'
+import { useTheme } from '../../context/ThemeContext'
 import './Navbar.css'
 
 function Navbar({ onMenuToggle }) {
+    const { theme, toggleTheme } = useTheme()
+
     return (
         <header className="navbar">
             <div className="navbar__left">
@@ -20,6 +23,13 @@ function Navbar({ onMenuToggle }) {
             </div>
 
             <div className="navbar__right">
+                <button
+                    className="btn-icon navbar__action navbar__theme-toggle tooltip"
+                    data-tooltip={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                    onClick={toggleTheme}
+                >
+                    {theme === 'dark' ? <MdLightMode /> : <MdDarkMode />}
+                </button>
                 <button className="btn-icon navbar__action tooltip" data-tooltip="Log Water">
                     <MdWaterDrop />
                 </button>

@@ -138,6 +138,30 @@
     box-shadow: 0 4px 15px rgba(0, 212, 170, 0.35);
 }
 
+/* Theme toggle animation */
+.navbar__theme-toggle {
+    transition: all var(--transition-base);
+}
+
+.navbar__theme-toggle:hover {
+    color: var(--accent-start) !important;
+    transform: rotate(20deg);
+}
+
+/* ── Light Theme ── */
+[data-theme="light"] .navbar {
+    background: rgba(255, 255, 255, 0.85);
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .navbar__search-input {
+    background: var(--bg-tertiary);
+}
+
+[data-theme="light"] .navbar__search-input:focus {
+    background: #ffffff;
+}
+
 /* ── Responsive ── */
 @media (max-width: 1024px) {
     .navbar {

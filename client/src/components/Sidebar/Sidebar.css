@@ -205,6 +205,24 @@
     min-width: 1.2rem;
 }
 
+/* ── Light Theme ── */
+[data-theme="light"] .sidebar {
+    background: rgba(255, 255, 255, 0.95);
+    border-right-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .sidebar__link:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .sidebar__link--active {
+    background: rgba(0, 184, 148, 0.08);
+}
+
+[data-theme="light"] .sidebar__toggle:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
 /* ── Responsive ── */
 @media (max-width: 1024px) {
     .sidebar {

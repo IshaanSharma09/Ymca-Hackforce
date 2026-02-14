@@ -12,11 +12,11 @@
 
 .login-card {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
     padding: var(--space-10);
     display: flex;
     flex-direction: column;
-    gap: var(--space-8);
+    gap: var(--space-6);
     position: relative;
     z-index: 2;
 }
@@ -49,6 +49,18 @@
     letter-spacing: -0.03em;
 }
 
+/* ── Error ── */
+.login-error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    color: var(--danger);
+    font-size: var(--font-sm);
+    font-weight: 500;
+    text-align: center;
+}
+
 /* ── Form ── */
 .login-form {
     display: flex;
@@ -68,10 +80,66 @@
     color: var(--text-secondary);
 }
 
+/* Input with icon */
+.login-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.login-input-icon {
+    position: absolute;
+    left: var(--space-3);
+    color: var(--text-tertiary);
+    font-size: 1.1rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.login-input-with-icon {
+    padding-left: calc(var(--space-3) + 1.4rem + var(--space-2)) !important;
+    padding-right: 2.5rem;
+}
+
+.login-password-toggle {
+    position: absolute;
+    right: var(--space-2);
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: var(--space-2);
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    transition: color var(--transition-fast);
+    border: none;
+}
+
+.login-password-toggle:hover {
+    color: var(--text-primary);
+}
+
 .login-btn {
     width: 100%;
     padding: var(--space-3) var(--space-6);
     font-size: var(--font-base);
+    position: relative;
+}
+
+.login-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* ── Spinner ── */
+.login-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: inline-block;
 }
 
 /* ── Divider ── */
@@ -102,17 +170,24 @@
     flex-shrink: 0;
 }
 
-/* ── Footer ── */
+/* ── Footer / Toggle ── */
 .login-footer {
     text-align: center;
 }
 
-.login-footer a {
+.login-toggle-link {
+    background: none;
+    border: none;
     cursor: pointer;
+    font-weight: 700;
+    font-size: var(--font-sm);
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
 }
 
-.login-footer a:hover {
-    text-decoration: underline;
+.login-toggle-link:hover {
+    opacity: 0.8;
 }
 
 /* ── Background Orbs ── */
@@ -149,6 +224,11 @@
     top: 40%;
     left: 60%;
     animation: float 6s ease-in-out infinite 2s;
+}
+
+/* ── Light Theme ── */
+[data-theme="light"] .login-logo__icon {
+    color: #ffffff;
 }
 
 /* ── Responsive ── */
