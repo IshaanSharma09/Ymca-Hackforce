@@ -20,6 +20,9 @@ User opens the FitFuel app (PWA or browser).
      - ✅ YES → select equipment your gym has (from checklist)
      - ❌ NO → bodyweight-only plans will be created
    - **Do you have a health watch?** Select: `Samsung` / `Apple` / `Google Fit` / `None`
+   - **Dietary Restrictions:**
+     - Select Allergies (e.g. Dairy, Nuts, Gluten)
+     - Add **Custom Blacklist** ingredients (e.g. "Maida", "Sugar")
 3. App calculates **BMR, TDEE, daily calorie target, macro split**
 4. Lands on the **Dashboard**
 
@@ -54,7 +57,10 @@ When the user opens the app each morning, they see:
 │  [+ LOG MEAL]   [+ LOG EXERCISE]   [+ LOG WATER]         │
 │                                                            │
 │  🍗 RECIPE OF THE DAY: "Tandoori Chicken" (280 kcal)     │
+|  🍗 RECIPE OF THE DAY: "Tandoori Chicken" (280 kcal)     │
 │  (fetched from Foodoscope: /recipe/recipeofday)           │
+│                                                            │
+│  ⚠️ ALERTS: Low Protein | Under-Eating (Health Score -5)   │
 │                                                            │
 └───────────────────────────────────────────────────────────┘
 ```
@@ -119,6 +125,11 @@ GET /recipe2-api/recipe/recipebycalories?minCalories=0&maxCalories=300
 GET /recipe2-api/recipe/recipebyproteinrange?minProtein=20
 ```
 → Shows matching healthy options → User picks and logs
+
+### ⚠️ Allergen & Blacklist Safety Check
+- Recipes containing your allergens (e.g., Dairy) are flagged with **RED BADGES**.
+- Recipes with blacklisted ingredients (e.g., "Palm Oil") are **DIMMED** and marked 🚫.
+- **Always check warnings before logging!**
 
 **After logging, dashboard updates in real-time:**
 > Eaten: 490 kcal | Protein: 38g | Carbs: 12g | Fat: 32g
