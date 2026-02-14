@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { auth, googleProvider } from '../config/firebase'
+import api from '../services/api'
 
 const AuthContext = createContext()
 
@@ -88,6 +89,22 @@ export function AuthProvider({ children }) {
         return () => { if (unsubscribe) unsubscribe() }
     }, [isFirebaseReady])
 
+    // Helper to sync user with backend
+    const syncUserToBackend = async (firebaseUser, additionalData = {}) => {
+        try {
+            const payload = {
+                firebaseUid: firebaseUser.uid,
+                email: firebaseUser.email,
+                name: firebaseUser.displayName || additionalData.displayName,
+                profile: additionalData.profile
+            }
+            await api.post('/auth/sync', payload)
+            // console.log('✅ User synced to backend')
+        } catch (err) {
+            console.error('❌ Backend sync failed:', err)
+        }
+    }
+
     const loginWithEmail = async (email, password) => {
         if (!isFirebaseReady) {
             // Demo mode login
@@ -104,6 +121,7 @@ export function AuthProvider({ children }) {
         }
         await loadFirebaseAuth()
         const result = await signInWithEmailAndPassword(auth, email, password)
+        syncUserToBackend(result.user)
         return result.user
     }
 
@@ -128,6 +146,7 @@ export function AuthProvider({ children }) {
         await updateProfile(result.user, { displayName: name })
         setUser(prev => ({ ...prev, displayName: name }))
         setNeedsOnboarding(true)
+        syncUserToBackend(result.user, { displayName: name })
         return result.user
     }
 
@@ -145,6 +164,7 @@ export function AuthProvider({ children }) {
         const result = await signInWithPopup(auth, googleProvider)
         const onboarded = localStorage.getItem(`fitfuel-onboarded-${result.user.uid}`)
         setNeedsOnboarding(!onboarded)
+        syncUserToBackend(result.user)
         return result.user
     }
 
