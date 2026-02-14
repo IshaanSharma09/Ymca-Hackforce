@@ -1,0 +1,253 @@
+/* ── Page Shared Styles ── */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.page__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.page__header-actions {
+    display: flex;
+    gap: var(--space-3);
+}
+
+/* ── Stats Grid ── */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.stat-card__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.stat-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.stat-card__label {
+    font-size: var(--font-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.stat-card__value {
+    font-size: var(--font-3xl);
+    font-weight: 800;
+    line-height: 1;
+}
+
+.stat-card__target {
+    font-size: var(--font-xs);
+    color: var(--text-tertiary);
+    margin-top: -4px;
+}
+
+/* ── Dashboard Grid ── */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-6);
+}
+
+/* ── Calorie Ring ── */
+.calorie-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.calorie-ring {
+    width: 200px;
+    height: 200px;
+}
+
+.calorie-ring__svg {
+    width: 100%;
+    height: 100%;
+}
+
+.calorie-stats {
+    display: flex;
+    gap: var(--space-6);
+    width: 100%;
+    justify-content: center;
+}
+
+.calorie-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-sm);
+}
+
+.calorie-stat__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.calorie-stat__val {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* ── Macros Card ── */
+.macros-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.macro-bars {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    flex: 1;
+}
+
+.macro-bar__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
+}
+
+.macro-bar__label {
+    font-size: var(--font-sm);
+    font-weight: 600;
+}
+
+.macro-target-label {
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+}
+
+/* ── Recipe of the Day ── */
+.recipe-of-day {
+    display: flex;
+    flex-direction: column;
+}
+
+.recipe-of-day__badge {
+    margin-bottom: var(--space-3);
+}
+
+.recipe-of-day__placeholder {
+    flex: 1;
+    min-height: 120px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-4);
+    overflow: hidden;
+    position: relative;
+}
+
+.recipe-placeholder-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+    animation: shimmer 2s infinite;
+}
+
+/* ── Coming Soon Card ── */
+.coming-soon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    text-align: center;
+    gap: var(--space-4);
+}
+
+.coming-soon__icon {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-xl);
+    background: var(--accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: #0a0e1a;
+    box-shadow: 0 8px 30px rgba(0, 212, 170, 0.3);
+    animation: float 3s ease-in-out infinite;
+}
+
+.coming-soon__title {
+    font-size: var(--font-2xl);
+    font-weight: 700;
+}
+
+.coming-soon__desc {
+    font-size: var(--font-sm);
+    color: var(--text-secondary);
+    max-width: 400px;
+}
+
+.coming-soon__features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    justify-content: center;
+    margin-top: var(--space-2);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page__header {
+        flex-direction: column;
+    }
+
+    .page__header-actions {
+        width: 100%;
+    }
+
+    .page__header-actions .btn {
+        flex: 1;
+    }
+}
