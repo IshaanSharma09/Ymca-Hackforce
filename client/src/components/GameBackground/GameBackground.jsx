@@ -1,41 +1,49 @@
 import { useTheme } from '../../context/ThemeContext'
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import './GameBackground.css'
 
 function GameBackground() {
     const { theme } = useTheme()
-    const [hour, setHour] = useState(new Date().getHours())
 
-    useEffect(() => {
-        const timer = setInterval(() => setHour(new Date().getHours()), 60000)
-        return () => clearInterval(timer)
-    }, [])
+    // Theme drives the landscape: light = day, dark = night
+    const isNight = theme === 'dark'
+    const timeClass = isNight ? 'night' : 'day'
 
-    // Determine time-of-day phase
-    const isNight = hour >= 19 || hour < 6
-    const isSunset = hour >= 17 && hour < 19
-    const isMorning = hour >= 6 && hour < 9
+    // Memoize random positions so they don't shift on re-render
+    const starPositions = useMemo(() =>
+        Array.from({ length: 60 }).map(() => ({
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 50}%`,
+            delay: `${Math.random() * 4}s`,
+            size: `${1 + Math.random() * 2}px`
+        })), [])
 
-    const timeClass = isNight ? 'night' : isSunset ? 'sunset' : isMorning ? 'morning' : 'day'
+    const particlePositions = useMemo(() =>
+        Array.from({ length: 12 }).map(() => ({
+            left: `${10 + Math.random() * 80}%`,
+            top: `${40 + Math.random() * 40}%`,
+            delay: `${Math.random() * 5}s`,
+            duration: `${3 + Math.random() * 4}s`
+        })), [])
 
     return (
         <div className={`landscape landscape--${timeClass}`}>
             {/* Sky gradient */}
             <div className="landscape__sky" />
 
-            {/* Stars (night only) */}
+            {/* Stars (night / dark mode only) */}
             {isNight && (
                 <div className="landscape__stars">
-                    {Array.from({ length: 60 }).map((_, i) => (
+                    {starPositions.map((star, i) => (
                         <div
                             key={i}
                             className="landscape__star"
                             style={{
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 50}%`,
-                                animationDelay: `${Math.random() * 4}s`,
-                                width: `${1 + Math.random() * 2}px`,
-                                height: `${1 + Math.random() * 2}px`
+                                left: star.left,
+                                top: star.top,
+                                animationDelay: star.delay,
+                                width: star.size,
+                                height: star.size
                             }}
                         />
                     ))}
@@ -97,14 +105,14 @@ function GameBackground() {
 
             {/* Fireflies (night) / Butterflies (day) */}
             <div className="landscape__particles">
-                {Array.from({ length: 12 }).map((_, i) => (
+                {particlePositions.map((p, i) => (
                     <div key={i}
                         className={`landscape__particle landscape__particle--${isNight ? 'firefly' : 'butterfly'}`}
                         style={{
-                            left: `${10 + Math.random() * 80}%`,
-                            top: `${40 + Math.random() * 40}%`,
-                            animationDelay: `${Math.random() * 5}s`,
-                            animationDuration: `${3 + Math.random() * 4}s`
+                            left: p.left,
+                            top: p.top,
+                            animationDelay: p.delay,
+                            animationDuration: p.duration
                         }} />
                 ))}
             </div>

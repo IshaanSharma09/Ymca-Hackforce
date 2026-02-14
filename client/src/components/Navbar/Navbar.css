@@ -485,3 +485,135 @@
         display: none;
     }
 }
+
+/* ── Light Theme — Sky-Blue Glass ── */
+[data-theme="light"] .navbar {
+    background: rgba(135, 206, 235, 0.35);
+    border-bottom-color: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="light"] .navbar__search-input {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(30, 58, 95, 0.12);
+    color: #0f172a;
+}
+
+[data-theme="light"] .navbar__search-input::placeholder {
+    color: #64748b;
+}
+
+[data-theme="light"] .navbar__search-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    background: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="light"] .navbar__search-icon {
+    color: #64748b;
+}
+
+[data-theme="light"] .navbar__search:focus-within .navbar__search-icon {
+    color: #2563eb;
+}
+
+[data-theme="light"] .navbar__action {
+    color: #1e3a5f;
+}
+
+[data-theme="light"] .navbar__action:hover,
+[data-theme="light"] .navbar__action.active {
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(30, 58, 95, 0.12);
+    color: #0f172a;
+}
+
+[data-theme="light"] .navbar__theme-toggle:hover {
+    color: #2563eb;
+    background: rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.2);
+}
+
+[data-theme="light"] .navbar__menu-btn {
+    color: #1e3a5f;
+}
+
+[data-theme="light"] .navbar__menu-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    color: #0f172a;
+}
+
+[data-theme="light"] .navbar__water-btn {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.25);
+    color: #2563eb;
+}
+
+[data-theme="light"] .navbar__water-btn:hover {
+    background: rgba(37, 99, 235, 0.18);
+    border-color: rgba(37, 99, 235, 0.4);
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.15);
+}
+
+[data-theme="light"] .navbar__water-meter {
+    background: rgba(30, 58, 95, 0.1);
+}
+
+[data-theme="light"] .navbar__notification-dot {
+    border-color: rgba(135, 206, 235, 0.5);
+}
+
+[data-theme="light"] .navbar__notify-dropdown {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .notify-header {
+    background: rgba(0, 0, 0, 0.03);
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+    color: #0f172a;
+}
+
+[data-theme="light"] .notify-item {
+    border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .notify-item:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .notify-title {
+    color: #0f172a;
+}
+
+[data-theme="light"] .notify-msg {
+    color: #475569;
+}
+
+[data-theme="light"] .navbar__avatar {
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    color: #fff;
+}
+
+[data-theme="light"] .navbar__avatar:hover {
+    border-color: #2563eb;
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+}
+
+[data-theme="light"] .tooltip::after {
+    background: #fff;
+    color: #0f172a;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .navbar__toast {
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(37, 99, 235, 0.25);
+    color: #0f172a;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 0 16px rgba(37, 99, 235, 0.08);
+}
+
+[data-theme="light"] .navbar__badge-count {
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+}

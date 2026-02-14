@@ -79,6 +79,34 @@
   --transition-slow: 0.4s ease;
 }
 
+/* ── Light Theme Variables ── */
+[data-theme="light"] {
+  --bg-primary: #f0f7ff;
+  --bg-secondary: rgba(255, 255, 255, 0.9);
+  --bg-tertiary: rgba(0, 0, 0, 0.04);
+  --bg-card: rgba(255, 255, 255, 0.6);
+
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-tertiary: #64748b;
+  --text-accent: #2563eb;
+  --text-muted: #94a3b8;
+
+  --accent-start: #2563eb;
+  --accent-end: #0ea5e9;
+  --accent-gradient: linear-gradient(135deg, #2563eb, #0ea5e9);
+  --accent-glow: 0 0 20px rgba(37, 99, 235, 0.2);
+
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --info: #2563eb;
+
+  --glass-bg: rgba(255, 255, 255, 0.45);
+  --glass-border: rgba(30, 58, 95, 0.1);
+  --glass-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
 /* ── RESET & BASE ── */
 *,
 *::before,
@@ -449,6 +477,78 @@ h6 {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 229, 160, 0.3);
+}
+
+/* Light theme scrollbar */
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(30, 58, 95, 0.15);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 99, 235, 0.3);
+}
+
+/* Light theme loading screen */
+[data-theme="light"] .loading-screen {
+  background: var(--bg-primary);
+}
+
+[data-theme="light"] .loading-spinner {
+  border-color: rgba(0, 0, 0, 0.1);
+  border-top-color: #2563eb;
+}
+
+/* Light theme cards */
+[data-theme="light"] .glass-card,
+[data-theme="light"] .glass-card-static,
+[data-theme="light"] .pixel-card,
+[data-theme="light"] .pixel-card-static {
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .glass-card:hover,
+[data-theme="light"] .pixel-card:hover {
+  border-color: rgba(37, 99, 235, 0.2);
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.1), 0 0 16px rgba(37, 99, 235, 0.06);
+}
+
+/* Light theme buttons */
+[data-theme="light"] .btn-primary {
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+}
+
+[data-theme="light"] .btn-primary:hover {
+  box-shadow: 0 8px 28px rgba(37, 99, 235, 0.35);
+}
+
+[data-theme="light"] .btn-secondary {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(30, 58, 95, 0.12);
+}
+
+[data-theme="light"] .btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.07);
+  border-color: rgba(30, 58, 95, 0.2);
+}
+
+/* Light theme inputs */
+[data-theme="light"] .input-field {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(30, 58, 95, 0.12);
+  color: #0f172a;
+}
+
+[data-theme="light"] .input-field:focus {
+  border-color: rgba(37, 99, 235, 0.4);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .input-field::placeholder {
+  color: #94a3b8;
 }
 
 /* ── RESPONSIVE ── */

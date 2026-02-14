@@ -270,26 +270,85 @@
     transform: translateX(-3px);
 }
 
-/* ── Light Theme ── */
+/* ── Light Theme — Sky-Blue Glass ── */
 [data-theme="light"] .sidebar {
-    background: rgba(255, 255, 255, 0.88);
-    border-right-color: rgba(0, 0, 0, 0.06);
+    background: rgba(135, 206, 235, 0.32);
+    border-right-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 2px 0 24px rgba(30, 144, 255, 0.08);
+}
+
+[data-theme="light"] .sidebar__logo-name {
+    background: linear-gradient(135deg, #1e3a5f, #2563eb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+[data-theme="light"] .sidebar__logo-tagline {
+    color: #475569;
+}
+
+[data-theme="light"] .sidebar__logo-icon {
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+}
+
+[data-theme="light"] .sidebar__divider {
+    background: rgba(30, 58, 95, 0.12);
+}
+
+[data-theme="light"] .sidebar__link {
+    color: #1e3a5f;
 }
 
 [data-theme="light"] .sidebar__link:hover {
-    background: rgba(0, 0, 0, 0.04);
+    background: rgba(255, 255, 255, 0.4);
+    color: #0f172a;
+}
+
+[data-theme="light"] .sidebar__link:hover .sidebar__link-icon {
+    color: #2563eb;
 }
 
 [data-theme="light"] .sidebar__link--active {
-    background: rgba(0, 201, 141, 0.08);
+    background: rgba(37, 99, 235, 0.12);
+    color: #1d4ed8;
+}
+
+[data-theme="light"] .sidebar__link--active:hover {
+    background: rgba(37, 99, 235, 0.18);
+}
+
+[data-theme="light"] .sidebar__link--active .sidebar__link-icon {
+    color: #1d4ed8;
+}
+
+[data-theme="light"] .sidebar__link-indicator {
+    background: linear-gradient(180deg, #2563eb, #0ea5e9);
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.3);
+}
+
+[data-theme="light"] .sidebar__link::before {
+    background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.06) 0%, transparent 70%);
+}
+
+[data-theme="light"] .sidebar__toggle {
+    color: #475569;
 }
 
 [data-theme="light"] .sidebar__toggle:hover {
-    background: rgba(0, 0, 0, 0.04);
+    background: rgba(255, 255, 255, 0.4);
+    color: #0f172a;
+}
+
+[data-theme="light"] .sidebar__version {
+    color: #64748b;
 }
 
 [data-theme="light"] .sidebar__tooltip {
     background: #fff;
+    color: #0f172a;
     border-color: rgba(0, 0, 0, 0.1);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }

@@ -466,3 +466,47 @@
     gap: var(--space-5);
     border-radius: var(--radius-2xl);
 }
+
+/* ── Light Theme ── */
+[data-theme="light"] .dash-game-hero {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.06), rgba(14, 165, 233, 0.06), rgba(96, 165, 250, 0.06));
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 24px rgba(37, 99, 235, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .dash-game-hero::before {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, transparent 50%, rgba(14, 165, 233, 0.03) 100%);
+}
+
+[data-theme="light"] .dash-quick-btn {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .dash-quick-btn:hover {
+    border-color: rgba(37, 99, 235, 0.3);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08), 0 0 16px rgba(37, 99, 235, 0.08);
+}
+
+[data-theme="light"] .dash-water-glass {
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(30, 58, 95, 0.1);
+    color: #64748b;
+}
+
+[data-theme="light"] .dash-water-glass.filled {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: #2563eb;
+    color: #2563eb;
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.15);
+}
+
+[data-theme="light"] .dash-calorie-warning--stuffed {
+    background: rgba(248, 113, 113, 0.08);
+    border-color: rgba(248, 113, 113, 0.2);
+}
+
+[data-theme="light"] .dash-calorie-warning--exhausted {
+    background: rgba(251, 191, 36, 0.08);
+    border-color: rgba(251, 191, 36, 0.2);
+}
