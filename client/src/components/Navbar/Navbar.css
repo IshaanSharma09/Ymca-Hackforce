@@ -1,59 +1,70 @@
+<<<<<<< HEAD
 /* ── Navbar — Modern Frosted Glass ── */
+=======
+/* ── Modern Hi-Bit Navbar ── */
+>>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
 .navbar {
     position: sticky;
     top: 0;
-    height: var(--navbar-height);
+    height: 72px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+<<<<<<< HEAD
     padding: 0 var(--space-6);
     background: rgba(11, 15, 25, 0.7);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-bottom: 1px solid var(--glass-border);
     z-index: 50;
+=======
+    padding: 0 32px;
+    background: rgba(11, 15, 25, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    z-index: 100;
+>>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
 }
 
 .navbar__left {
     display: flex;
     align-items: center;
-    gap: var(--space-4);
+    gap: 16px;
 }
 
-.navbar__menu-btn {
-    display: none;
+.navbar__brand {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 0.1em;
+    color: #fff;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-@media (max-width: 1024px) {
-    .navbar__menu-btn {
-        display: flex;
-    }
+.navbar__brand svg {
+    color: var(--tech-accent);
+    filter: drop-shadow(0 0 8px var(--tech-accent));
 }
 
 .navbar__right {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: 12px;
 }
 
-/* ── Search ── */
+/* ── Modern Search ── */
 .navbar__search {
     position: relative;
-    min-width: 280px;
-}
-
-.navbar__search-icon {
-    position: absolute;
-    left: var(--space-3);
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-tertiary);
-    font-size: 1.1rem;
-    transition: color 0.2s ease;
+    width: 320px;
 }
 
 .navbar__search-input {
     width: 100%;
+<<<<<<< HEAD
     padding: var(--space-2) var(--space-4);
     padding-left: var(--space-8);
     background: rgba(255, 255, 255, 0.04);
@@ -62,10 +73,21 @@
     color: var(--text-primary);
     font-size: var(--font-sm);
     transition: all 0.3s ease;
+=======
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 16px 10px 40px;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+>>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
 }
 
 .navbar__search-input:focus {
     outline: none;
+<<<<<<< HEAD
     border-color: var(--accent-start);
     box-shadow: 0 0 0 3px rgba(0, 229, 160, 0.1), 0 0 20px rgba(0, 229, 160, 0.05);
     background: rgba(255, 255, 255, 0.06);
@@ -76,32 +98,49 @@
 }
 
 .navbar__search-shortcut {
+=======
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--tech-accent);
+    box-shadow: 0 0 0 1px var(--tech-accent-glow);
+}
+
+.navbar__search-icon {
+>>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
     position: absolute;
-    right: var(--space-3);
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
+<<<<<<< HEAD
     font-size: var(--font-xs);
     color: var(--text-tertiary);
     background: rgba(255, 255, 255, 0.06);
     padding: 2px var(--space-2);
     border-radius: var(--radius-sm);
     border: 1px solid var(--glass-border);
+=======
+    color: rgba(255, 255, 255, 0.4);
+    pointer-events: none;
+    transition: color 0.3s;
+}
+
+.navbar__search-input:focus+.navbar__search-icon {
+    color: var(--tech-accent);
+>>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
 }
 
 /* ── Action Buttons ── */
 .navbar__action {
-    position: relative;
-    width: 38px;
-    height: 38px;
-    border-radius: var(--radius-md);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
     background: transparent;
     border: 1px solid transparent;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
+<<<<<<< HEAD
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -258,16 +297,31 @@
 /* ── Avatar ── */
 .navbar__profile {
     margin-left: var(--space-2);
+=======
+    transition: all 0.2s;
+}
+
+.navbar__action:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar__action svg {
+    font-size: 1.2rem;
+>>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
 }
 
 .navbar__avatar {
     width: 36px;
     height: 36px;
-    border-radius: 50%;
-    background: var(--accent-gradient);
+    border-radius: 8px;
+    /* Squircle */
+    background: linear-gradient(135deg, var(--tech-accent), #0099ff);
     display: flex;
     align-items: center;
     justify-content: center;
+<<<<<<< HEAD
     font-weight: 800;
     font-size: var(--font-sm);
     color: #0b0f19;
@@ -361,23 +415,26 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 768px) {
-    .navbar__search {
-        min-width: 160px;
-    }
-
-    .navbar__search-shortcut {
-        display: none;
-    }
+=======
+    font-weight: 700;
+    color: #000;
+    font-family: 'Rajdhani', sans-serif;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-@media (max-width: 480px) {
+>>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
+@media (max-width: 768px) {
     .navbar__search {
         display: none;
     }
 
+<<<<<<< HEAD
     .navbar__notify-dropdown {
         right: -60px;
         width: 300px;
+=======
+    .navbar__brand span {
+        display: none;
+>>>>>>> e64b1f6 (feat(ui): modern hi-bit ui overhaul)
     }
 }

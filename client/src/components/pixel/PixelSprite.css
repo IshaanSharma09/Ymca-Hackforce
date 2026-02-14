@@ -1,0 +1,15 @@
+.pixel-sprite {
+    position: relative;
+    /* Optimize for pixel rendering */
+    image-rendering: pixelated;
+    pointer-events: none;
+    /* Sprite itself usually doesn't capture clicks */
+}
+
+.pixel-unit {
+    position: absolute;
+    /* Ensure no anti-aliasing artifacts */
+    box-sizing: border-box;
+    /* Optional: slightly overlap to prevent sub-pixel gaps on some zooms? 
+       No, exact size is better for now. */
+}
