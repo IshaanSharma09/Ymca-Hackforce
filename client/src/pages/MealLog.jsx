@@ -9,6 +9,7 @@ import {
     MdMenuBook, MdTimer, MdPeople, MdWarning
 } from 'react-icons/md'
 import './MealLog.css'
+import api from '../services/api'
 
 // ── Nutrition data per 100g ──
 const FOOD_DATABASE = [
@@ -240,6 +241,29 @@ function MealLog() {
         })
     }
 
+    // Fire-and-forget sync to backend (if saving a new meal)
+    // Note: This simple logic syncs the whole list or just the last added one?
+    // Ideally we should save specific meals. But for now let's just save the *last* meal added if this was an add operation.
+    // Actually, let's just try to sync the latest meal if possible.
+    // A better approach for "Connect" is to just log it.
+    // Let's iterate and save unsaved meals? No, too complex.
+    // Let's just save the meal when logMeal is called.
+
+
+    const syncMealToBackend = async (meal) => {
+        if (!user) return
+        try {
+            await api.post('/meals/save', {
+                firebaseUid: user.uid,
+                ...meal,
+                date: new Date()
+            })
+            // console.log('✅ Meal synced to backend')
+        } catch (err) {
+            console.error('❌ Meal sync failed:', err)
+        }
+    }
+
     const handleSearch = (query) => {
         setSearchQuery(query)
         if (query.trim().length < 2) { setSearchResults([]); return }
@@ -277,6 +301,7 @@ function MealLog() {
             loggedAt: new Date().toISOString()
         }
         saveMeals([...loggedMeals, meal])
+        syncMealToBackend(meal) // Sync
         setSelectedFood(null)
         setQuantity(100)
         setSearchQuery('')
@@ -291,143 +316,182 @@ function MealLog() {
             carbs: recipe.carbs, fat: recipe.fat,
             loggedAt: new Date().toISOString()
         }
-        saveMeals([...loggedMeals, meal])
-        setSelectedRecipe(null)
     }
+    saveMeals([...loggedMeals, meal])
+    syncMealToBackend(meal) // Sync
+    setSelectedRecipe(null)
+}
 
-    const removeMeal = (mealId) => saveMeals(loggedMeals.filter(m => m.id !== mealId))
+const removeMeal = (mealId) => saveMeals(loggedMeals.filter(m => m.id !== mealId))
 
-    const toggleFavorite = (food) => {
-        const isFav = favorites.some(f => f.id === food.id)
-        const updated = isFav ? favorites.filter(f => f.id !== food.id) : [...favorites, food]
-        setFavorites(updated)
-        localStorage.setItem(`fitfuel-favorites-${user.uid}`, JSON.stringify(updated))
-    }
+const toggleFavorite = (food) => {
+    const isFav = favorites.some(f => f.id === food.id)
+    const updated = isFav ? favorites.filter(f => f.id !== food.id) : [...favorites, food]
+    setFavorites(updated)
+    localStorage.setItem(`fitfuel-favorites-${user.uid}`, JSON.stringify(updated))
+}
 
-    const totals = loggedMeals.reduce((acc, m) => ({
-        calories: acc.calories + m.calories, protein: acc.protein + m.protein,
-        carbs: acc.carbs + m.carbs, fat: acc.fat + m.fat
-    }), { calories: 0, protein: 0, carbs: 0, fat: 0 })
+const totals = loggedMeals.reduce((acc, m) => ({
+    calories: acc.calories + m.calories, protein: acc.protein + m.protein,
+    carbs: acc.carbs + m.carbs, fat: acc.fat + m.fat
+}), { calories: 0, protein: 0, carbs: 0, fat: 0 })
 
-    const mealsByType = MEAL_TYPES.map(type => ({
-        ...type,
-        meals: loggedMeals.filter(m => m.mealType === type.id),
-        totalCal: loggedMeals.filter(m => m.mealType === type.id).reduce((s, m) => s + m.calories, 0)
-    }))
+const mealsByType = MEAL_TYPES.map(type => ({
+    ...type,
+    meals: loggedMeals.filter(m => m.mealType === type.id),
+    totalCal: loggedMeals.filter(m => m.mealType === type.id).reduce((s, m) => s + m.calories, 0)
+}))
 
-    // Live macro calculation for selected food
-    const liveMacros = selectedFood ? calcMacros(selectedFood, quantity) : null
+// Live macro calculation for selected food
+const liveMacros = selectedFood ? calcMacros(selectedFood, quantity) : null
 
-    return (
-        <div className="page animate-fade-in">
-            <div className="page__header">
-                <h1 className="heading-2">Meal Log 🍽️</h1>
-                <p className="text-muted text-sm">Search food, enter quantity — we calculate everything</p>
+return (
+    <div className="page animate-fade-in">
+        <div className="page__header">
+            <h1 className="heading-2">Meal Log 🍽️</h1>
+            <p className="text-muted text-sm">Search food, enter quantity — we calculate everything</p>
+        </div>
+
+        {/* Daily Summary */}
+        <div className="meal-summary-bar glass-card-static">
+            <div className="meal-summary-stat">
+                <MdLocalFireDepartment style={{ color: 'var(--success)' }} />
+                <div><span className="meal-summary-number">{totals.calories}</span><span className="meal-summary-label">kcal</span></div>
             </div>
-
-            {/* Daily Summary */}
-            <div className="meal-summary-bar glass-card-static">
-                <div className="meal-summary-stat">
-                    <MdLocalFireDepartment style={{ color: 'var(--success)' }} />
-                    <div><span className="meal-summary-number">{totals.calories}</span><span className="meal-summary-label">kcal</span></div>
-                </div>
-                <div className="meal-summary-divider" />
-                <div className="meal-summary-stat">
-                    <span className="meal-macro-dot" style={{ background: '#ef4444' }} />
-                    <div><span className="meal-summary-number">{Math.round(totals.protein)}g</span><span className="meal-summary-label">Protein</span></div>
-                </div>
-                <div className="meal-summary-stat">
-                    <span className="meal-macro-dot" style={{ background: '#3b82f6' }} />
-                    <div><span className="meal-summary-number">{Math.round(totals.carbs)}g</span><span className="meal-summary-label">Carbs</span></div>
-                </div>
-                <div className="meal-summary-stat">
-                    <span className="meal-macro-dot" style={{ background: '#f59e0b' }} />
-                    <div><span className="meal-summary-number">{Math.round(totals.fat)}g</span><span className="meal-summary-label">Fat</span></div>
-                </div>
+            <div className="meal-summary-divider" />
+            <div className="meal-summary-stat">
+                <span className="meal-macro-dot" style={{ background: '#ef4444' }} />
+                <div><span className="meal-summary-number">{Math.round(totals.protein)}g</span><span className="meal-summary-label">Protein</span></div>
             </div>
+            <div className="meal-summary-stat">
+                <span className="meal-macro-dot" style={{ background: '#3b82f6' }} />
+                <div><span className="meal-summary-number">{Math.round(totals.carbs)}g</span><span className="meal-summary-label">Carbs</span></div>
+            </div>
+            <div className="meal-summary-stat">
+                <span className="meal-macro-dot" style={{ background: '#f59e0b' }} />
+                <div><span className="meal-summary-number">{Math.round(totals.fat)}g</span><span className="meal-summary-label">Fat</span></div>
+            </div>
+        </div>
 
-            <div className="meal-layout">
-                {/* Left — Search & Recipes */}
-                <div className="meal-column-main">
-                    <div className="meal-tabs">
-                        <button className={`meal-tab ${activeTab === 'food' ? 'active' : ''}`} onClick={() => setActiveTab('food')}>
-                            <MdRestaurantMenu /> Food Search
-                        </button>
-                        <button className={`meal-tab ${activeTab === 'recipes' ? 'active' : ''}`} onClick={() => setActiveTab('recipes')}>
-                            <MdMenuBook /> Recipes
-                        </button>
-                    </div>
+        <div className="meal-layout">
+            {/* Left — Search & Recipes */}
+            <div className="meal-column-main">
+                <div className="meal-tabs">
+                    <button className={`meal-tab ${activeTab === 'food' ? 'active' : ''}`} onClick={() => setActiveTab('food')}>
+                        <MdRestaurantMenu /> Food Search
+                    </button>
+                    <button className={`meal-tab ${activeTab === 'recipes' ? 'active' : ''}`} onClick={() => setActiveTab('recipes')}>
+                        <MdMenuBook /> Recipes
+                    </button>
+                </div>
 
-                    {activeTab === 'food' && (
-                        <div className="glass-card-static meal-search-card">
-                            <div className="meal-search-bar">
-                                <MdSearch className="meal-search-icon" />
-                                <input
-                                    className="input-field meal-search-input"
-                                    placeholder="Search food... (chicken, dal, rice, paneer)"
-                                    value={searchQuery}
-                                    onChange={e => handleSearch(e.target.value)}
-                                />
-                                {searchQuery && (
-                                    <button className="meal-search-clear" onClick={() => { setSearchQuery(''); setSearchResults([]) }}>
-                                        <MdClose />
+                {activeTab === 'food' && (
+                    <div className="glass-card-static meal-search-card">
+                        <div className="meal-search-bar">
+                            <MdSearch className="meal-search-icon" />
+                            <input
+                                className="input-field meal-search-input"
+                                placeholder="Search food... (chicken, dal, rice, paneer)"
+                                value={searchQuery}
+                                onChange={e => handleSearch(e.target.value)}
+                            />
+                            {searchQuery && (
+                                <button className="meal-search-clear" onClick={() => { setSearchQuery(''); setSearchResults([]) }}>
+                                    <MdClose />
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Meal Type */}
+                        <div className="meal-type-selector">
+                            {MEAL_TYPES.map(type => {
+                                const Icon = type.icon
+                                return (
+                                    <button key={type.id} className={`meal-type-btn ${selectedMealType === type.id ? 'selected' : ''}`} style={{ '--type-color': type.color }} onClick={() => setSelectedMealType(type.id)}>
+                                        <Icon /> {type.label}
                                     </button>
-                                )}
-                            </div>
+                                )
+                            })}
+                        </div>
 
-                            {/* Meal Type */}
-                            <div className="meal-type-selector">
-                                {MEAL_TYPES.map(type => {
-                                    const Icon = type.icon
+                        {/* Search Results */}
+                        {searchResults.length > 0 && (
+                            <div className="meal-results animate-fade-in">
+                                {searchResults.map(food => {
+                                    const preview = calcMacros(food, food.defaultG || 100)
+                                    const warnings = getFoodWarnings(food)
                                     return (
-                                        <button key={type.id} className={`meal-type-btn ${selectedMealType === type.id ? 'selected' : ''}`} style={{ '--type-color': type.color }} onClick={() => setSelectedMealType(type.id)}>
-                                            <Icon /> {type.label}
-                                        </button>
+                                        <div key={food.id}
+                                            className={`meal-result-card ${warnings.length > 0 ? 'meal-result-card--villain' : ''}`}
+                                            onClick={() => selectFood(food)}>
+                                            <div className="meal-result-info">
+                                                <div className="meal-result-name">
+                                                    {food.name}
+                                                    {warnings.length > 0 && (
+                                                        <span className="meal-villain-badge">
+                                                            <MdWarning /> {warnings[0]}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <div className="meal-result-meta">
+                                                    <span className="text-xs text-muted">Per {food.defaultG || 100}g:</span>
+                                                    <span className="badge badge-success">{preview.calories} kcal</span>
+                                                </div>
+                                                <div className="meal-result-macros">
+                                                    <span style={{ color: '#ef4444' }}>P: {preview.protein}g</span>
+                                                    <span style={{ color: '#3b82f6' }}>C: {preview.carbs}g</span>
+                                                    <span style={{ color: '#f59e0b' }}>F: {preview.fat}g</span>
+                                                </div>
+                                            </div>
+                                            <div className="meal-result-actions">
+                                                <button className="btn-icon" onClick={e => { e.stopPropagation(); toggleFavorite(food) }}>
+                                                    {favorites.some(f => f.id === food.id) ? <MdFavorite style={{ color: '#ef4444' }} /> : <MdFavoriteBorder />}
+                                                </button>
+                                                <button className="btn btn-primary btn-sm" onClick={e => { e.stopPropagation(); selectFood(food) }}>
+                                                    <MdAdd /> Add
+                                                </button>
+                                            </div>
+                                        </div>
                                     )
                                 })}
                             </div>
+                        )}
 
-                            {/* Search Results */}
-                            {searchResults.length > 0 && (
-                                <div className="meal-results animate-fade-in">
-                                    {searchResults.map(food => {
+                        {searchQuery.length >= 2 && searchResults.length === 0 && (
+                            <div className="meal-no-results">
+                                <p className="text-muted text-sm">No results for "{searchQuery}"</p>
+                            </div>
+                        )}
+
+                        {/* Quick Picks */}
+                        {!searchQuery && (
+                            <div className="meal-quick-picks">
+                                <h4 className="text-sm text-muted" style={{ marginBottom: 'var(--space-3)' }}>
+                                    {favorites.length > 0 ? '⭐ Your Favorites' : '🔥 Popular Foods'}
+                                </h4>
+                                <div className="meal-results">
+                                    {(favorites.length > 0 ? favorites : FOOD_DATABASE.slice(0, 8)).map(food => {
                                         const preview = calcMacros(food, food.defaultG || 100)
-                                        const warnings = getFoodWarnings(food)
                                         return (
-                                            <div key={food.id}
-                                                className={`meal-result-card ${warnings.length > 0 ? 'meal-result-card--villain' : ''}`}
-                                                onClick={() => selectFood(food)}>
+                                            <div key={food.id} className="meal-result-card" onClick={() => selectFood(food)}>
                                                 <div className="meal-result-info">
-                                                    <div className="meal-result-name">
-                                                        {food.name}
-                                                        {warnings.length > 0 && (
-                                                            <span className="meal-villain-badge">
-                                                                <MdWarning /> {warnings[0]}
-                                                            </span>
-                                                        )}
-                                                    </div>
+                                                    <div className="meal-result-name">{food.name}</div>
                                                     <div className="meal-result-meta">
                                                         <span className="text-xs text-muted">Per {food.defaultG || 100}g:</span>
                                                         <span className="badge badge-success">{preview.calories} kcal</span>
-                                                    </div>
-                                                    <div className="meal-result-macros">
-                                                        <span style={{ color: '#ef4444' }}>P: {preview.protein}g</span>
-                                                        <span style={{ color: '#3b82f6' }}>C: {preview.carbs}g</span>
-                                                        <span style={{ color: '#f59e0b' }}>F: {preview.fat}g</span>
                                                     </div>
                                                 </div>
                                                 <div className="meal-result-actions">
                                                     <button className="btn-icon" onClick={e => { e.stopPropagation(); toggleFavorite(food) }}>
                                                         {favorites.some(f => f.id === food.id) ? <MdFavorite style={{ color: '#ef4444' }} /> : <MdFavoriteBorder />}
                                                     </button>
-                                                    <button className="btn btn-primary btn-sm" onClick={e => { e.stopPropagation(); selectFood(food) }}>
-                                                        <MdAdd /> Add
-                                                    </button>
+                                                    <button className="btn btn-primary btn-sm" onClick={e => { e.stopPropagation(); selectFood(food) }}><MdAdd /></button>
                                                 </div>
                                             </div>
                                         )
                                     })}
                                 </div>
+<<<<<<< HEAD
                             )}
 
                             {searchQuery.length >= 2 && searchResults.length === 0 && (
@@ -555,74 +619,88 @@ function MealLog() {
                                         </div>
                                     )
                                 })}
+=======
+>>>>>>> f15db03d435d0ed89232ba014a6be6ecc8c56046
                             </div>
                         )}
                     </div>
-                </div>
+                )}
+
+                {/* Recipes Tab */}
+                {activeTab === 'recipes' && (
+                    <div className="glass-card-static meal-search-card">
+                        <p className="text-sm text-muted">Browse recipes with step-by-step instructions 📖</p>
+                        <div className="recipe-grid">
+                            {RECIPE_DATABASE.map(recipe => (
+                                <div key={recipe.id} className="recipe-card" onClick={() => setSelectedRecipe(recipe)}>
+                                    <div className="recipe-card-header">
+                                        <h4 className="recipe-card-name">{recipe.name}</h4>
+                                        <span className="badge badge-success">{recipe.calories} kcal</span>
+                                    </div>
+                                    <div className="recipe-card-meta">
+                                        <span><MdTimer /> {recipe.time}</span>
+                                        <span><MdPeople /> {recipe.servings}p</span>
+                                        <span className="recipe-difficulty">{recipe.difficulty}</span>
+                                    </div>
+                                    <div className="recipe-card-macros">
+                                        <span style={{ color: '#ef4444' }}>P: {recipe.protein}g</span>
+                                        <span style={{ color: '#3b82f6' }}>C: {recipe.carbs}g</span>
+                                        <span style={{ color: '#f59e0b' }}>F: {recipe.fat}g</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
 
-            {/* ── Add Food Modal — User enters quantity, we calculate everything ── */}
-            {selectedFood && liveMacros && (
-                <div className="meal-modal-overlay" onClick={() => setSelectedFood(null)}>
-                    <div className="meal-modal glass-card-static animate-scale-in" onClick={e => e.stopPropagation()}>
-                        <button className="meal-modal-close" onClick={() => setSelectedFood(null)}><MdClose /></button>
-                        <h3 className="heading-4">{selectedFood.name}</h3>
-                        <p className="text-xs text-muted">
-                            Per 100g: {selectedFood.cal100} kcal · P: {selectedFood.p100}g · C: {selectedFood.c100}g · F: {selectedFood.f100}g
-                        </p>
-
-                        {/* Quantity Input */}
-                        <div className="quantity-section">
-                            <label className="quantity-label">How much did you eat?</label>
-                            <div className="quantity-input-row">
-                                <button className="quantity-btn" onClick={() => setQuantity(Math.max(10, quantity - 25))}>−</button>
-                                <div className="quantity-input-wrapper">
-                                    <input
-                                        className="quantity-input"
-                                        type="number"
-                                        value={quantity}
-                                        onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 0))}
-                                        autoFocus
-                                    />
-                                    <span className="quantity-unit">grams</span>
-                                </div>
-                                <button className="quantity-btn" onClick={() => setQuantity(quantity + 25)}>+</button>
-                            </div>
-                            {/* Quick preset buttons */}
-                            <div className="quantity-presets">
-                                {[50, 100, 150, 200, 250, 300].map(g => (
-                                    <button key={g} className={`quantity-preset ${quantity === g ? 'active' : ''}`} onClick={() => setQuantity(g)}>
-                                        {g}g
-                                    </button>
-                                ))}
-                            </div>
+            {/* Right — Today's Meals */}
+            <div className="meal-column-side">
+                <div className="glass-card-static">
+                    <h3 className="dash-card-title"><MdRestaurantMenu style={{ color: 'var(--success)' }} /> Today's Meals</h3>
+                    {loggedMeals.length === 0 ? (
+                        <p className="text-muted text-sm text-center" style={{ padding: 'var(--space-8) 0' }}>No meals logged yet 🍽️</p>
+                    ) : (
+                        <div className="meal-today-list">
+                            {mealsByType.filter(t => t.meals.length > 0).map(type => {
+                                const Icon = type.icon
+                                return (
+                                    <div key={type.id} className="meal-today-group">
+                                        <button className="meal-today-group-header" onClick={() => setExpandedMeal(expandedMeal === type.id ? null : type.id)}>
+                                            <div className="meal-today-group-left">
+                                                <Icon style={{ color: type.color }} /> <strong>{type.label}</strong>
+                                                <span className="text-xs text-muted">({type.meals.length})</span>
+                                            </div>
+                                            <div className="meal-today-group-right">
+                                                <span className="text-sm" style={{ color: 'var(--text-accent)' }}>{type.totalCal} kcal</span>
+                                                {expandedMeal === type.id ? <MdExpandLess /> : <MdExpandMore />}
+                                            </div>
+                                        </button>
+                                        {expandedMeal === type.id && (
+                                            <div className="meal-today-items animate-fade-in">
+                                                {type.meals.map(meal => (
+                                                    <div key={meal.id} className="meal-today-item">
+                                                        <div>
+                                                            <span className="text-sm">{meal.name}</span>
+                                                            {meal.quantity && <span className="text-xs text-muted"> · {meal.quantity}g</span>}
+                                                        </div>
+                                                        <div className="meal-today-item-right">
+                                                            <span className="text-xs">{meal.calories} kcal</span>
+                                                            <button className="btn-icon btn-icon-sm" onClick={() => removeMeal(meal.id)}>
+                                                                <MdDelete style={{ color: 'var(--danger)', fontSize: '0.9rem' }} />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )
+                            })}
                         </div>
-
-                        {/* Live-calculated macros */}
-                        <div className="meal-modal-macros">
-                            <div className="meal-modal-macro highlight">
-                                <span className="meal-modal-macro-val">{liveMacros.calories}</span>
-                                <span className="meal-modal-macro-label">kcal</span>
-                            </div>
-                            <div className="meal-modal-macro">
-                                <span className="meal-modal-macro-val" style={{ color: '#ef4444' }}>{liveMacros.protein}g</span>
-                                <span className="meal-modal-macro-label">Protein</span>
-                            </div>
-                            <div className="meal-modal-macro">
-                                <span className="meal-modal-macro-val" style={{ color: '#3b82f6' }}>{liveMacros.carbs}g</span>
-                                <span className="meal-modal-macro-label">Carbs</span>
-                            </div>
-                            <div className="meal-modal-macro">
-                                <span className="meal-modal-macro-val" style={{ color: '#f59e0b' }}>{liveMacros.fat}g</span>
-                                <span className="meal-modal-macro-label">Fat</span>
-                            </div>
-                        </div>
-
-                        <button className="btn btn-primary" style={{ width: '100%' }} onClick={logMeal}>
-                            <MdAdd /> Log {quantity}g to {MEAL_TYPES.find(t => t.id === selectedMealType)?.label}
-                        </button>
-                    </div>
+                    )}
                 </div>
+<<<<<<< HEAD
             )}
 
             {/* ── Recipe Modal ── */}
@@ -679,8 +757,108 @@ function MealLog() {
                     </div>
                 </div>
             )}
+=======
+            </div>
+>>>>>>> f15db03d435d0ed89232ba014a6be6ecc8c56046
         </div>
-    )
+
+        {/* ── Add Food Modal — User enters quantity, we calculate everything ── */}
+        {selectedFood && liveMacros && (
+            <div className="meal-modal-overlay" onClick={() => setSelectedFood(null)}>
+                <div className="meal-modal glass-card-static animate-scale-in" onClick={e => e.stopPropagation()}>
+                    <button className="meal-modal-close" onClick={() => setSelectedFood(null)}><MdClose /></button>
+                    <h3 className="heading-4">{selectedFood.name}</h3>
+                    <p className="text-xs text-muted">
+                        Per 100g: {selectedFood.cal100} kcal · P: {selectedFood.p100}g · C: {selectedFood.c100}g · F: {selectedFood.f100}g
+                    </p>
+
+                    {/* Quantity Input */}
+                    <div className="quantity-section">
+                        <label className="quantity-label">How much did you eat?</label>
+                        <div className="quantity-input-row">
+                            <button className="quantity-btn" onClick={() => setQuantity(Math.max(10, quantity - 25))}>−</button>
+                            <div className="quantity-input-wrapper">
+                                <input
+                                    className="quantity-input"
+                                    type="number"
+                                    value={quantity}
+                                    onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 0))}
+                                    autoFocus
+                                />
+                                <span className="quantity-unit">grams</span>
+                            </div>
+                            <button className="quantity-btn" onClick={() => setQuantity(quantity + 25)}>+</button>
+                        </div>
+                        {/* Quick preset buttons */}
+                        <div className="quantity-presets">
+                            {[50, 100, 150, 200, 250, 300].map(g => (
+                                <button key={g} className={`quantity-preset ${quantity === g ? 'active' : ''}`} onClick={() => setQuantity(g)}>
+                                    {g}g
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Live-calculated macros */}
+                    <div className="meal-modal-macros">
+                        <div className="meal-modal-macro highlight">
+                            <span className="meal-modal-macro-val">{liveMacros.calories}</span>
+                            <span className="meal-modal-macro-label">kcal</span>
+                        </div>
+                        <div className="meal-modal-macro">
+                            <span className="meal-modal-macro-val" style={{ color: '#ef4444' }}>{liveMacros.protein}g</span>
+                            <span className="meal-modal-macro-label">Protein</span>
+                        </div>
+                        <div className="meal-modal-macro">
+                            <span className="meal-modal-macro-val" style={{ color: '#3b82f6' }}>{liveMacros.carbs}g</span>
+                            <span className="meal-modal-macro-label">Carbs</span>
+                        </div>
+                        <div className="meal-modal-macro">
+                            <span className="meal-modal-macro-val" style={{ color: '#f59e0b' }}>{liveMacros.fat}g</span>
+                            <span className="meal-modal-macro-label">Fat</span>
+                        </div>
+                    </div>
+
+                    <button className="btn btn-primary" style={{ width: '100%' }} onClick={logMeal}>
+                        <MdAdd /> Log {quantity}g to {MEAL_TYPES.find(t => t.id === selectedMealType)?.label}
+                    </button>
+                </div>
+            </div>
+        )}
+
+        {/* ── Recipe Modal ── */}
+        {selectedRecipe && (
+            <div className="meal-modal-overlay" onClick={() => setSelectedRecipe(null)}>
+                <div className="meal-modal recipe-modal glass-card-static animate-scale-in" onClick={e => e.stopPropagation()}>
+                    <button className="meal-modal-close" onClick={() => setSelectedRecipe(null)}><MdClose /></button>
+                    <h3 className="heading-4">{selectedRecipe.name}</h3>
+                    <div className="recipe-detail-meta">
+                        <span><MdTimer /> {selectedRecipe.time}</span>
+                        <span><MdPeople /> {selectedRecipe.servings} serving{selectedRecipe.servings > 1 ? 's' : ''}</span>
+                        <span className="recipe-difficulty">{selectedRecipe.difficulty}</span>
+                    </div>
+                    <div className="meal-modal-macros">
+                        <div className="meal-modal-macro"><span className="meal-modal-macro-val">{selectedRecipe.calories}</span><span className="meal-modal-macro-label">kcal</span></div>
+                        <div className="meal-modal-macro"><span className="meal-modal-macro-val" style={{ color: '#ef4444' }}>{selectedRecipe.protein}g</span><span className="meal-modal-macro-label">Protein</span></div>
+                        <div className="meal-modal-macro"><span className="meal-modal-macro-val" style={{ color: '#3b82f6' }}>{selectedRecipe.carbs}g</span><span className="meal-modal-macro-label">Carbs</span></div>
+                        <div className="meal-modal-macro"><span className="meal-modal-macro-val" style={{ color: '#f59e0b' }}>{selectedRecipe.fat}g</span><span className="meal-modal-macro-label">Fat</span></div>
+                    </div>
+                    <div className="recipe-detail-section">
+                        <h5>🧂 Ingredients</h5>
+                        <ul className="recipe-ingredients">{selectedRecipe.ingredients.map((ing, i) => <li key={i}>{ing}</li>)}</ul>
+                    </div>
+                    <div className="recipe-detail-section">
+                        <h5>👨‍🍳 Instructions</h5>
+                        <ol className="recipe-steps">{selectedRecipe.steps.map((step, i) => <li key={i}>{step}</li>)}</ol>
+                    </div>
+                    <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => logRecipeAsMeal(selectedRecipe)}>
+                        <MdAdd /> Log as Meal
+                    </button>
+                </div>
+            </div>
+        )}
+    </div>
+)
 }
 
 export default MealLog

@@ -49,25 +49,30 @@ It leverages the **Foodoscope API as the SOLE source** for all food and nutritio
 - Track daily, weekly, and monthly nutrition intake with visual charts
 - Meal history and favourite meals for quick re-logging
 
-### 2. 🚶 Step & Activity Tracking
+### 2. 🛡️ Safety & Dietary Restrictions
+- **Allergy Highlighting:** Define your allergens (e.g., Dairy, Nuts, Gluten) and get instant warnings on recipes.
+- **Custom Ingredient Blacklist:** Add specific ingredients to avoid (e.g., "palm oil", "msg"). Any recipe containing them is flagged as "BLACKLISTED".
+- **Visual Warnings:** Red badges and highlighted ingredients ensure you never accidentally consume something unsafe.
+
+### 3. 🚶 Step & Activity Tracking
 - Real-time step counter using device sensors (accelerometer / pedometer)
 - Automatic calorie-burn estimation based on steps, distance, pace, and user profile
 - Daily step goals with progress ring and streak tracking
 - Walk / run session logger with route summary
 
-### 3. 🏋️ Exercise & Workout Tracking
+### 4. 🏋️ Exercise & Workout Tracking
 - Log gym exercises with **sets, reps, and weight** for each movement
 - Auto-calculate calories burned per exercise using **MET** (Metabolic Equivalent of Task) values
 - Support for bodyweight exercises (push-ups, pull-ups, squats, etc.) and cardio machines
 - Exercise history with personal-record tracking
 - Timer / stopwatch for rest intervals
 
-### 4. 💪 Muscle Strength Analysis
+### 5. 💪 Muscle Strength Analysis
 - Analyse logged workouts to identify **strong vs. weak muscle groups**
 - Visual **muscle-map heatmap** showing relative strength across body parts
 - Detect **muscle imbalances** (e.g., push vs. pull, quads vs. hamstrings) and flag them
 
-### 5. 📋 Smart Workout Plan Generator
+### 6. 📋 Smart Workout Plan Generator
 - Personalised weekly workout plans based on:
   - User's fitness goals (lose fat, build muscle, maintain, rehabilitate)
   - Current strength profile and weak-muscle areas
@@ -76,7 +81,7 @@ It leverages the **Foodoscope API as the SOLE source** for all food and nutritio
 - Progressive overload suggestions (increase reps/weight over weeks)
 - Rest-day scheduling and deload week recommendations
 
-### 6. 📊 Comprehensive Health Data Analysis & Dashboard
+### 7. 📊 Comprehensive Health Data Analysis & Dashboard
 - **Daily calorie balance:** Calories consumed vs. calories burned
 - **Surplus / Deficit indicator:** tells you exactly how many calories to add or remove
 - **BMI, BMR, and TDEE calculator** based on user profile
@@ -84,14 +89,16 @@ It leverages the **Foodoscope API as the SOLE source** for all food and nutritio
 - Weekly & monthly trend graphs for weight, calories, steps, and workout volume
 - Health score / wellness index summarising overall progress
 - Nutrient deficiency alerts (e.g., low iron, low protein)
+- **Smart Nutrition Alerts:** Get real-time warnings for low protein, under-eating, or over-eating.
+- **Gamified Health Score:** Dangerous nutritional habits deduct points from your health score and level.
 
-### 7. 🤖 Personalised Recommendations
+### 8. 🤖 Personalised Recommendations
 - AI-driven suggestions: *"Add 250 kcal of protein-rich food today to meet your muscle-building goal"*
 - Food swap suggestions for healthier alternatives
 - Hydration reminders and water-intake tracking
 - Sleep-hour logging and its impact on recovery
 
-### 8. ⌚ Health Watch & Wearable Integration
+### 9. ⌚ Health Watch & Wearable Integration
 - Connect **Samsung Galaxy Watch**, **Apple Watch**, or **Google Fit** to automatically sync real-time health data (heart rate, steps, calories burned, sleep, SpO2)
 - Supported platforms:
 
@@ -104,7 +111,7 @@ It leverages the **Foodoscope API as the SOLE source** for all food and nutritio
 - **No wearable?** No problem — FitFuel's built-in tracking engine uses your phone's accelerometer and gyroscope to count steps, estimate calories burned, and track activity directly inside the app
 - All data (wearable or built-in) feeds into the same unified dashboard
 
-### 9. 👤 User Profile & Onboarding
+### 10. 👤 User Profile & Onboarding
 - Profile setup: age, gender, height, weight, activity level, goals
 - Gym equipment inventory: user checks off what their gym has
 - "No Gym" toggle for home-workout-only plans
