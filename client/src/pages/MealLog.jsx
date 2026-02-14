@@ -6,47 +6,47 @@ import {
     MdLocalFireDepartment, MdFavorite,
     MdFavoriteBorder, MdDelete, MdExpandMore, MdExpandLess,
     MdBreakfastDining, MdLunchDining, MdDinnerDining, MdCookie,
-    MdMenuBook, MdTimer, MdPeople
+    MdMenuBook, MdTimer, MdPeople, MdWarning
 } from 'react-icons/md'
 import './MealLog.css'
 
 // ── Nutrition data per 100g ──
 const FOOD_DATABASE = [
-    { id: 1, name: 'Chicken Breast (Grilled)', cal100: 165, p100: 31, c100: 0, f100: 3.6, category: 'Protein' },
-    { id: 2, name: 'Brown Rice (Cooked)', cal100: 112, p100: 2.6, c100: 23, f100: 0.9, category: 'Grains' },
-    { id: 3, name: 'Egg (Boiled/Scrambled)', cal100: 155, p100: 13, c100: 1.1, f100: 11, category: 'Protein', defaultG: 50 },
-    { id: 4, name: 'Banana', cal100: 89, p100: 1.1, c100: 23, f100: 0.3, category: 'Fruits', defaultG: 120 },
-    { id: 5, name: 'Greek Yogurt', cal100: 59, p100: 10, c100: 3.6, f100: 0.4, category: 'Dairy', defaultG: 170 },
-    { id: 6, name: 'Oatmeal (Cooked)', cal100: 68, p100: 2.4, c100: 12, f100: 1.4, category: 'Grains', defaultG: 240 },
-    { id: 7, name: 'Salmon', cal100: 208, p100: 20, c100: 0, f100: 13, category: 'Protein' },
-    { id: 8, name: 'Avocado', cal100: 160, p100: 2, c100: 8.5, f100: 15, category: 'Fats', defaultG: 80 },
-    { id: 9, name: 'Sweet Potato', cal100: 86, p100: 1.6, c100: 20, f100: 0.1, category: 'Carbs', defaultG: 130 },
-    { id: 10, name: 'Broccoli', cal100: 34, p100: 2.8, c100: 7, f100: 0.4, category: 'Vegetables' },
-    { id: 11, name: 'Almonds', cal100: 579, p100: 21, c100: 22, f100: 50, category: 'Nuts', defaultG: 28 },
-    { id: 12, name: 'Whole Wheat Bread', cal100: 247, p100: 13, c100: 43, f100: 3.4, category: 'Grains', defaultG: 28 },
-    { id: 13, name: 'Apple', cal100: 52, p100: 0.3, c100: 14, f100: 0.2, category: 'Fruits', defaultG: 180 },
-    { id: 14, name: 'Peanut Butter', cal100: 588, p100: 25, c100: 20, f100: 50, category: 'Fats', defaultG: 32 },
-    { id: 15, name: 'Cottage Cheese', cal100: 98, p100: 11, c100: 3.4, f100: 4.3, category: 'Dairy' },
-    { id: 16, name: 'Tuna (Canned)', cal100: 116, p100: 26, c100: 0, f100: 1, category: 'Protein' },
-    { id: 17, name: 'Pasta (Cooked)', cal100: 131, p100: 5, c100: 25, f100: 1.1, category: 'Grains', defaultG: 150 },
-    { id: 18, name: 'Spinach', cal100: 23, p100: 2.9, c100: 3.6, f100: 0.4, category: 'Vegetables' },
-    { id: 19, name: 'Whey Protein (Scoop)', cal100: 400, p100: 80, c100: 10, f100: 3, category: 'Supplement', defaultG: 30 },
-    { id: 20, name: 'Mixed Berries', cal100: 57, p100: 0.7, c100: 14, f100: 0.3, category: 'Fruits', defaultG: 150 },
-    { id: 21, name: 'Paneer', cal100: 265, p100: 18, c100: 1.2, f100: 21, category: 'Protein' },
-    { id: 22, name: 'Toor Dal (Cooked)', cal100: 120, p100: 8, c100: 20, f100: 1.3, category: 'Protein', defaultG: 150 },
-    { id: 23, name: 'Roti / Chapati', cal100: 297, p100: 11, c100: 56, f100: 3.7, category: 'Grains', defaultG: 30 },
-    { id: 24, name: 'White Rice (Cooked)', cal100: 130, p100: 2.7, c100: 28, f100: 0.3, category: 'Grains', defaultG: 160 },
-    { id: 25, name: 'Chicken Curry', cal100: 150, p100: 14, c100: 5, f100: 8, category: 'Protein', defaultG: 200 },
-    { id: 26, name: 'Masala Dosa', cal100: 140, p100: 3.3, c100: 23, f100: 4, category: 'Grains', defaultG: 120 },
-    { id: 27, name: 'Idli', cal100: 129, p100: 3.5, c100: 28, f100: 0.4, category: 'Grains', defaultG: 40 },
-    { id: 28, name: 'Mixed Veg Curry', cal100: 85, p100: 2.5, c100: 11, f100: 3.6, category: 'Vegetables', defaultG: 170 },
-    { id: 29, name: 'Curd / Dahi', cal100: 61, p100: 3.5, c100: 4.7, f100: 3.3, category: 'Dairy', defaultG: 150 },
-    { id: 30, name: 'Paratha', cal100: 260, p100: 6, c100: 36, f100: 10, category: 'Grains', defaultG: 60 },
-    { id: 31, name: 'Rajma (Cooked)', cal100: 127, p100: 8.7, c100: 23, f100: 0.5, category: 'Protein', defaultG: 150 },
-    { id: 32, name: 'Poha', cal100: 130, p100: 2.5, c100: 26, f100: 2, category: 'Grains', defaultG: 200 },
-    { id: 33, name: 'Milk (Whole)', cal100: 62, p100: 3.2, c100: 4.8, f100: 3.3, category: 'Dairy', defaultG: 250 },
-    { id: 34, name: 'Tofu', cal100: 76, p100: 8, c100: 1.9, f100: 4.8, category: 'Protein' },
-    { id: 35, name: 'Basmati Rice (Cooked)', cal100: 121, p100: 3.5, c100: 25, f100: 0.4, category: 'Grains', defaultG: 160 },
+    { id: 1, name: 'Chicken Breast (Grilled)', cal100: 165, p100: 31, c100: 0, f100: 3.6, category: 'Protein', tags: ['nonveg'] },
+    { id: 2, name: 'Brown Rice (Cooked)', cal100: 112, p100: 2.6, c100: 23, f100: 0.9, category: 'Grains', tags: [] },
+    { id: 3, name: 'Egg (Boiled/Scrambled)', cal100: 155, p100: 13, c100: 1.1, f100: 11, category: 'Protein', defaultG: 50, tags: ['egg', 'nonveg'] },
+    { id: 4, name: 'Banana', cal100: 89, p100: 1.1, c100: 23, f100: 0.3, category: 'Fruits', defaultG: 120, tags: [] },
+    { id: 5, name: 'Greek Yogurt', cal100: 59, p100: 10, c100: 3.6, f100: 0.4, category: 'Dairy', defaultG: 170, tags: ['dairy'] },
+    { id: 6, name: 'Oatmeal (Cooked)', cal100: 68, p100: 2.4, c100: 12, f100: 1.4, category: 'Grains', defaultG: 240, tags: ['gluten'] },
+    { id: 7, name: 'Salmon', cal100: 208, p100: 20, c100: 0, f100: 13, category: 'Protein', tags: ['nonveg', 'seafood'] },
+    { id: 8, name: 'Avocado', cal100: 160, p100: 2, c100: 8.5, f100: 15, category: 'Fats', defaultG: 80, tags: [] },
+    { id: 9, name: 'Sweet Potato', cal100: 86, p100: 1.6, c100: 20, f100: 0.1, category: 'Carbs', defaultG: 130, tags: [] },
+    { id: 10, name: 'Broccoli', cal100: 34, p100: 2.8, c100: 7, f100: 0.4, category: 'Vegetables', tags: [] },
+    { id: 11, name: 'Almonds', cal100: 579, p100: 21, c100: 22, f100: 50, category: 'Nuts', defaultG: 28, tags: ['nuts'] },
+    { id: 12, name: 'Whole Wheat Bread', cal100: 247, p100: 13, c100: 43, f100: 3.4, category: 'Grains', defaultG: 28, tags: ['gluten'] },
+    { id: 13, name: 'Apple', cal100: 52, p100: 0.3, c100: 14, f100: 0.2, category: 'Fruits', defaultG: 180, tags: [] },
+    { id: 14, name: 'Peanut Butter', cal100: 588, p100: 25, c100: 20, f100: 50, category: 'Fats', defaultG: 32, tags: ['nuts'] },
+    { id: 15, name: 'Cottage Cheese', cal100: 98, p100: 11, c100: 3.4, f100: 4.3, category: 'Dairy', tags: ['dairy'] },
+    { id: 16, name: 'Tuna (Canned)', cal100: 116, p100: 26, c100: 0, f100: 1, category: 'Protein', tags: ['nonveg', 'seafood'] },
+    { id: 17, name: 'Pasta (Cooked)', cal100: 131, p100: 5, c100: 25, f100: 1.1, category: 'Grains', defaultG: 150, tags: ['gluten'] },
+    { id: 18, name: 'Spinach', cal100: 23, p100: 2.9, c100: 3.6, f100: 0.4, category: 'Vegetables', tags: [] },
+    { id: 19, name: 'Whey Protein (Scoop)', cal100: 400, p100: 80, c100: 10, f100: 3, category: 'Supplement', defaultG: 30, tags: ['dairy'] },
+    { id: 20, name: 'Mixed Berries', cal100: 57, p100: 0.7, c100: 14, f100: 0.3, category: 'Fruits', defaultG: 150, tags: [] },
+    { id: 21, name: 'Paneer', cal100: 265, p100: 18, c100: 1.2, f100: 21, category: 'Protein', tags: ['dairy'] },
+    { id: 22, name: 'Toor Dal (Cooked)', cal100: 120, p100: 8, c100: 20, f100: 1.3, category: 'Protein', defaultG: 150, tags: [] },
+    { id: 23, name: 'Roti / Chapati', cal100: 297, p100: 11, c100: 56, f100: 3.7, category: 'Grains', defaultG: 30, tags: ['gluten'] },
+    { id: 24, name: 'White Rice (Cooked)', cal100: 130, p100: 2.7, c100: 28, f100: 0.3, category: 'Grains', defaultG: 160, tags: [] },
+    { id: 25, name: 'Chicken Curry', cal100: 150, p100: 14, c100: 5, f100: 8, category: 'Protein', defaultG: 200, tags: ['nonveg'] },
+    { id: 26, name: 'Masala Dosa', cal100: 140, p100: 3.3, c100: 23, f100: 4, category: 'Grains', defaultG: 120, tags: [] },
+    { id: 27, name: 'Idli', cal100: 129, p100: 3.5, c100: 28, f100: 0.4, category: 'Grains', defaultG: 40, tags: [] },
+    { id: 28, name: 'Mixed Veg Curry', cal100: 85, p100: 2.5, c100: 11, f100: 3.6, category: 'Vegetables', defaultG: 170, tags: [] },
+    { id: 29, name: 'Curd / Dahi', cal100: 61, p100: 3.5, c100: 4.7, f100: 3.3, category: 'Dairy', defaultG: 150, tags: ['dairy'] },
+    { id: 30, name: 'Paratha', cal100: 260, p100: 6, c100: 36, f100: 10, category: 'Grains', defaultG: 60, tags: ['gluten'] },
+    { id: 31, name: 'Rajma (Cooked)', cal100: 127, p100: 8.7, c100: 23, f100: 0.5, category: 'Protein', defaultG: 150, tags: [] },
+    { id: 32, name: 'Poha', cal100: 130, p100: 2.5, c100: 26, f100: 2, category: 'Grains', defaultG: 200, tags: [] },
+    { id: 33, name: 'Milk (Whole)', cal100: 62, p100: 3.2, c100: 4.8, f100: 3.3, category: 'Dairy', defaultG: 250, tags: ['dairy'] },
+    { id: 34, name: 'Tofu', cal100: 76, p100: 8, c100: 1.9, f100: 4.8, category: 'Protein', tags: ['soy'] },
+    { id: 35, name: 'Basmati Rice (Cooked)', cal100: 121, p100: 3.5, c100: 25, f100: 0.4, category: 'Grains', defaultG: 160, tags: [] },
 ]
 
 // ── Helper: calc macros for given grams ──
@@ -117,8 +117,27 @@ const MEAL_TYPES = [
 ]
 
 function MealLog() {
-    const { user } = useAuth()
+    const { user, getUserProfile } = useAuth()
     const { dailyData, saveDailyData } = useDailyLog()
+    const profile = getUserProfile() || {}
+
+    // Allergen detection from user profile
+    const userAllergens = profile.allergies || []
+    const isVegetarian = profile.dietType === 'vegetarian' || profile.dietType === 'vegan'
+    const isVegan = profile.dietType === 'vegan'
+
+    // Check if a food is an allergen for this user
+    const getFoodWarnings = (food) => {
+        const warnings = []
+        const tags = food.tags || []
+        if (isVegetarian && tags.includes('nonveg')) warnings.push('🥩 Non-Veg')
+        if (isVegan && tags.includes('dairy')) warnings.push('🥛 Dairy')
+        if (isVegan && tags.includes('egg')) warnings.push('🥚 Egg')
+        userAllergens.forEach(a => {
+            if (tags.includes(a)) warnings.push(`⚠️ ${a.charAt(0).toUpperCase() + a.slice(1)}`)
+        })
+        return warnings
+    }
     const [searchQuery, setSearchQuery] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [selectedMealType, setSelectedMealType] = useState('breakfast')
@@ -162,10 +181,19 @@ function MealLog() {
     const handleSearch = (query) => {
         setSearchQuery(query)
         if (query.trim().length < 2) { setSearchResults([]); return }
-        setSearchResults(FOOD_DATABASE.filter(f =>
+        let results = FOOD_DATABASE.filter(f =>
             f.name.toLowerCase().includes(query.toLowerCase()) ||
             f.category.toLowerCase().includes(query.toLowerCase())
-        ))
+        )
+        // Hide completely blocked foods (vegetarian sees no meat, user allergens hidden)
+        results = results.filter(f => {
+            const tags = f.tags || []
+            if (isVegetarian && tags.includes('nonveg')) return false
+            if (isVegan && (tags.includes('dairy') || tags.includes('egg'))) return false
+            // Don't hide allergen foods, just warn — let user decide
+            return true
+        })
+        setSearchResults(results)
     }
 
     // Open add-food modal with default quantity
@@ -302,10 +330,20 @@ function MealLog() {
                                 <div className="meal-results animate-fade-in">
                                     {searchResults.map(food => {
                                         const preview = calcMacros(food, food.defaultG || 100)
+                                        const warnings = getFoodWarnings(food)
                                         return (
-                                            <div key={food.id} className="meal-result-card" onClick={() => selectFood(food)}>
+                                            <div key={food.id}
+                                                className={`meal-result-card ${warnings.length > 0 ? 'meal-result-card--villain' : ''}`}
+                                                onClick={() => selectFood(food)}>
                                                 <div className="meal-result-info">
-                                                    <div className="meal-result-name">{food.name}</div>
+                                                    <div className="meal-result-name">
+                                                        {food.name}
+                                                        {warnings.length > 0 && (
+                                                            <span className="meal-villain-badge">
+                                                                <MdWarning /> {warnings[0]}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                     <div className="meal-result-meta">
                                                         <span className="text-xs text-muted">Per {food.defaultG || 100}g:</span>
                                                         <span className="badge badge-success">{preview.calories} kcal</span>

@@ -3,13 +3,14 @@ import { useAuth } from '../../context/AuthContext'
 import {
     MdPerson, MdFitnessCenter, MdFlag, MdWatch,
     MdArrowForward, MdArrowBack, MdCheck,
-    MdMale, MdFemale
+    MdMale, MdFemale, MdRestaurant, MdWarning
 } from 'react-icons/md'
 import './Onboarding.css'
 
 const STEPS = [
     { id: 'profile', label: 'Profile', icon: MdPerson },
     { id: 'goals', label: 'Goals', icon: MdFlag },
+    { id: 'diet', label: 'Diet', icon: MdRestaurant },
     { id: 'gym', label: 'Equipment', icon: MdFitnessCenter },
     { id: 'wearable', label: 'Wearable', icon: MdWatch }
 ]
@@ -33,6 +34,9 @@ function Onboarding() {
         activityLevel: '',
         goal: '',
         targetWeight: '',
+        targetWeight: '',
+        dietType: 'classic',
+        allergies: [],
         hasGym: null,
         equipment: [],
         wearable: 'none'
@@ -51,12 +55,22 @@ function Onboarding() {
         }))
     }
 
+    const toggleAllergy = (allergy) => {
+        setProfile(prev => ({
+            ...prev,
+            allergies: prev.allergies.includes(allergy)
+                ? prev.allergies.filter(a => a !== allergy)
+                : [...prev.allergies, allergy]
+        }))
+    }
+
     const canProceed = () => {
         switch (step) {
             case 0: return profile.name && profile.age && profile.gender && profile.height && profile.weight
             case 1: return profile.activityLevel && profile.goal
-            case 2: return profile.hasGym !== null
-            case 3: return true
+            case 2: return true // Diet is optional (defaults to classic/none)
+            case 3: return profile.hasGym !== null
+            case 4: return true
             default: return false
         }
     }
@@ -196,6 +210,41 @@ function Onboarding() {
 
                     {step === 2 && (
                         <>
+                            <h2 className="heading-3">Any dietary preferences?</h2>
+                            <p className="text-muted text-sm">We'll highlight allergens as 'Villains' to avoid!</p>
+
+                            <div className="onboarding-options">
+                                <label>Diet Type</label>
+                                <div className="onboarding-option-grid">
+                                    {[
+                                        { value: 'classic', label: '🍖 Classic', desc: 'No restrictions' },
+                                        { value: 'vegetarian', label: '🥦 Vegetarian', desc: 'No meat' },
+                                        { value: 'vegan', label: '🌿 Vegan', desc: 'Plant-based only' },
+                                    ].map(opt => (
+                                        <button key={opt.value} className={`onboarding-option ${profile.dietType === opt.value ? 'selected' : ''}`} onClick={() => updateProfile('dietType', opt.value)}>
+                                            <strong>{opt.label}</strong>
+                                            <span>{opt.desc}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="onboarding-equipment animate-fade-in">
+                                <label>Allergies / Intolerances</label>
+                                <div className="onboarding-equipment-grid">
+                                    {['nuts', 'dairy', 'gluten', 'soy', 'egg', 'seafood'].map(item => (
+                                        <button key={item} className={`onboarding-equip-chip ${profile.allergies.includes(item) ? 'selected' : ''}`} onClick={() => toggleAllergy(item)}>
+                                            {profile.allergies.includes(item) && <MdWarning className="text-warning" />}
+                                            {item.charAt(0).toUpperCase() + item.slice(1)}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </>
+                    )}
+
+                    {step === 3 && (
+                        <>
                             <h2 className="heading-3">Do you go to a gym?</h2>
                             <p className="text-muted text-sm">We'll customise workout plans based on available equipment</p>
                             <div className="onboarding-gym-toggle">
@@ -226,7 +275,7 @@ function Onboarding() {
                         </>
                     )}
 
-                    {step === 3 && (
+                    {step === 4 && (
                         <>
                             <h2 className="heading-3">Do you have a health watch?</h2>
                             <p className="text-muted text-sm">We'll sync your real-time health data automatically</p>
@@ -253,7 +302,8 @@ function Onboarding() {
                                     <div><span className="text-muted">Height:</span> {profile.height} cm</div>
                                     <div><span className="text-muted">Weight:</span> {profile.weight} kg</div>
                                     <div><span className="text-muted">Activity:</span> {profile.activityLevel}</div>
-                                    <div><span className="text-muted">Goal:</span> {profile.goal?.replace('_', ' ')}</div>
+                                    <div><span className="text-muted">Diet:</span> {profile.dietType}</div>
+                                    <div><span className="text-muted">Allergies:</span> {profile.allergies.length ? profile.allergies.join(', ') : 'None'}</div>
                                     <div><span className="text-muted">Gym:</span> {profile.hasGym ? 'Yes' : 'No'}</div>
                                     <div><span className="text-muted">Watch:</span> {profile.wearable}</div>
                                 </div>
