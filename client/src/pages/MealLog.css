@@ -708,6 +708,111 @@
     font-weight: 700;
 }
 
+/* ── Recipe Allergen / Blacklist Highlighting ── */
+.recipe-card--allergen {
+    border-color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.04);
+    position: relative;
+}
+
+.recipe-card--allergen:hover {
+    border-color: #f87171 !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 20px rgba(239, 68, 68, 0.15);
+}
+
+.recipe-card--blacklisted {
+    border-color: #dc2626 !important;
+    background: rgba(239, 68, 68, 0.06);
+    opacity: 0.7;
+    position: relative;
+}
+
+.recipe-card--blacklisted::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(-45deg,
+            transparent,
+            transparent 8px,
+            rgba(239, 68, 68, 0.04) 8px,
+            rgba(239, 68, 68, 0.04) 16px);
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.recipe-allergen-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: var(--space-1);
+}
+
+.recipe-allergen-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border-radius: 4px;
+    font-weight: 700;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    animation: villainPulse 3s infinite;
+}
+
+.recipe-allergen-badge--blacklist {
+    background: rgba(220, 38, 38, 0.2);
+    color: #fca5a5;
+    border-color: rgba(220, 38, 38, 0.5);
+}
+
+/* ── Recipe Modal Warnings ── */
+.recipe-modal-warnings {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    font-size: var(--font-sm);
+    animation: fadeIn 0.3s ease;
+}
+
+.recipe-modal-warnings svg {
+    color: #ef4444;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* ── Ingredient Danger Highlight ── */
+.ingredient--danger {
+    background: rgba(239, 68, 68, 0.12) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    color: #fca5a5 !important;
+}
+
+.ingredient--danger:hover {
+    border-color: #ef4444 !important;
+}
+
+.ingredient-warning-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 4px;
+    font-size: 0.6rem;
+    color: #ef4444;
+    font-weight: 700;
+    vertical-align: middle;
+}
+
+.ingredient-warning-badge svg {
+    font-size: 0.7rem;
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
     .meal-layout {

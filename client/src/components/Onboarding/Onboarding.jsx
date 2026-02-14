@@ -37,10 +37,13 @@ function Onboarding() {
         targetWeight: '',
         dietType: 'classic',
         allergies: [],
+        customBlacklist: [],
         hasGym: null,
         equipment: [],
         wearable: 'none'
     })
+
+    const [blacklistInput, setBlacklistInput] = useState('')
 
     const updateProfile = (key, value) => {
         setProfile(prev => ({ ...prev, [key]: value }))
@@ -61,6 +64,24 @@ function Onboarding() {
             allergies: prev.allergies.includes(allergy)
                 ? prev.allergies.filter(a => a !== allergy)
                 : [...prev.allergies, allergy]
+        }))
+    }
+
+    const addBlacklistItem = () => {
+        const item = blacklistInput.trim().toLowerCase()
+        if (item && !profile.customBlacklist.includes(item)) {
+            setProfile(prev => ({
+                ...prev,
+                customBlacklist: [...prev.customBlacklist, item]
+            }))
+        }
+        setBlacklistInput('')
+    }
+
+    const removeBlacklistItem = (item) => {
+        setProfile(prev => ({
+            ...prev,
+            customBlacklist: prev.customBlacklist.filter(b => b !== item)
         }))
     }
 
@@ -240,6 +261,31 @@ function Onboarding() {
                                     ))}
                                 </div>
                             </div>
+
+                            <div className="onboarding-equipment animate-fade-in">
+                                <label>Custom Blacklist (specific ingredients to avoid)</label>
+                                <p className="text-xs text-muted" style={{ marginBottom: 'var(--space-2)' }}>Type any ingredient you want to avoid — we'll flag recipes containing it</p>
+                                <div className="onboarding-blacklist-input">
+                                    <input
+                                        className="input-field"
+                                        placeholder="e.g. ajinomoto, palm oil, msg..."
+                                        value={blacklistInput}
+                                        onChange={e => setBlacklistInput(e.target.value)}
+                                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addBlacklistItem() } }}
+                                    />
+                                    <button className="btn btn-primary btn-sm" onClick={addBlacklistItem} disabled={!blacklistInput.trim()}>+ Add</button>
+                                </div>
+                                {profile.customBlacklist.length > 0 && (
+                                    <div className="onboarding-blacklist-chips">
+                                        {profile.customBlacklist.map(item => (
+                                            <span key={item} className="onboarding-blacklist-chip">
+                                                🚫 {item}
+                                                <button onClick={() => removeBlacklistItem(item)} className="onboarding-blacklist-remove">&times;</button>
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </>
                     )}
 
@@ -304,6 +350,7 @@ function Onboarding() {
                                     <div><span className="text-muted">Activity:</span> {profile.activityLevel}</div>
                                     <div><span className="text-muted">Diet:</span> {profile.dietType}</div>
                                     <div><span className="text-muted">Allergies:</span> {profile.allergies.length ? profile.allergies.join(', ') : 'None'}</div>
+                                    <div><span className="text-muted">Blacklist:</span> {profile.customBlacklist.length ? profile.customBlacklist.join(', ') : 'None'}</div>
                                     <div><span className="text-muted">Gym:</span> {profile.hasGym ? 'Yes' : 'No'}</div>
                                     <div><span className="text-muted">Watch:</span> {profile.wearable}</div>
                                 </div>

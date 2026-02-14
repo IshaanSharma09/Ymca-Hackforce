@@ -62,48 +62,56 @@ const RECIPE_DATABASE = [
     {
         id: 'r1', name: 'Protein Oatmeal Bowl', time: '10 min', servings: 1, difficulty: 'Easy',
         calories: 380, protein: 32, carbs: 42, fat: 8,
+        tags: ['dairy', 'gluten'],
         ingredients: ['1 cup oats', '1 scoop whey protein', '1 banana (sliced)', '1 tbsp honey', '1/2 cup milk'],
         steps: ['Cook oats with milk for 5 min.', 'Mix in protein powder while warm.', 'Top with banana slices and drizzle honey.']
     },
     {
         id: 'r2', name: 'Chicken Stir-Fry', time: '20 min', servings: 2, difficulty: 'Easy',
         calories: 320, protein: 35, carbs: 15, fat: 12,
+        tags: ['nonveg', 'soy'],
         ingredients: ['200g chicken breast', '1 bell pepper', '1 cup broccoli', '2 tbsp soy sauce', '1 tbsp olive oil', '2 cloves garlic'],
         steps: ['Slice chicken into strips, season with salt & pepper.', 'Heat oil, cook chicken 5-6 min until golden.', 'Add garlic, bell pepper, broccoli — stir-fry 4 min.', 'Pour soy sauce, toss well, serve hot.']
     },
     {
         id: 'r3', name: 'Dal Tadka', time: '30 min', servings: 3, difficulty: 'Medium',
         calories: 180, protein: 12, carbs: 28, fat: 3,
+        tags: [],
         ingredients: ['1 cup toor dal', '1 tomato (chopped)', '1 tsp cumin seeds', '2 cloves garlic', '1 tsp turmeric', 'Coriander', 'Salt'],
         steps: ['Wash dal, pressure cook with turmeric + 2 cups water for 3 whistles.', 'Heat oil, add cumin seeds till they splutter.', 'Add garlic, tomato — sauté 3 min.', 'Pour cooked dal in, add salt, simmer 5 min.', 'Garnish with coriander.']
     },
     {
         id: 'r4', name: 'Greek Yogurt Parfait', time: '5 min', servings: 1, difficulty: 'Easy',
         calories: 250, protein: 22, carbs: 30, fat: 5,
+        tags: ['dairy', 'gluten'],
         ingredients: ['170g Greek yogurt', '1/2 cup mixed berries', '1/4 cup granola', '1 tsp honey'],
         steps: ['Layer yogurt in a glass.', 'Add berries on top.', 'Sprinkle granola.', 'Drizzle honey and enjoy!']
     },
     {
         id: 'r5', name: 'Paneer Bhurji', time: '15 min', servings: 2, difficulty: 'Easy',
         calories: 280, protein: 20, carbs: 8, fat: 19,
+        tags: ['dairy'],
         ingredients: ['200g paneer (crumbled)', '1 onion (chopped)', '1 tomato (chopped)', '1 green chili', '1/2 tsp turmeric', 'Coriander leaves'],
         steps: ['Heat oil, sauté onion until golden.', 'Add green chili, tomato — cook 3 min.', 'Add turmeric and crumbled paneer.', 'Stir-fry 5 min on medium heat.', 'Garnish with coriander, serve with roti.']
     },
     {
         id: 'r6', name: 'Salmon & Avocado Bowl', time: '15 min', servings: 1, difficulty: 'Easy',
         calories: 450, protein: 30, carbs: 35, fat: 20,
+        tags: ['nonveg', 'seafood', 'soy'],
         ingredients: ['100g salmon fillet', '1/2 avocado', '1 cup brown rice (cooked)', 'Soy sauce', 'Sesame seeds'],
         steps: ['Pan-sear salmon 4 min each side.', 'Flake salmon into a bowl with rice.', 'Add sliced avocado.', 'Drizzle soy sauce, top with sesame seeds.']
     },
     {
         id: 'r7', name: 'Masala Omelette', time: '8 min', servings: 1, difficulty: 'Easy',
         calories: 210, protein: 14, carbs: 4, fat: 15,
+        tags: ['nonveg', 'egg'],
         ingredients: ['2 eggs', '1 small onion (diced)', '1 green chili', 'Pinch of turmeric', 'Coriander', 'Salt'],
         steps: ['Beat eggs with salt, turmeric, chili.', 'Mix in onion and coriander.', 'Pour into heated oiled pan.', 'Cook 2-3 min each side until golden.']
     },
     {
         id: 'r8', name: 'Smoothie Bowl', time: '5 min', servings: 1, difficulty: 'Easy',
         calories: 300, protein: 8, carbs: 52, fat: 6,
+        tags: ['dairy'],
         ingredients: ['1 frozen banana', '1/2 cup frozen berries', '1/2 cup milk', 'Granola', 'Chia seeds', 'Sliced fruits'],
         steps: ['Blend banana, berries, and milk until thick.', 'Pour into bowl.', 'Top with granola, chia seeds, and fresh fruit slices.']
     }
@@ -123,10 +131,11 @@ function MealLog() {
 
     // Allergen detection from user profile
     const userAllergens = profile.allergies || []
+    const customBlacklist = (profile.customBlacklist || []).map(b => b.toLowerCase().trim())
     const isVegetarian = profile.dietType === 'vegetarian' || profile.dietType === 'vegan'
     const isVegan = profile.dietType === 'vegan'
 
-    // Check if a food is an allergen for this user
+    // Check if a food/recipe is an allergen for this user
     const getFoodWarnings = (food) => {
         const warnings = []
         const tags = food.tags || []
@@ -135,6 +144,59 @@ function MealLog() {
         if (isVegan && tags.includes('egg')) warnings.push('🥚 Egg')
         userAllergens.forEach(a => {
             if (tags.includes(a)) warnings.push(`⚠️ ${a.charAt(0).toUpperCase() + a.slice(1)}`)
+        })
+        return warnings
+    }
+
+    // Check recipe ingredients against custom blacklist
+    const getBlacklistWarnings = (recipe) => {
+        if (!recipe.ingredients || customBlacklist.length === 0) return []
+        const warnings = []
+        const ingredientText = recipe.ingredients.join(' ').toLowerCase()
+        customBlacklist.forEach(item => {
+            if (ingredientText.includes(item)) {
+                warnings.push(`🚫 ${item.charAt(0).toUpperCase() + item.slice(1)}`)
+            }
+        })
+        return warnings
+    }
+
+    // Get all warnings for a recipe (allergen tags + blacklist ingredients)
+    const getRecipeWarnings = (recipe) => {
+        return [...getFoodWarnings(recipe), ...getBlacklistWarnings(recipe)]
+    }
+
+    // Check if a specific ingredient line is an allergen/blacklisted
+    const getIngredientWarning = (ingredientLine) => {
+        const lower = ingredientLine.toLowerCase()
+        const warnings = []
+        // Check allergen keywords
+        const allergenKeywords = {
+            dairy: ['milk', 'yogurt', 'cheese', 'paneer', 'cream', 'butter', 'whey', 'curd', 'dahi', 'ghee'],
+            nuts: ['almond', 'peanut', 'cashew', 'walnut', 'pistachio', 'nuts'],
+            gluten: ['wheat', 'bread', 'oats', 'granola', 'flour', 'roti', 'chapati', 'pasta', 'noodle'],
+            egg: ['egg'],
+            soy: ['soy', 'tofu'],
+            seafood: ['salmon', 'tuna', 'fish', 'shrimp', 'prawn', 'crab']
+        }
+        userAllergens.forEach(allergen => {
+            const keywords = allergenKeywords[allergen] || [allergen]
+            if (keywords.some(kw => lower.includes(kw))) {
+                warnings.push(`⚠️ ${allergen}`)
+            }
+        })
+        if (isVegetarian && ['chicken', 'mutton', 'lamb', 'beef', 'pork', 'fish', 'salmon', 'tuna', 'shrimp', 'prawn'].some(w => lower.includes(w))) {
+            warnings.push('🥩 Non-Veg')
+        }
+        if (isVegan && allergenKeywords.dairy.some(w => lower.includes(w))) {
+            warnings.push('🥛 Dairy')
+        }
+        if (isVegan && lower.includes('egg')) {
+            warnings.push('🥚 Egg')
+        }
+        // Check custom blacklist
+        customBlacklist.forEach(item => {
+            if (lower.includes(item)) warnings.push(`🚫 ${item}`)
         })
         return warnings
     }
@@ -412,24 +474,39 @@ function MealLog() {
                         <div className="glass-card-static meal-search-card">
                             <p className="text-sm text-muted">Browse recipes with step-by-step instructions 📖</p>
                             <div className="recipe-grid">
-                                {RECIPE_DATABASE.map(recipe => (
-                                    <div key={recipe.id} className="recipe-card" onClick={() => setSelectedRecipe(recipe)}>
-                                        <div className="recipe-card-header">
-                                            <h4 className="recipe-card-name">{recipe.name}</h4>
-                                            <span className="badge badge-success">{recipe.calories} kcal</span>
+                                {RECIPE_DATABASE.map(recipe => {
+                                    const recipeWarnings = getRecipeWarnings(recipe)
+                                    const isBlacklisted = getBlacklistWarnings(recipe).length > 0
+                                    return (
+                                        <div key={recipe.id}
+                                            className={`recipe-card ${recipeWarnings.length > 0 ? 'recipe-card--allergen' : ''} ${isBlacklisted ? 'recipe-card--blacklisted' : ''}`}
+                                            onClick={() => setSelectedRecipe(recipe)}>
+                                            {recipeWarnings.length > 0 && (
+                                                <div className="recipe-allergen-badges">
+                                                    {recipeWarnings.map((w, i) => (
+                                                        <span key={i} className={`recipe-allergen-badge ${isBlacklisted ? 'recipe-allergen-badge--blacklist' : ''}`}>
+                                                            {w}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            <div className="recipe-card-header">
+                                                <h4 className="recipe-card-name">{recipe.name}</h4>
+                                                <span className="badge badge-success">{recipe.calories} kcal</span>
+                                            </div>
+                                            <div className="recipe-card-meta">
+                                                <span><MdTimer /> {recipe.time}</span>
+                                                <span><MdPeople /> {recipe.servings}p</span>
+                                                <span className="recipe-difficulty">{recipe.difficulty}</span>
+                                            </div>
+                                            <div className="recipe-card-macros">
+                                                <span style={{ color: '#ef4444' }}>P: {recipe.protein}g</span>
+                                                <span style={{ color: '#3b82f6' }}>C: {recipe.carbs}g</span>
+                                                <span style={{ color: '#f59e0b' }}>F: {recipe.fat}g</span>
+                                            </div>
                                         </div>
-                                        <div className="recipe-card-meta">
-                                            <span><MdTimer /> {recipe.time}</span>
-                                            <span><MdPeople /> {recipe.servings}p</span>
-                                            <span className="recipe-difficulty">{recipe.difficulty}</span>
-                                        </div>
-                                        <div className="recipe-card-macros">
-                                            <span style={{ color: '#ef4444' }}>P: {recipe.protein}g</span>
-                                            <span style={{ color: '#3b82f6' }}>C: {recipe.carbs}g</span>
-                                            <span style={{ color: '#f59e0b' }}>F: {recipe.fat}g</span>
-                                        </div>
-                                    </div>
-                                ))}
+                                    )
+                                })}
                             </div>
                         </div>
                     )}
@@ -554,6 +631,15 @@ function MealLog() {
                     <div className="meal-modal recipe-modal glass-card-static animate-scale-in" onClick={e => e.stopPropagation()}>
                         <button className="meal-modal-close" onClick={() => setSelectedRecipe(null)}><MdClose /></button>
                         <h3 className="heading-4">{selectedRecipe.name}</h3>
+                        {/* Allergen / Blacklist warnings banner */}
+                        {(() => {
+                            const rw = getRecipeWarnings(selectedRecipe)
+                            return rw.length > 0 ? (
+                                <div className="recipe-modal-warnings">
+                                    <MdWarning /> <strong>Warning:</strong> {rw.join(', ')}
+                                </div>
+                            ) : null
+                        })()}
                         <div className="recipe-detail-meta">
                             <span><MdTimer /> {selectedRecipe.time}</span>
                             <span><MdPeople /> {selectedRecipe.servings} serving{selectedRecipe.servings > 1 ? 's' : ''}</span>
@@ -567,7 +653,21 @@ function MealLog() {
                         </div>
                         <div className="recipe-detail-section">
                             <h5>🧂 Ingredients</h5>
-                            <ul className="recipe-ingredients">{selectedRecipe.ingredients.map((ing, i) => <li key={i}>{ing}</li>)}</ul>
+                            <ul className="recipe-ingredients">
+                                {selectedRecipe.ingredients.map((ing, i) => {
+                                    const ingWarnings = getIngredientWarning(ing)
+                                    return (
+                                        <li key={i} className={ingWarnings.length > 0 ? 'ingredient--danger' : ''}>
+                                            {ing}
+                                            {ingWarnings.length > 0 && (
+                                                <span className="ingredient-warning-badge">
+                                                    <MdWarning /> {ingWarnings[0]}
+                                                </span>
+                                            )}
+                                        </li>
+                                    )
+                                })}
+                            </ul>
                         </div>
                         <div className="recipe-detail-section">
                             <h5>👨‍🍳 Instructions</h5>

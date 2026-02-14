@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext'
 import {
     MdPerson, MdEmail, MdLock, MdLogout, MdDeleteForever,
     MdEdit, MdSave, MdClose, MdFitnessCenter, MdFlag,
-    MdWatch, MdScale, MdHeight, MdCake, MdCheck
+    MdWatch, MdScale, MdHeight, MdCake, MdCheck, MdWarning, MdAdd
 } from 'react-icons/md'
 import './Profile.css'
 
@@ -29,10 +29,35 @@ function Profile() {
 
     const [message, setMessage] = useState({ text: '', type: '' })
     const [loading, setLoading] = useState(false)
+    const [blacklistInput, setBlacklistInput] = useState('')
+    const [localBlacklist, setLocalBlacklist] = useState(profile.customBlacklist || [])
 
     const showMessage = (text, type = 'success') => {
         setMessage({ text, type })
         setTimeout(() => setMessage({ text: '', type: '' }), 4000)
+    }
+
+    // Save blacklist to profile in localStorage
+    const syncBlacklist = (newList) => {
+        setLocalBlacklist(newList)
+        const profileKey = `fitfuel-profile-${user.uid}`
+        const stored = JSON.parse(localStorage.getItem(profileKey) || '{}')
+        stored.customBlacklist = newList
+        localStorage.setItem(profileKey, JSON.stringify(stored))
+    }
+
+    const addBlacklistItem = () => {
+        const item = blacklistInput.trim().toLowerCase()
+        if (item && !localBlacklist.includes(item)) {
+            syncBlacklist([...localBlacklist, item])
+            showMessage(`"${item}" added to blacklist`)
+        }
+        setBlacklistInput('')
+    }
+
+    const removeBlacklistItem = (item) => {
+        syncBlacklist(localBlacklist.filter(b => b !== item))
+        showMessage(`"${item}" removed from blacklist`)
     }
 
     // Update display name
@@ -371,6 +396,40 @@ function Profile() {
                             {profile.wearable === 'none' && '📱 No watch — phone tracking'}
                             {!profile.wearable && '–'}
                         </p>
+                    </div>
+
+                    {/* Blacklist Management */}
+                    <div className="glass-card-static profile-section">
+                        <h4 className="profile-section__title">
+                            <MdWarning /> My Ingredient Blacklist
+                        </h4>
+                        <p className="text-sm text-muted" style={{ marginBottom: 'var(--space-3)' }}>
+                            Recipes containing these ingredients will be flagged 🚫
+                        </p>
+                        <div className="profile-blacklist-input">
+                            <input
+                                className="input-field"
+                                placeholder="e.g. ajinomoto, palm oil..."
+                                value={blacklistInput}
+                                onChange={e => setBlacklistInput(e.target.value)}
+                                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addBlacklistItem() } }}
+                            />
+                            <button className="btn btn-primary btn-sm" onClick={addBlacklistItem} disabled={!blacklistInput.trim()}>
+                                <MdAdd /> Add
+                            </button>
+                        </div>
+                        {localBlacklist.length > 0 ? (
+                            <div className="profile-blacklist-chips">
+                                {localBlacklist.map(item => (
+                                    <span key={item} className="profile-blacklist-chip">
+                                        🚫 {item}
+                                        <button onClick={() => removeBlacklistItem(item)} className="profile-blacklist-remove">&times;</button>
+                                    </span>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-xs text-muted" style={{ marginTop: 'var(--space-2)' }}>No blacklisted ingredients yet</p>
+                        )}
                     </div>
                 </div>
             </div>

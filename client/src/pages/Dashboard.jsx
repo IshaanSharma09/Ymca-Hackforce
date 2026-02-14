@@ -6,7 +6,7 @@ import PixelHearts from '../components/PixelHearts/PixelHearts'
 import {
     MdLocalFireDepartment, MdRestaurantMenu, MdFitnessCenter,
     MdWaterDrop, MdDirectionsWalk, MdBedtime, MdTrendingUp,
-    MdTrendingDown, MdFavorite, MdFavoriteBorder
+    MdTrendingDown, MdFavorite, MdFavoriteBorder, MdWarning
 } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 import './Dashboard.css'
@@ -60,21 +60,63 @@ function Dashboard() {
         fat: Math.round(calorieTarget * 0.3 / 9)
     }
 
+    // Calorie ratio for alerts and character expression
+    const calorieRatio = dailyData.caloriesConsumed / calorieTarget
+
+    // ── Nutrition Alerts ──
+    const currentHour = new Date().getHours()
+    const nutritionAlerts = []
+
+    // Low protein alert: protein < 50% of target
+    const proteinRatio = dailyData.protein / macroTargets.protein
+    if (proteinRatio < 0.5) {
+        nutritionAlerts.push({
+            id: 'low-protein',
+            type: proteinRatio < 0.25 ? 'error' : 'warning',
+            icon: '💪',
+            title: 'Low Protein',
+            message: `Only ${Math.round(dailyData.protein)}g / ${macroTargets.protein}g consumed`,
+            penalty: proteinRatio < 0.25 ? 5 : 3
+        })
+    }
+
+    // Low calories alert: after noon and calories < 40% of target
+    if (currentHour >= 12 && calorieRatio < 0.4) {
+        nutritionAlerts.push({
+            id: 'low-calories',
+            type: calorieRatio < 0.2 ? 'error' : 'warning',
+            icon: '🔥',
+            title: 'Under-Eating!',
+            message: `Only ${dailyData.caloriesConsumed} / ${calorieTarget} kcal — you need more fuel`,
+            penalty: calorieRatio < 0.2 ? 5 : 3
+        })
+    }
+
+    // High calories on non-cheat day: > 120% of target
+    if (!isCheatDay && calorieRatio > 1.2) {
+        nutritionAlerts.push({
+            id: 'high-calories',
+            type: calorieRatio > 1.5 ? 'error' : 'warning',
+            icon: '⚠️',
+            title: 'Over-Eating!',
+            message: `${dailyData.caloriesConsumed} / ${calorieTarget} kcal — ${Math.round((calorieRatio - 1) * 100)}% over target`,
+            penalty: calorieRatio > 1.5 ? 5 : 3
+        })
+    }
+
+    // Total nutrition penalty
+    const nutritionPenalty = nutritionAlerts.reduce((sum, a) => sum + (a.type === 'error' ? a.penalty : 1), 0)
+
     // SVG Calorie Ring
     const ringRadius = 90
     const ringCircumference = 2 * Math.PI * ringRadius
     const ringOffset = ringCircumference - (calorieProgress / 100) * ringCircumference
-
-    // Greeting
-    // const hour = new Date().getHours()
-    // const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening'
 
     // BMI calculation
     const heightM = (profile.height || 170) / 100
     const bmi = (profile.weight || 70) / (heightM * heightM)
 
     // Calorie status for character expression
-    const calorieRatio = dailyData.caloriesConsumed / calorieTarget
     let calorieStatusText = ''
     let calorieStatus = 'happy'
     if (calorieRatio > 1.3) {
@@ -85,16 +127,18 @@ function Dashboard() {
         // We'll let GameCharacter handle the visual state logic
     }
 
-    // Health score for hearts (0-100), with cheat day penalty
+    // Health score for hearts (0-100), with cheat day penalty AND nutrition penalty
     const rawHealthScore = Math.min(100, Math.round(
         (Math.min(calorieProgress, 100) * 0.3) +
         (stepsProgress * 0.25) +
         (waterProgress * 0.25) +
         (Math.min((dailyData.sleep || 0) / 8 * 100, 100) * 0.2)
     ))
-    const healthScore = isCheatDay
-        ? Math.max(0, rawHealthScore - (cheatDayPenalty || 20))
-        : rawHealthScore
+    const healthScore = Math.max(0,
+        isCheatDay
+            ? rawHealthScore - (cheatDayPenalty || 20) - nutritionPenalty
+            : rawHealthScore - nutritionPenalty
+    )
 
     // Level & XP Logic
     const currentLevel = Math.max(1, Math.floor(healthScore / 20) + 1)
@@ -280,6 +324,32 @@ function Dashboard() {
                         </div>
                     </div>
                 </div>
+
+                {/* Nutrition Alerts Panel */}
+                {nutritionAlerts.length > 0 && (
+                    <div className="glass-card-static dash-nutrition-alerts">
+                        <h3 className="dash-card-title">
+                            <MdWarning style={{ color: '#ef4444' }} /> Nutrition Alerts
+                            <span className="dash-alert-count">{nutritionAlerts.length}</span>
+                        </h3>
+                        <div className="dash-alerts-list">
+                            {nutritionAlerts.map(alert => (
+                                <div key={alert.id} className={`dash-alert dash-alert--${alert.type}`}>
+                                    <div className="dash-alert__dot" />
+                                    <span className="dash-alert__icon">{alert.icon}</span>
+                                    <div className="dash-alert__content">
+                                        <strong className="dash-alert__title">{alert.title}</strong>
+                                        <span className="dash-alert__message">{alert.message}</span>
+                                    </div>
+                                    <span className="dash-alert__penalty">-{alert.penalty} pts</span>
+                                </div>
+                            ))}
+                        </div>
+                        <p className="dash-alert-total">
+                            Total Penalty: <strong>-{nutritionPenalty} pts</strong> from health score
+                        </p>
+                    </div>
+                )}
 
                 {/* Steps Card */}
                 <div className="glass-card-static dash-stat-card-large">
