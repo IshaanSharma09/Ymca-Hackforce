@@ -9,9 +9,9 @@
 /* ── CSS VARIABLES ── */
 :root {
   /* ─ Layout ─ */
-  --sidebar-width: 250px;
-  --sidebar-collapsed: 72px;
-  --navbar-height: 64px;
+  --sidebar-width: 200px;
+  --sidebar-collapsed: 56px;
+  --navbar-height: 60px;
 
   /* ─ Colors — Dark Theme ─ */
   --bg-primary: #0b0f19;
@@ -44,7 +44,8 @@
 
   /* ─ Typography ─ */
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Outfit', system-ui, sans-serif;
+  --font-heading: 'Rajdhani', 'Outfit', system-ui, sans-serif;
+  --font-game: 'Rajdhani', monospace;
   --font-xs: 0.75rem;
   --font-sm: 0.875rem;
   --font-base: 1rem;

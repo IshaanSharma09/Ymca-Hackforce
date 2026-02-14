@@ -328,6 +328,138 @@
     transform: translateX(-50%) translateY(0);
 }
 
+/* ── Water Quick-Add Counter ── */
+.navbar__water-quick {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.navbar__water-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.25);
+    color: #06b6d4;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-size: 1.1rem;
+}
+
+.navbar__water-btn:hover {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: rgba(6, 182, 212, 0.4);
+    transform: scale(1.05);
+    box-shadow: 0 0 16px rgba(6, 182, 212, 0.2);
+}
+
+.navbar__water-btn:active {
+    transform: scale(0.92);
+}
+
+.navbar__water-count {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: var(--font-sm);
+    min-width: 14px;
+    text-align: center;
+}
+
+.navbar__water-meter {
+    width: 42px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.navbar__water-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #06b6d4, #22d3ee);
+    border-radius: var(--radius-full);
+    transition: width 0.4s ease;
+    box-shadow: 0 0 6px rgba(6, 182, 212, 0.4);
+}
+
+/* ── Notification Badge Count ── */
+.navbar__badge-count {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--danger);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+    animation: badgeBounce 0.3s ease;
+}
+
+@keyframes badgeBounce {
+    0% {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1.3);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ── Notification Meta (timestamp) ── */
+.notify-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.65rem;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+}
+
+/* ── Toast Reminder Pop-up ── */
+.navbar__toast {
+    position: fixed;
+    top: calc(var(--navbar-height) + 12px);
+    right: 24px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-5);
+    background: rgba(16, 24, 40, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(6, 182, 212, 0.1);
+    z-index: 9000;
+    font-size: var(--font-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    animation: toastSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes toastSlide {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 /* ── Responsive ── */
 @media (max-width: 1024px) {
     .navbar__menu-btn {
@@ -347,5 +479,9 @@
     .navbar__notify-dropdown {
         right: -60px;
         width: 300px;
+    }
+
+    .navbar__water-meter {
+        display: none;
     }
 }
