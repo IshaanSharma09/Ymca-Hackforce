@@ -28,11 +28,11 @@ app.get('/api/health', (req, res) => {
     })
 })
 
-// Routes (will be added in later stages)
+// Routes
+import mealsRouter from './routes/meals.js'
+app.use('/api/meals', mealsRouter)
 // app.use('/api/auth', authRoutes)
-// app.use('/api/meals', mealRoutes)
 // app.use('/api/workouts', workoutRoutes)
-// app.use('/api/foodoscope', foodoscopeRoutes)
 // app.use('/api/health-log', healthLogRoutes)
 
 // Error handler
