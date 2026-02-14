@@ -35,10 +35,17 @@ management experience.
 1. CALORIE & NUTRITION TRACKING (via Foodoscope API — SOLE DATA SOURCE)
    ─────────────────────────────────────────────────────────────────────
    • Search food / recipes via Foodoscope API and get calorie + nutrient data.
-   • ALL nutrition data (calories, protein, carbs, fat, fiber, vitamins,
-     minerals) is fetched exclusively from the Foodoscope API.
-   • Log meals manually by searching from the Foodoscope recipe & ingredient
-     database.
+   • ALL nutrition data (calories, protein, carbs, fat, sugar, fiber, vitamins,
+     minerals, cholesterol, sodium, etc.) is fetched exclusively from the
+     Foodoscope API (RecipeDB + FlavorDB).
+   • MANUALLY ADD any food item or dish by name — search the Foodoscope
+     database of 118,000+ recipes and get instant nutrition breakdown.
+   • Useful when items are hidden from camera or when eating a home-cooked
+     dish — just type the name and log it.
+   • Full health tracking: protein, sugar, saturated/unsaturated fats,
+     cholesterol, sodium, fiber, vitamins (A, B, C, D, E, K), minerals
+     (iron, calcium, zinc, magnesium) — everything needed for a complete
+     health report.
    • Track daily, weekly, and monthly nutrition intake with visual charts.
    • Meal history and favourite meals for quick re-logging.
 
