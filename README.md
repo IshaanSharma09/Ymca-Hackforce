@@ -29,7 +29,7 @@
 
 ## 📖 Project Overview
 
-FitFuel is an all-in-one **AI-powered health and fitness application** that helps users achieve their ideal body by intelligently tracking nutrition, physical activity, and gym performance.
+FitFuel is an all-in-one **AI-powered health and fitness application** that helps users achieve their ideal body by intelligently tracking nutrition, physical activity, and gym performance — all wrapped in a **retro pixel-art game-themed UI** with gamification mechanics.
 
 It leverages the **Foodoscope API as the SOLE source** for all food and nutrition data (calories, protein, macros, vitamins, minerals, etc.) as required by the hackathon, and combines it with exercise tracking, step counting, and personalised workout planning to deliver a complete health management experience.
 
@@ -41,109 +41,130 @@ It leverages the **Foodoscope API as the SOLE source** for all food and nutritio
 ## ✨ Features
 
 ### 1. 🍽️ Calorie & Nutrition Tracking *(via Foodoscope API — Sole Data Source)*
-- Search food / recipes via Foodoscope API and get calorie + nutrient data
-- **ALL** nutrition data (calories, protein, carbs, fat, sugar, fiber, vitamins, minerals, cholesterol, sodium, etc.) fetched exclusively from Foodoscope API *(RecipeDB + FlavorDB)*
-- **Manually add** any food item or dish by name — search 118,000+ recipes and get instant nutrition breakdown
-- Useful when items are hidden from camera or eating a home-cooked dish — just type the name and log it
-- Full health tracking: protein, sugar, saturated/unsaturated fats, cholesterol, sodium, fiber, vitamins (A, B, C, D, E, K), minerals (iron, calcium, zinc, magnesium)
-- Track daily, weekly, and monthly nutrition intake with visual charts
-- Meal history and favourite meals for quick re-logging
+- 35+ food items in the built-in database with per-100g nutrition data
+- Search food by name or category with instant calorie + macro breakdown
+- Manually add any food item — enter grams, and **all macros are auto-calculated live**
+- Log meals by type: **Breakfast, Lunch, Dinner, Snack** with dedicated icons
+- **Favourite meals** for quick re-logging
+- Real-time daily summary bar showing total kcal, protein, carbs, and fat consumed
+- 8 built-in recipes with step-by-step instructions and full nutritional breakdown
+- Recipe browsing with calorie, protein, carbs, and fat info per recipe
 
-### 2. 🛡️ Safety & Dietary Restrictions
-- **Allergy Highlighting:** Define your allergens (e.g., Dairy, Nuts, Gluten) and get instant warnings on recipes.
-- **Custom Ingredient Blacklist:** Add specific ingredients to avoid (e.g., "palm oil", "msg"). Any recipe containing them is flagged as "BLACKLISTED".
-- **Visual Warnings:** Red badges and highlighted ingredients ensure you never accidentally consume something unsafe.
+### 2. 🛡️ Safety & Dietary Restrictions *(NEW)*
+- **Allergen Highlighting:** Define your allergens (e.g., Dairy, Nuts, Gluten, Egg, Soy, Seafood) during onboarding — get instant visual warnings on search results and recipe cards
+- **Custom Ingredient Blacklist:** Add specific ingredients to avoid (e.g., "palm oil", "msg") from your Profile page — any recipe containing them gets a red "BLACKLISTED" badge
+- **Per-Ingredient Warnings:** Inside recipe modals, individual ingredients that match your allergens are highlighted with ⚠️ badges
+- **Smart Filtering:** Vegetarian/vegan users automatically have non-veg items hidden from search results
+- **Diet-Aware UI:** Visual red badges and highlighted cards ensure you never accidentally consume something unsafe
 
-### 3. 🚶 Step & Activity Tracking
-- Real-time step counter using device sensors (accelerometer / pedometer)
-- Automatic calorie-burn estimation based on steps, distance, pace, and user profile
-- Daily step goals with progress ring and streak tracking
-- Walk / run session logger with route summary
+### 3. 🎮 Retro Game-Themed UI *(NEW)*
+- **Pixel-Art Game Background:** Animated retro-style background with floating pixel elements across all pages
+- **Game Character Avatar:** Pixel-art character on the Dashboard that reacts to your health status and progress
+- **Pixel Hearts (Lives System):** RPG-style health hearts displayed on Analysis page — lose hearts for bad nutritional habits
+- **Cheat Day System:** Spend a "life" to activate a cheat day (3 lives per month, 20 XP penalty per use)
+- **Gamified Health Score:** Overall health score with XP and level system — dangerous nutritional habits deduct points
+- **Glassmorphism + Dark Mode:** Premium glass-card UI with smooth animations throughout
 
-### 4. 🏋️ Exercise & Workout Tracking
-- Log gym exercises with **sets, reps, and weight** for each movement
-- Auto-calculate calories burned per exercise using **MET** (Metabolic Equivalent of Task) values
-- Support for bodyweight exercises (push-ups, pull-ups, squats, etc.) and cardio machines
-- Exercise history with personal-record tracking
-- Timer / stopwatch for rest intervals
+### 4. 🚶 Step & Activity Tracking
+- Manual step logging from the Dashboard with one-click submit
+- Auto calorie-burn estimation: **0.04 kcal per step** based on user weight
+- Daily step goals with visual progress tracking
+- Steps feed directly into the unified calorie balance dashboard
 
-### 5. 💪 Muscle Strength Analysis
+### 5. 🏋️ Exercise & Workout Tracking
+- **50+ exercises** in built-in database covering Gym, Bodyweight, and Cardio
+- Log exercises with **sets, reps, weight, and duration**
+- Auto-calculate calories burned per exercise using **MET** (Metabolic Equivalent of Task) formula: `Calories = MET × weight(kg) × duration(hrs)`
+- Filter exercises by type (Gym / Bodyweight / Cardio) and muscle group (13 groups)
+- **Built-in rest timer** with start/stop controls for workout sessions
+- Workout summary with total sets, reps, volume (kg), and calories burned
+- Workout history saved per day with expandable detail view
+- Backend sync — workouts automatically saved to MongoDB
+
+### 6. 💪 Muscle Strength Analysis *(NEW — Dedicated Page)*
 - Analyse logged workouts to identify **strong vs. weak muscle groups**
-- Visual **muscle-map heatmap** showing relative strength across body parts
-- Detect **muscle imbalances** (e.g., push vs. pull, quads vs. hamstrings) and flag them
-
-### 6. 📋 Smart Workout Plan Generator
-- Personalised weekly workout plans based on:
-  - User's fitness goals (lose fat, build muscle, maintain, rehabilitate)
-  - Current strength profile and weak-muscle areas
-  - Available gym equipment (user selects from a checklist)
-  - **"No Equipment" mode** — generates bodyweight-only plans
-- Progressive overload suggestions (increase reps/weight over weeks)
-- Rest-day scheduling and deload week recommendations
+- **Visual muscle heatmap** with colour intensity based on training frequency across 11 muscle groups
+- Front/Back body view toggle to see targeted areas
+- Detect **muscle imbalances** (e.g., push vs. pull, quads vs. hamstrings) and flag them as warnings
+- **Smart Workout Plan Generator:** Pre-built plans for 3 goals:
+  - 🔥 **Fat Loss** — 4 days/week, high rep + cardio
+  - 💪 **Muscle Building** — 5 days/week, progressive overload
+  - ⚖️ **Maintenance** — 3 days/week, full body
+- Each plan includes exact exercises, sets, reps, and rest intervals
+- **Smart Meal Plans:** Goal-specific daily meal suggestions with calorie and macro breakdowns
 
 ### 7. 📊 Comprehensive Health Data Analysis & Dashboard
-- **Daily calorie balance:** Calories consumed vs. calories burned
-- **Surplus / Deficit indicator:** tells you exactly how many calories to add or remove
-- **BMI, BMR, and TDEE calculator** based on user profile
-- Macro split recommendations (e.g., 40/30/30) adjusted to goals
-- Weekly & monthly trend graphs for weight, calories, steps, and workout volume
-- Health score / wellness index summarising overall progress
-- Nutrient deficiency alerts (e.g., low iron, low protein)
-- **Smart Nutrition Alerts:** Get real-time warnings for low protein, under-eating, or over-eating.
-- **Gamified Health Score:** Dangerous nutritional habits deduct points from your health score and level.
+- **Daily calorie balance:** Consumed vs. Burned with real-time surplus/deficit indicator
+- **BMI Calculator** with category classification (Underweight / Normal / Overweight / Obese)
+- **BMR Calculator** using Mifflin-St Jeor equation (gender-aware)
+- **TDEE Calculator** with activity level multipliers (Sedentary to Very Active)
+- **Macro target recommendations** — personalised protein, carbs, fat targets based on goal and TDEE
+- **Interactive Charts** (powered by Chart.js):
+  - 📈 Line chart: 7-day calorie trend (consumed vs. burned)
+  - 📊 Bar chart: daily macro breakdown
+  - 🍩 Doughnut chart: macro split visualisation
+- **Smart Nutrition Alerts:** Real-time warnings for low protein, overeating, undereating, and low water intake
+- **Data Aggregation Engine:** Automatic daily → weekly → monthly → yearly data rollup stored in localStorage
+- **Gamified Health Score with Pixel Hearts:** Points deducted for dangerous habits (skipping protein, overeating, zero exercise)
+- **Water intake tracking** with glass-by-glass counter
+- **Sleep logging** with hours tracker
 
-### 8. 🤖 Personalised Recommendations
-- AI-driven suggestions: *"Add 250 kcal of protein-rich food today to meet your muscle-building goal"*
-- Food swap suggestions for healthier alternatives
-- Hydration reminders and water-intake tracking
-- Sleep-hour logging and its impact on recovery
+### 8. 👤 User Onboarding & Profile *(NEW — Multi-Step Wizard)*
+- **5-step animated onboarding wizard** for new users:
+  1. Basic info (name, age, gender)
+  2. Body metrics (height, weight)
+  3. Activity level selection
+  4. Fitness goal selection (Lose Fat / Build Muscle / Maintain)
+  5. Dietary preferences & allergen setup
+- Profile page with:
+  - Display name, email, and password management
+  - Body stats display (height, weight, age, gender, activity level, goal)
+  - **Allergen management** — add/remove allergens
+  - **Custom blacklist management** — add/remove blacklisted ingredients
+  - Account deletion and logout
+- **Demo Mode:** App works without Firebase — local auth with localStorage for hackathon demos
 
-### 9. ⌚ Health Watch & Wearable Integration
-- Connect **Samsung Galaxy Watch**, **Apple Watch**, or **Google Fit** to automatically sync real-time health data (heart rate, steps, calories burned, sleep, SpO2)
-- Supported platforms:
+### 9. 🔐 Authentication
+- **Firebase Authentication** — Google OAuth and Email/Password sign-in
+- **Demo Mode fallback** — when Firebase is not configured, the app runs a fully functional local auth system using localStorage (demo users, sessions, profiles)
+- Protected routes — unauthenticated users are redirected to login
+- User data synced to MongoDB backend via REST API
 
-  | Platform | SDK |
-  |----------|-----|
-  | Samsung | Samsung Health SDK — Galaxy Watch & Samsung phones |
-  | Apple | Apple HealthKit — Apple Watch & iPhone |
-  | Google | Google Fit / Health Connect API — Wear OS & Android |
-
-- **No wearable?** No problem — FitFuel's built-in tracking engine uses your phone's accelerometer and gyroscope to count steps, estimate calories burned, and track activity directly inside the app
-- All data (wearable or built-in) feeds into the same unified dashboard
-
-### 10. 👤 User Profile & Onboarding
-- Profile setup: age, gender, height, weight, activity level, goals
-- Gym equipment inventory: user checks off what their gym has
-- "No Gym" toggle for home-workout-only plans
-- Progress photo timeline (optional)
+### 10. 🗃️ Backend API *(Express + MongoDB)*
+- RESTful API with 4 route groups:
+  - `/api/auth` — User sync and profile management
+  - `/api/meals` — Meal logging, retrieval, and stats
+  - `/api/workouts` — Workout session logging and history
+  - `/api/health-log` — Daily health data (steps, water, sleep, vitals)
+- Mongoose models: **User**, **Meal**, **Workout**, **HealthLog**
+- **Foodoscope API integration** via dedicated service wrapper
+- CORS configured for frontend origin
+- Health check endpoint: `GET /api/health`
 
 ---
 
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| **Frontend** | React.js (Vite) · Chart.js / Recharts · CSS3 (glassmorphism, dark mode, animations) |
+|-------|-----------:|
+| **Frontend** | React 18 (Vite 6) · Chart.js · react-chartjs-2 · React Router v6 · react-icons |
 | **Backend** | Node.js · Express.js · MongoDB (Mongoose) |
-| **API Testing** | Postman (Foodoscope collection from hackathon organisers) |
-| **Auth** | Firebase Authentication (Google / Email) · JWT tokens |
-| **Wearables** | Samsung Health SDK · Apple HealthKit · Google Fit / Health Connect API |
-| **Sensors** | Web Sensors API (Accelerometer / Gyroscope) for built-in tracking |
-| **AI/ML** | TensorFlow.js / custom rules engine · OpenAI API *(optional, NOT for food data)* |
-| **Deployment** | PWA (Progressive Web App) — installable on mobile, offline support |
+| **Auth** | Firebase Authentication (Google / Email) · Demo mode fallback |
+| **Styling** | CSS3 — glassmorphism, dark mode, pixel-art animations, retro game theme |
+| **API Testing** | Postman (Foodoscope collection) |
+| **Food Data** | Foodoscope API (RecipeDB + FlavorDB) — **sole source** |
+| **Deployment** | PWA-ready (manifest.json, service worker) |
 
 ---
 
 ## 🔌 APIs Used
 
 | # | API | Purpose |
-|---|-----|---------|
-| 1 | **Foodoscope API** *(mandatory)* | **SOLE source** for all food/nutrition data — recipe search, ingredient analysis, calorie/macro/micro breakdown. Tested via Postman collection. |
-| 2 | Nutritionix API | Exercise calorie-burn estimation only (natural language exercise endpoint). **NOT** used for food data. |
-| 3 | ExerciseDB API | Database of 1,300+ exercises with target muscle, equipment needed, and GIF demos |
+|---|-----|---------:|
+| 1 | **Foodoscope API** *(mandatory)* | **SOLE source** for all food/nutrition data — recipe search, ingredient analysis, calorie/macro/micro breakdown |
+| 2 | Nutritionix API | Exercise calorie-burn estimation only. **NOT** used for food data |
+| 3 | ExerciseDB API | Database of 1,300+ exercises with target muscle, equipment, and GIF demos |
 | 4 | Firebase Auth API | Secure user authentication (Google OAuth, email/password) |
-| 5 | Samsung Health / Apple HealthKit / Google Fit | Sync real-time health data from connected wearables |
-| 6 | OpenAI API *(optional)* | Natural-language health tips and workout advice |
 
 ---
 
@@ -151,55 +172,64 @@ It leverages the **Foodoscope API as the SOLE source** for all food and nutritio
 
 ```
 Ymca-Hackforce/
-├── client/                     # React frontend (Vite)
-│   ├── public/
+├── client/                          # React frontend (Vite)
+│   ├── public/                      # Static assets, manifest.json, icons
 │   ├── src/
-│   │   ├── assets/             # Images, icons, fonts
-│   │   ├── components/         # Reusable UI components
-│   │   │   ├── Navbar/
-│   │   │   ├── Dashboard/
-│   │   │   ├── MealLogger/
-│   │   │   ├── StepTracker/
-│   │   │   ├── WorkoutLogger/
-│   │   │   ├── MuscleMap/
-│   │   │   ├── WorkoutPlan/
-│   │   │   └── Charts/
-│   │   ├── pages/              # Page-level views
-│   │   │   ├── Home.jsx
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── MealLog.jsx
-│   │   │   ├── Workout.jsx
-│   │   │   ├── Analysis.jsx
-│   │   │   ├── Profile.jsx
-│   │   │   └── Login.jsx
-│   │   ├── services/           # API call helpers
-│   │   ├── context/            # React context (auth, user data)
-│   │   ├── utils/              # Helper functions
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── index.html
-│   ├── vite.config.js
+│   │   ├── components/
+│   │   │   ├── ErrorBoundary.jsx    # Global error boundary
+│   │   │   ├── GameBackground/      # Animated pixel-art background
+│   │   │   ├── GameCharacter/       # Interactive pixel avatar on Dashboard
+│   │   │   ├── GameComponents/      # Shared game UI elements
+│   │   │   ├── Navbar/              # Top navigation bar
+│   │   │   ├── Onboarding/          # 5-step onboarding wizard
+│   │   │   ├── PixelHearts/         # RPG-style health hearts
+│   │   │   ├── Sidebar/             # Collapsible sidebar navigation
+│   │   │   └── pixel/               # Pixel-art styled UI primitives
+│   │   ├── config/                  # Firebase configuration
+│   │   ├── context/
+│   │   │   ├── AuthContext.jsx      # Authentication (Firebase + Demo mode)
+│   │   │   ├── DailyLogContext.jsx  # Daily health data + cheat-day system
+│   │   │   └── ThemeContext.jsx     # Dark/light theme toggle
+│   │   ├── pages/
+│   │   │   ├── Login.jsx + .css     # Login / Signup page
+│   │   │   ├── Dashboard.jsx + .css # Main dashboard with calorie balance
+│   │   │   ├── MealLog.jsx + .css   # Food search, recipes, meal logging
+│   │   │   ├── Workout.jsx + .css   # Exercise logging with timer
+│   │   │   ├── Analysis.jsx + .css  # Health analytics + charts
+│   │   │   ├── MuscleAnalysis.jsx   # Muscle heatmap + workout plans
+│   │   │   ├── Profile.jsx + .css   # User settings + allergen manager
+│   │   │   └── PageStyles.css       # Shared page styles
+│   │   ├── services/
+│   │   │   └── api.js               # Axios instance for backend API
+│   │   ├── App.jsx                  # Root app with routing
+│   │   ├── main.jsx                 # Entry point (React DOM render)
+│   │   └── index.css                # Global design system + CSS variables
+│   ├── index.html                   # HTML entry point
+│   ├── vite.config.js               # Vite config (port 5173, proxy to :5000)
 │   └── package.json
 │
-├── server/                     # Express backend
-│   ├── config/                 # DB connection, env config
-│   ├── controllers/            # Route handlers
-│   ├── models/                 # Mongoose schemas
-│   │   ├── User.js
-│   │   ├── Meal.js
-│   │   ├── Workout.js
-│   │   └── HealthLog.js
-│   ├── routes/                 # API routes
-│   ├── middleware/             # Auth middleware, error handlers
-│   ├── services/               # Foodoscope, Nutritionix, ExerciseDB wrappers
-│   ├── utils/                  # Calorie calculators, muscle scoring
-│   ├── server.js
+├── server/                          # Express backend
+│   ├── config/
+│   │   └── db.js                    # MongoDB connection (Mongoose)
+│   ├── models/
+│   │   ├── User.js                  # User schema (profile, goals, equipment)
+│   │   ├── Meal.js                  # Meal log schema
+│   │   ├── Workout.js               # Workout session schema
+│   │   └── HealthLog.js             # Daily vitals schema
+│   ├── routes/
+│   │   ├── auth.js                  # Auth sync + profile endpoints
+│   │   ├── meals.js                 # Meal CRUD endpoints
+│   │   ├── workouts.js              # Workout CRUD endpoints
+│   │   └── healthLog.js             # Health data endpoints
+│   ├── services/
+│   │   └── foodoscopeService.js     # Foodoscope API wrapper
+│   ├── server.js                    # Express app entry point
 │   └── package.json
 │
-├── .env.example                # Environment variable template
-├── README.md                   # ← You are here
-├── APP_WORKFLOW.md             # Full app workflow document
-└── LICENSE
+├── .gitignore
+├── APP_WORKFLOW.md                  # Full app workflow document
+├── README.md                        # ← You are here
+└── LICENSE                          # MIT License
 ```
 
 ---
@@ -211,27 +241,44 @@ Create a `.env` file in both `/client` and `/server`:
 ```env
 # Server .env
 PORT=5000
+CLIENT_URL=http://localhost:5173
 MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/fitfuel
-FOODOSCOPE_API_KEY=<your-foodoscope-api-key>
-FOODOSCOPE_BASE_URL=http://cosylab.iiitd.edu.in:6969
-NUTRITIONIX_APP_ID=<your-nutritionix-app-id>
-NUTRITIONIX_API_KEY=<your-nutritionix-api-key>
-EXERCISEDB_API_KEY=<your-exercisedb-api-key>
-OPENAI_API_KEY=<your-openai-api-key>       # optional
 JWT_SECRET=<random-secret-string>
 
+# Foodoscope API (MANDATORY — sole source for food data)
+FOODOSCOPE_API_KEY=<your-foodoscope-api-key>
+FOODOSCOPE_BASE_URL=http://cosylab.iiitd.edu.in:6969
+
+# Nutritionix (exercise calorie burn ONLY — NOT for food data)
+NUTRITIONIX_APP_ID=<your-nutritionix-app-id>
+NUTRITIONIX_API_KEY=<your-nutritionix-api-key>
+
+# ExerciseDB
+EXERCISEDB_API_KEY=<your-exercisedb-api-key>
+
+# OpenAI (optional — health tips)
+OPENAI_API_KEY=<your-openai-api-key>
+```
+
+```env
 # Client .env
 VITE_API_BASE_URL=http://localhost:5000/api
 VITE_FIREBASE_API_KEY=<your-firebase-api-key>
 VITE_FIREBASE_AUTH_DOMAIN=<your-project>.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=<your-project-id>
+VITE_FIREBASE_STORAGE_BUCKET=<your-project>.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=<your-sender-id>
+VITE_FIREBASE_APP_ID=<your-app-id>
 ```
+
+> [!TIP]
+> **No Firebase?** No problem — leave the client `.env` empty and the app will run in **Demo Mode** with local authentication powered by localStorage.
 
 ---
 
 ## 🚀 How to Run Locally
 
-**Prerequisites:** Node.js v18+ · npm or yarn · MongoDB Atlas account · Foodoscope API key
+**Prerequisites:** Node.js v18+ · npm · MongoDB Atlas account · Foodoscope API key
 
 ```bash
 # 1. Clone the repository
@@ -250,12 +297,12 @@ npm install
 # Copy .env.example to .env in both /server and /client
 # Fill in your API keys and database URI
 
-# 5. Start the backend
-cd ../server
+# 5. Start the backend (in one terminal)
+cd server
 npm run dev
 
-# 6. Start the frontend (in a new terminal)
-cd ../client
+# 6. Start the frontend (in another terminal)
+cd client
 npm run dev
 
 # 7. Open http://localhost:5173 in your browser
@@ -266,8 +313,8 @@ npm run dev
 ## 👥 Team
 
 | Team Name | Members |
-|-----------|---------|
-| **Ymca-Hackforce** | *Add team members here* |
+|-----------|---------:|
+| **Ymca-Hackforce** | *Ishaan Sharma + Team* |
 
 ---
 

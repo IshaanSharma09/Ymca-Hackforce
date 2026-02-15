@@ -316,11 +316,10 @@ function MealLog() {
             carbs: recipe.carbs, fat: recipe.fat,
             loggedAt: new Date().toISOString()
         }
+        saveMeals([...loggedMeals, meal])
+        syncMealToBackend(meal) // Sync
+        setSelectedRecipe(null)
     }
-    saveMeals([...loggedMeals, meal])
-    syncMealToBackend(meal) // Sync
-    setSelectedRecipe(null)
-}
 
 const removeMeal = (mealId) => saveMeals(loggedMeals.filter(m => m.id !== mealId))
 
@@ -491,136 +490,6 @@ return (
                                         )
                                     })}
                                 </div>
-<<<<<<< HEAD
-                            )}
-
-                            {searchQuery.length >= 2 && searchResults.length === 0 && (
-                                <div className="meal-no-results">
-                                    <p className="text-muted text-sm">No results for "{searchQuery}"</p>
-                                </div>
-                            )}
-
-                            {/* Quick Picks */}
-                            {!searchQuery && (
-                                <div className="meal-quick-picks">
-                                    <h4 className="text-sm text-muted" style={{ marginBottom: 'var(--space-3)' }}>
-                                        {favorites.length > 0 ? '⭐ Your Favorites' : '🔥 Popular Foods'}
-                                    </h4>
-                                    <div className="meal-results">
-                                        {(favorites.length > 0 ? favorites : FOOD_DATABASE.slice(0, 8)).map(food => {
-                                            const preview = calcMacros(food, food.defaultG || 100)
-                                            return (
-                                                <div key={food.id} className="meal-result-card" onClick={() => selectFood(food)}>
-                                                    <div className="meal-result-info">
-                                                        <div className="meal-result-name">{food.name}</div>
-                                                        <div className="meal-result-meta">
-                                                            <span className="text-xs text-muted">Per {food.defaultG || 100}g:</span>
-                                                            <span className="badge badge-success">{preview.calories} kcal</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="meal-result-actions">
-                                                        <button className="btn-icon" onClick={e => { e.stopPropagation(); toggleFavorite(food) }}>
-                                                            {favorites.some(f => f.id === food.id) ? <MdFavorite style={{ color: '#ef4444' }} /> : <MdFavoriteBorder />}
-                                                        </button>
-                                                        <button className="btn btn-primary btn-sm" onClick={e => { e.stopPropagation(); selectFood(food) }}><MdAdd /></button>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Recipes Tab */}
-                    {activeTab === 'recipes' && (
-                        <div className="glass-card-static meal-search-card">
-                            <p className="text-sm text-muted">Browse recipes with step-by-step instructions 📖</p>
-                            <div className="recipe-grid">
-                                {RECIPE_DATABASE.map(recipe => {
-                                    const recipeWarnings = getRecipeWarnings(recipe)
-                                    const isBlacklisted = getBlacklistWarnings(recipe).length > 0
-                                    return (
-                                        <div key={recipe.id}
-                                            className={`recipe-card ${recipeWarnings.length > 0 ? 'recipe-card--allergen' : ''} ${isBlacklisted ? 'recipe-card--blacklisted' : ''}`}
-                                            onClick={() => setSelectedRecipe(recipe)}>
-                                            {recipeWarnings.length > 0 && (
-                                                <div className="recipe-allergen-badges">
-                                                    {recipeWarnings.map((w, i) => (
-                                                        <span key={i} className={`recipe-allergen-badge ${isBlacklisted ? 'recipe-allergen-badge--blacklist' : ''}`}>
-                                                            {w}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            )}
-                                            <div className="recipe-card-header">
-                                                <h4 className="recipe-card-name">{recipe.name}</h4>
-                                                <span className="badge badge-success">{recipe.calories} kcal</span>
-                                            </div>
-                                            <div className="recipe-card-meta">
-                                                <span><MdTimer /> {recipe.time}</span>
-                                                <span><MdPeople /> {recipe.servings}p</span>
-                                                <span className="recipe-difficulty">{recipe.difficulty}</span>
-                                            </div>
-                                            <div className="recipe-card-macros">
-                                                <span style={{ color: '#ef4444' }}>P: {recipe.protein}g</span>
-                                                <span style={{ color: '#3b82f6' }}>C: {recipe.carbs}g</span>
-                                                <span style={{ color: '#f59e0b' }}>F: {recipe.fat}g</span>
-                                            </div>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Right — Today's Meals */}
-                <div className="meal-column-side">
-                    <div className="glass-card-static">
-                        <h3 className="dash-card-title"><MdRestaurantMenu style={{ color: 'var(--success)' }} /> Today's Meals</h3>
-                        {loggedMeals.length === 0 ? (
-                            <p className="text-muted text-sm text-center" style={{ padding: 'var(--space-8) 0' }}>No meals logged yet 🍽️</p>
-                        ) : (
-                            <div className="meal-today-list">
-                                {mealsByType.filter(t => t.meals.length > 0).map(type => {
-                                    const Icon = type.icon
-                                    return (
-                                        <div key={type.id} className="meal-today-group">
-                                            <button className="meal-today-group-header" onClick={() => setExpandedMeal(expandedMeal === type.id ? null : type.id)}>
-                                                <div className="meal-today-group-left">
-                                                    <Icon style={{ color: type.color }} /> <strong>{type.label}</strong>
-                                                    <span className="text-xs text-muted">({type.meals.length})</span>
-                                                </div>
-                                                <div className="meal-today-group-right">
-                                                    <span className="text-sm" style={{ color: 'var(--text-accent)' }}>{type.totalCal} kcal</span>
-                                                    {expandedMeal === type.id ? <MdExpandLess /> : <MdExpandMore />}
-                                                </div>
-                                            </button>
-                                            {expandedMeal === type.id && (
-                                                <div className="meal-today-items animate-fade-in">
-                                                    {type.meals.map(meal => (
-                                                        <div key={meal.id} className="meal-today-item">
-                                                            <div>
-                                                                <span className="text-sm">{meal.name}</span>
-                                                                {meal.quantity && <span className="text-xs text-muted"> · {meal.quantity}g</span>}
-                                                            </div>
-                                                            <div className="meal-today-item-right">
-                                                                <span className="text-xs">{meal.calories} kcal</span>
-                                                                <button className="btn-icon btn-icon-sm" onClick={() => removeMeal(meal.id)}>
-                                                                    <MdDelete style={{ color: 'var(--danger)', fontSize: '0.9rem' }} />
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    )
-                                })}
-=======
->>>>>>> f15db03d435d0ed89232ba014a6be6ecc8c56046
                             </div>
                         )}
                     </div>
@@ -631,24 +500,39 @@ return (
                     <div className="glass-card-static meal-search-card">
                         <p className="text-sm text-muted">Browse recipes with step-by-step instructions 📖</p>
                         <div className="recipe-grid">
-                            {RECIPE_DATABASE.map(recipe => (
-                                <div key={recipe.id} className="recipe-card" onClick={() => setSelectedRecipe(recipe)}>
-                                    <div className="recipe-card-header">
-                                        <h4 className="recipe-card-name">{recipe.name}</h4>
-                                        <span className="badge badge-success">{recipe.calories} kcal</span>
+                            {RECIPE_DATABASE.map(recipe => {
+                                const recipeWarnings = getRecipeWarnings(recipe)
+                                const isBlacklisted = getBlacklistWarnings(recipe).length > 0
+                                return (
+                                    <div key={recipe.id}
+                                        className={`recipe-card ${recipeWarnings.length > 0 ? 'recipe-card--allergen' : ''} ${isBlacklisted ? 'recipe-card--blacklisted' : ''}`}
+                                        onClick={() => setSelectedRecipe(recipe)}>
+                                        {recipeWarnings.length > 0 && (
+                                            <div className="recipe-allergen-badges">
+                                                {recipeWarnings.map((w, i) => (
+                                                    <span key={i} className={`recipe-allergen-badge ${isBlacklisted ? 'recipe-allergen-badge--blacklist' : ''}`}>
+                                                        {w}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                        <div className="recipe-card-header">
+                                            <h4 className="recipe-card-name">{recipe.name}</h4>
+                                            <span className="badge badge-success">{recipe.calories} kcal</span>
+                                        </div>
+                                        <div className="recipe-card-meta">
+                                            <span><MdTimer /> {recipe.time}</span>
+                                            <span><MdPeople /> {recipe.servings}p</span>
+                                            <span className="recipe-difficulty">{recipe.difficulty}</span>
+                                        </div>
+                                        <div className="recipe-card-macros">
+                                            <span style={{ color: '#ef4444' }}>P: {recipe.protein}g</span>
+                                            <span style={{ color: '#3b82f6' }}>C: {recipe.carbs}g</span>
+                                            <span style={{ color: '#f59e0b' }}>F: {recipe.fat}g</span>
+                                        </div>
                                     </div>
-                                    <div className="recipe-card-meta">
-                                        <span><MdTimer /> {recipe.time}</span>
-                                        <span><MdPeople /> {recipe.servings}p</span>
-                                        <span className="recipe-difficulty">{recipe.difficulty}</span>
-                                    </div>
-                                    <div className="recipe-card-macros">
-                                        <span style={{ color: '#ef4444' }}>P: {recipe.protein}g</span>
-                                        <span style={{ color: '#3b82f6' }}>C: {recipe.carbs}g</span>
-                                        <span style={{ color: '#f59e0b' }}>F: {recipe.fat}g</span>
-                                    </div>
-                                </div>
-                            ))}
+                                )
+                            })}
                         </div>
                     </div>
                 )}
@@ -700,66 +584,7 @@ return (
                         </div>
                     )}
                 </div>
-<<<<<<< HEAD
-            )}
-
-            {/* ── Recipe Modal ── */}
-            {selectedRecipe && (
-                <div className="meal-modal-overlay" onClick={() => setSelectedRecipe(null)}>
-                    <div className="meal-modal recipe-modal glass-card-static animate-scale-in" onClick={e => e.stopPropagation()}>
-                        <button className="meal-modal-close" onClick={() => setSelectedRecipe(null)}><MdClose /></button>
-                        <h3 className="heading-4">{selectedRecipe.name}</h3>
-                        {/* Allergen / Blacklist warnings banner */}
-                        {(() => {
-                            const rw = getRecipeWarnings(selectedRecipe)
-                            return rw.length > 0 ? (
-                                <div className="recipe-modal-warnings">
-                                    <MdWarning /> <strong>Warning:</strong> {rw.join(', ')}
-                                </div>
-                            ) : null
-                        })()}
-                        <div className="recipe-detail-meta">
-                            <span><MdTimer /> {selectedRecipe.time}</span>
-                            <span><MdPeople /> {selectedRecipe.servings} serving{selectedRecipe.servings > 1 ? 's' : ''}</span>
-                            <span className="recipe-difficulty">{selectedRecipe.difficulty}</span>
-                        </div>
-                        <div className="meal-modal-macros">
-                            <div className="meal-modal-macro"><span className="meal-modal-macro-val">{selectedRecipe.calories}</span><span className="meal-modal-macro-label">kcal</span></div>
-                            <div className="meal-modal-macro"><span className="meal-modal-macro-val" style={{ color: '#ef4444' }}>{selectedRecipe.protein}g</span><span className="meal-modal-macro-label">Protein</span></div>
-                            <div className="meal-modal-macro"><span className="meal-modal-macro-val" style={{ color: '#3b82f6' }}>{selectedRecipe.carbs}g</span><span className="meal-modal-macro-label">Carbs</span></div>
-                            <div className="meal-modal-macro"><span className="meal-modal-macro-val" style={{ color: '#f59e0b' }}>{selectedRecipe.fat}g</span><span className="meal-modal-macro-label">Fat</span></div>
-                        </div>
-                        <div className="recipe-detail-section">
-                            <h5>🧂 Ingredients</h5>
-                            <ul className="recipe-ingredients">
-                                {selectedRecipe.ingredients.map((ing, i) => {
-                                    const ingWarnings = getIngredientWarning(ing)
-                                    return (
-                                        <li key={i} className={ingWarnings.length > 0 ? 'ingredient--danger' : ''}>
-                                            {ing}
-                                            {ingWarnings.length > 0 && (
-                                                <span className="ingredient-warning-badge">
-                                                    <MdWarning /> {ingWarnings[0]}
-                                                </span>
-                                            )}
-                                        </li>
-                                    )
-                                })}
-                            </ul>
-                        </div>
-                        <div className="recipe-detail-section">
-                            <h5>👨‍🍳 Instructions</h5>
-                            <ol className="recipe-steps">{selectedRecipe.steps.map((step, i) => <li key={i}>{step}</li>)}</ol>
-                        </div>
-                        <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => logRecipeAsMeal(selectedRecipe)}>
-                            <MdAdd /> Log as Meal
-                        </button>
-                    </div>
-                </div>
-            )}
-=======
             </div>
->>>>>>> f15db03d435d0ed89232ba014a6be6ecc8c56046
         </div>
 
         {/* ── Add Food Modal — User enters quantity, we calculate everything ── */}
